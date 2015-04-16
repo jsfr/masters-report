@@ -1,0 +1,15 @@
+\begin{tikzpicture}[thick]
+\tikzstyle{every node}=[font=\footnotesize]
+\node [reg={1}{left}](v1) at (0,4) {};
+\node [reg={2}{right}](v2) at (6,2) {};
+\node [reg={3}{left}](v3) at (0,0) {};
+\node [stein={N+1}{left}](vn1) at (2,2) {};
+\draw (v1) -- (vn1) node [midway,above] {1};
+\draw (v2) -- (vn1) node [midway,above] {2};
+\draw (v3) -- (vn1) node [midway,below] {3};
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

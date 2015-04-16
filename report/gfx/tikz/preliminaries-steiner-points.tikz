@@ -1,0 +1,20 @@
+\begin{tikzpicture}[thick]
+\node [reg](v2) at (0,4) {};
+\node [reg](v4) at (-2,0) {};
+\node [reg](v3) at (2,0) {};
+\node [stein](v1) at (0,1.154) {};
+\draw  (v1) edge (v2);
+\draw  (v1) edge (v3);
+\draw  (v1) edge (v4);
+
+\node [reg](v5) at (-6,4) {};
+\node [reg](v6) at (-8,0) {};
+\node [reg](v7) at (-4,0) {};
+\draw  (v5) edge (v6);
+\draw  (v6) edge (v7);
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

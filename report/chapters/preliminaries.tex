@@ -1,0 +1,150 @@
+\chapter{Preliminaries}
+\label{cha:preliminaries}
+
+% Short introduction to the chapter (max 1/2 page)
+This chapter contains all the preliminaries, basic concepts and definitions,
+which are needed to understand the work done in the thesis, and which are
+not necessarily known to the reader in full.
+
+\section{Topology}
+\label{sec:topology}
+
+The combinatorial structure of of a tree, or other form of geometric network, is
+called a topology. I.e.\ in the topology we only think about the adjacencies of
+the points and not their coordinates.
+
+\section{Steiner tree}
+\label{sec:steiner-tree}
+
+There are, at least, two different definitions of a Steiner tree both of which a
+equivalent. The first, used by Gilbert and Pollak~\cite{Gilbert1968} defines a
+Steiner tree, as a tree that cannot be shortened by a small perturbation or by
+``splitting'' a terminal by inserting a Steiner point.
+
+Here a Steiner point is an extra vertex which one is allowed to insert into the
+graph and use as a ``connection point'' for edges, as can be seen in
+\Cref{fig:preliminaries-steiner-point}.
+
+\begin{figure}[htbp]
+
+\centering
+\includegraphics[width=0.5\textwidth]{gfx/tikz/preliminaries-steiner-points}
+\caption[Steiner point of isosceles triangle.]{The length of the tree on the left
+  can be shortened by inserting an extra point as has been done on the
+  right.\label{fig:preliminaries-steiner-point}}
+\end{figure}
+
+Another definition, used by Smith~\cite{Smith1992}, defines the Steiner tree a
+tree with the following properties:
+\begin{enumerate}
+\item It contains $N$ ``regular points'' $\vec{x}_1 \cdots \vec{x}_N$, and
+  possibly $K$ additional ``Steiner points'' $\vec{x}_{N+1} \cdots
+  \vec{x}_{N+K}$.
+\item Each Steiner point has valence 3, and the edges emanating from it lie in a
+  plane and have mutual angle $120^{\circ}$
+\item Each regular point has valence between 1 and 3 (and generally $\le 2$).
+\item $0 \le K \le N-2$.
+\end{enumerate}
+
+These two definitions are equivalent, however the second one gives some
+important information about the \NOTE{Is there a better word than structure?}
+structure of the Steiner tree. This thesis will therefore in general use the
+second definition.
+
+That the two definitions are indeed equivalent can seen by considering each of
+the property of the second definition.
+
+The first property is by definition, and to name the regular points and the
+Steiner points.
+
+The second property can be shown in the following way. First of consider that
+any Steiner point must have at least valence three. This should be obvious as every
+point with valence one can simply be removed to make the length the same or
+shorter as they do not lead to any regular point Every Steiner point with
+valence two can be removed, and its edges be replaced with one edge which is of
+the same length or shorter as per the triangle inequality theorem.
+
+We now show that no pair of edges emanating from a Steiner point can have a
+mutual angle less than $120^{\circ}$. Suppose the contrary is the case, and the
+lines $PR$ and $RQ$ meet with angle $PRQ < 120^{\circ}$. If we use the
+mechanical interpretation given by Gilbert and Pollak~\cite{Gilbert1968} the two
+edges ``pull'' on point $R$ with a resultant force of magnitude\NOTE{I don't
+  quite get why this is the case?}
+\[
+F = 2 \cos \theta / 2 > 1
+\]
+\TODO[inline]{Finish the part about the angles being no less than 120}
+
+Using that the mutual angles can be no less than $120^{\circ}$ it follows that
+every Steiner point can have a valence of at most 3, as $120^{\circ} =
+360^{\circ}$. We therefore have, using the first part about the valence that a
+Steiner point always has exactly valence 3, and as the mutual angles can be no
+less than $120^{\circ}$, they must be exactly $120^{\circ}$.
+
+\TODO[inline]{Write proof of third property}
+
+The fourth property follows in the following way from property 3 and 4. Any tree
+has one edge fewer than vertices. Thus a Steiner tree has $N+K-1$ edges. Every
+edge has two endpoints meaning there are $2N+2K-2$ edges. As every Steiner point
+has valence three they account for $3K$ of the endpoints. For the regular points
+we must split them in three groups -- $N_1$, those that have valence 1. $N_2$,
+those that have valence 2 and, $N_3$, those that have valence 3. Thus the
+regular points account for the rest of the endpoints as
+$N_1 + 2 N_2 + 3 N_3 \ge N$. We can then write the equation as
+\begin{align}
+  3K + N_1 + 2N_2 + 3N_3 &= 2N + 2K - 2 \\
+  K &= 2N - 2 - (N_1 + 2N_2 + 3N_3) \\
+  0 \le K &\le N - 2
+\end{align}
+
+\subsection{Full Steiner tree}
+\label{sec:full-steiner-tree}
+
+A \ac{FST} is a Steiner tree where all regular points have valence 1, which is
+equivalent to the tree having exactly $N-2$ Steiner points, the maximal number
+of possible Steiner points. This can easily be seen by considering the
+definition of Steiner trees in \Cref{sec:steiner-tree}. This corresponds to the
+proof of the fourth property, but here $N_1 = N$ and $N_2 = N_3 = 0$, meaning
+that the number of Steiner points will be exactly $N-2$.
+
+It can furthermore be shown that any Steiner tree is a union of edge-disjoint
+\acp{FST}, meaning that any edge of a \ac{SMT} joining to regular points is also
+an edge of \ac{MST} of the regular points. This is relatively easily seen, by
+realizing that every three points connected to a Steiner point is a \ac{FST} for
+those three points. These are then either connected to the rest of the tree with
+a Steiner point, in which case they are part of a bigger \ac{FST}, or they are
+connected to a regular point, in which case we can we can remove that edge to
+have one \ac{FST} and the rest of the tree.
+
+The topology of a \ac{FST} is called a full Steiner topology, also abbreviated
+\ac{FST}. Here we have the fixed coordinates of the regular points, but not the
+coordinates of the Steiner points, and as such we only think about the
+adjacencies of the points. Whether we are talking about the topology or tree
+will be clear from the context.
+
+\subsection{Steiner minimal tree}
+\label{sec:steiner-minimal-tree}
+
+A minimal tree on $N$ points $y\vec{x}_{1},\vec{x}_{2},\ldots,\vec{x}{n}$ is the
+tree having these points as its vertices and having the smallest possible sum of
+the length of all its edges. When we are allowed to insert any number of extra
+points into the tree and connect the edges using these to further shorten the
+tree this is known as a \ac{SMT}~\cite{Gilbert1968}.
+
+\NOTE{This could probably be fleshed out a bit more}
+
+\section{Euclidean Steiner tree problem}
+\label{sec:eucl-stein-tree}
+
+The \ac{ESTP} is the problem of finding the \ac{SMT} for the set of points $N$
+in Euclidean $d$-space. I.e\ each point $x_{i}, 1 \le i \le n$ is a $d$-vector,
+and the metric used to calculate the length of the edges connecting the points
+is the $L^2$-norm, the Euclidean norm.
+
+The work of this thesis is only concerned with the Euclidean version of the
+Steiner tree problem in $d$-space.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

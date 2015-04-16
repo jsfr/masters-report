@@ -1,0 +1,49 @@
+%------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%------------------------------------------------------------------------------
+
+\RequirePackage[l2tabu, orthodox, abort]{nag}
+\documentclass[10pt,a4paper]{report}
+
+% Includes the file which contains all the document configurations and packages - make sure to edit this file
+\input{config}
+
+\begin{document}
+
+%------------------------------------------------------------------------------
+%	PRE-CONTENT THESIS PAGES
+%------------------------------------------------------------------------------
+
+\pagenumbering{roman} % Roman page numbering prior to the start of the thesis content (i, ii, iii, etc)
+
+\include{frontbackmatter/titlepage}
+\include{frontbackmatter/abstract}
+\include{frontbackmatter/contents}
+
+%------------------------------------------------------------------------------
+%	THESIS CONTENT - CHAPTERS
+%------------------------------------------------------------------------------
+
+\pagenumbering{arabic} % Arabic page numbering for thesis content (1, 2, 3, etc)
+
+\include{chapters/preliminaries}
+\include{chapters/smiths-algorithm}
+
+%------------------------------------------------------------------------------
+%	THESIS CONTENT - APPENDICES
+%------------------------------------------------------------------------------
+
+\appendix
+
+%------------------------------------------------------------------------------
+%	POST-CONTENT THESIS PAGES
+%------------------------------------------------------------------------------
+
+\include{frontbackmatter/bibliography}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

@@ -1,0 +1,51 @@
+The algorithm:
+- Choose three arbitrary regular points, and create a Steiner topology with
+these three and one Steiner point (there is only one way to do this).
+- Set an upper bound of infinity (or something similar)
+- Branch depth-first (to get better upper bounds as quickly as possible,
+allowing to prune earlier on) by splitting each edge, and insert a new Steiner point and
+connect this to a regular point.
+- Optimize the new topology. If the topology includes all $N$ points, and $N-2$
+Steiner points, and its length is smaller than the upper bound, set this as the
+new upper bound.
+- If at any point a optimized topology has length greater than the upper bound,
+prune the topology and all its descendants away (per theorem 4).
+- Continue until all topologies have been tried or pruned.
+- Output the current upper bound and its optimized tree, as this is also the \ac{SMT}
+
+\section{Overview}
+
+A general overview of the algorithm is a follows:
+\begin{itemize}
+  \item Generate all possible Steiner topologies
+  \item Minimize the length of all topologies, by optimizing the coordinates of
+    the Steiner points.
+  \item The tree which has the minimal length of all these will be the \ac{SMT}.
+\end{itemize}
+
+TODO this is not done! also look at the GP-algorithm, and remember to refer to it!
+
+\section{Representation of topology}
+
+A full Steiner topology can be represented using a $(N-3)$-vector $\vec a$,
+where $N$ is the number of regular terminals, and where the the ith entry $a_i$
+is an integer in the range $1 \le a_i \le 2 i + 1$.
+
+WHAT ARE THE INTEGERS
+
+EXAMPLE -> See the other article for good example
+
+HOW DOES THE ALGORITHM SET UP THE TOPOLOGY USING THIS VECTOR -> in the implementation?
+
+\section{Branch and Bound}
+
+The algorithm branches in the following way. Using the previously described
+topology vectors, a topology for three regular points is first created, from
+this we branch by splitting each of the three edges (thus creating three new
+topologies with four regular points). The algorithm continues branching in this
+way, by splitting on each edge in the previous topology. As noted by
+Smith~\cite{Smith1992} for $N$ regular points, there are
+$1 \cdot 3 \cdot 5 \ cdots (2N - 5)$ full Steiner topologies.
+
+The algorithm then performs bounding in the following way: Every time we branch,
+we optimize the points

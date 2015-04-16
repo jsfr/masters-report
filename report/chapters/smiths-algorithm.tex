@@ -1,0 +1,108 @@
+\chapter{Smiths algorithm}
+\label{ch:algorithm}
+
+% Short introduction to the chapter (max 1/2 page)
+The following chapter will describe the different parts of the algorithm used by
+Smith~\cite{Smith1992}.
+
+\section{Overview}
+\label{sec:overview}
+
+The algorithm in general follow the form of as proposed by Gilbert and
+Pollak~\missingref{18 in Smith}
+
+\TODO[inline]{Finish the overview}
+
+\TODO[inline]{Add a note that while there may not have been other ways to go at
+  the time, today we also have things such as the one described in Fonseca,
+  Pawel, et al.}
+
+\section{Topologies}
+\label{sec:topologies}
+
+The first step of the algorithm is, as described in \Cref{sec:overview}, to
+generate topologies. It is therefore natural that we need some way of
+representing and generating these topologies.
+
+The algorithm only considers full Steiner topologies where $K = N - 2$. This is
+a \NOTE{is there a better word than legal?} legal approach as we can simply
+regard any Steiner tree with $K \le N - 2$ as a \ac{FST} where some edges have
+length zero and thus some points have ``merged''.
+
+\subsection{Representation}
+\label{sec:representation}
+
+\begin{figure}[htbp]
+\centering
+  \begin{subfigure}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-1}
+    \caption{Here be dragons.\label{fig:algorithm-topology-1}}
+  \end{subfigure}
+~
+  \begin{subfigure}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-2}
+    \caption{Here be dragons.\label{fig:algorithm-topology-2}}
+  \end{subfigure}
+~
+  \begin{subfigure}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-3}
+    \caption{Here be dragons.\label{fig:algorithm-topology-3}}
+  \end{subfigure}
+\caption[How to construct Steiner topologies]{Here be dragons.\label{fig:algorithm-topologies}}
+\end{figure}
+
+There is an 1--1 correspondence between full Steiner topologies with $N \ge 3$
+regular points, and $(N-3)$-vectors $\vec{a}$, whose $i$th entry $a_i$ is an
+integer between $1 \le a_i \le 2 i + 1$.
+
+\TODO[inline]{Describe/Outline proof and the generation as shown in the figures.}
+
+\subsection{Generation}
+\label{sec:generation}
+
+Using the representation described in \Cref{sec:representation} the problem of
+generating all topologies can now be done as a backtracking problem generating
+all $(N-3)$-topology vectors.
+
+\TODO[inline]{Describe the backtracking here}
+
+To further speed up the generation of topologies, or rather to avoid generating
+unnecessary topologies, Smith also utilizes the following theorem
+
+\begin{theorem}
+For any set of $N$ distinct regular points in any Euclidean space, the length of
+the shortest tree, interconnecting $N-1$ points, with topology vector $a_1
+\cdots a_{N-4}$ is no greater than the length of the shortest tree,
+interconnecting $N$ points, with topology vector $a_1 \cdots a_{N-3}$.
+\end{theorem}
+
+\TODO[inline]{Proof of above theorem}
+
+The algorithm utilizes this to prune in the following way. Imagine we have found
+some upper bound for the \ac{SMT}. If we then optimize any generated topology
+vector which does not yet include all the regular points, and it turns out to
+have length greater than the upper bound, we can prune any topologies that we
+would have generated from this vector, as the length of the larger topologies
+cannot become any smaller than the length of the current, and thus cannot become
+smaller than the length of the upper bound.
+
+Thus the implementation of the algorithm generates and optimizes topologies
+depth-first to ensure we get a upper bound as quickly as possible. If it did
+breadth-first we would not be able to prune anything, as we would get all the
+full topologies as the last to optimize.
+
+\section{Optimization of a topology}
+\label{sec:optim-topol}
+
+\TODO[inline]{TODO}
+
+\subsection{Iteration}
+\label{sec:iter-fixm-could}
+
+\FIXME[inline]{This section could probably be better named}
+\TODO[inline]{TODO}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
