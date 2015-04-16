@@ -3,43 +3,157 @@
 %------------------------------------------------------------------------------
 
 \RequirePackage[l2tabu, orthodox, abort]{nag}
-\documentclass[10pt,a4paper]{report}
+\documentclass[11pt, a4paper, twoside, openright]{memoir}
 
-% Includes the file which contains all the document configurations and packages - make sure to edit this file
-\input{config}
+\chapterstyle{southall}
+
+\checkandfixthelayout[nearest] % WHAT DOES THIS DO?
+
+% Essentials
+\usepackage[utf8x]{inputenc} % UTF8-support
+\usepackage{ucs} % Extended UTF8-support
+\usepackage[english]{babel} % Use english conventions in typesetting
+\usepackage{fixltx2e} % Fixes some LaTeX stuff
+\usepackage{graphicx, float} % Allows for graphics with fixed placement
+\usepackage{booktabs} % Better tables
+\usepackage{mathtools, amsmath, amsfonts, amssymb} % Math-support
+
+% Fonts
+%\usepackage{palatino} % font
+%\usepackage[sc]{mathpazo} % math font for palatino
+\usepackage{lmodern, tgpagella, eulervm}
+\usepackage[T1]{fontenc}
+
+% Customizable
+\usepackage[font={small,it},margin=.5cm]{caption}
+\usepackage{subcaption}
+%\usepackage[parfill]{parskip}
+\usepackage{acronym}
+\usepackage[dvipsnames]{xcolor}  % Coloured text etc.
+\usepackage{tikz, tikzscale}
+\usepackage{xargs}
+\usepackage[colorinlistoftodos,prependcaption,textsize=footnotesize,%
+obeyFinal,bordercolor=black,linecolor=black]{todonotes}
+\usepackage[final]{pdfpages} % include pdfs
+
+
+% Keep here to make sure it loads last (but it is a "Essentials")
+\usepackage{microtype}
+\usepackage[bookmarks]{hyperref} % hyperlinks
+\hypersetup{
+  bookmarks=true,
+  colorlinks=true, % colored links
+  linkcolor=red, % color of internal links
+  citecolor=NavyBlue, % color of links to bibliography
+  filecolor=cyan, % color of file links
+  urlcolor=blue % color of external links
+}
+\usepackage[noabbrev]{cleveref}
+
+% Tikz styles
+\tikzset{%
+stein/.style 2 args={circle,inner sep=1pt,fill=white,draw,minimum size=5pt,label={#2:#1},name=#1},%
+reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1},name=#1}%
+}
+
+% To-do commands
+\newcommandx{\NOTE}[2][1=]{%
+\todo[backgroundcolor=green!50,#1]{Note: #2}}
+
+\newcommandx{\TODO}[2][1=]{%
+\todo[backgroundcolor=yellow!50,#1]{ToDo: #2}}
+
+\newcommandx{\FIXME}[2][1=]{%
+\todo[backgroundcolor=red!50,#1]{FixMe: #2}}
+
+\newcommandx{\missingref}[2][1=]{%
+\todo[backgroundcolor=blue!50,#1]{Missing ref: #2}}
+
+% Theorems, lemmas and corollaries
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+% Remove hyperlinks from acronyms
+\makeatletter
+\AtBeginDocument{%
+  \renewcommand*{\AC@hyperlink}[2]{%
+    \begingroup
+      \hypersetup{hidelinks}%
+      \hyperlink{#1}{#2}%
+    \endgroup
+  }%
+}
+\makeatother
+
+%------------------------------------------------------------------------------
+%	BEGIN DOCUMENT
+%------------------------------------------------------------------------------
+
+\pagestyle{ruled}
 
 \begin{document}
 
 %------------------------------------------------------------------------------
-%	PRE-CONTENT THESIS PAGES
+%	PRE-CONTENT - THESIS PAGES
 %------------------------------------------------------------------------------
+
+\frontmatter
+
+\includepdf{coverpage/coverpage}
 
 \pagenumbering{roman} % Roman page numbering prior to the start of the thesis content (i, ii, iii, etc)
 
-\include{frontbackmatter/titlepage}
-\include{frontbackmatter/abstract}
-\include{frontbackmatter/contents}
+%\include{frontbackmatter/titlepage}
+\include{content/frontmatter/abstract}
+
+\listoftodos
+\clearpage
+
+\hypersetup{
+  colorlinks=true, % colored links
+  linkcolor=MidnightBlue, % color of internal links
+}
+\tableofcontents
+\clearpage
+
+\listoffigures
+\clearpage
+
+\listoftables
+
+\chapter*{Acronyms}
+\begin{acronym}[UML]
+    \acro{SMT}{Steiner minimal tree}
+    \acro{ESMT}{euclidean Steiner minimal tree}
+    \acro{ESTP}{euclidean Steiner tree problem}
+    \acro{MST}{minimum spanning tree}
+    \acro{FST}{full Steiner tree}
+\end{acronym}
 
 %------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS
 %------------------------------------------------------------------------------
 
+\mainmatter
+
 \pagenumbering{arabic} % Arabic page numbering for thesis content (1, 2, 3, etc)
 
-\include{chapters/preliminaries}
-\include{chapters/smiths-algorithm}
+%\include{chapters/introduction}
+\include{content/mainmatter/preliminaries}
+\include{content/mainmatter/smiths-algorithm}
 
 %------------------------------------------------------------------------------
-%	THESIS CONTENT - APPENDICES
+%	POST-CONTENT  - APPENDIX AND BIBLIOGRAPHY
 %------------------------------------------------------------------------------
+
+\backmatter
 
 \appendix
 
-%------------------------------------------------------------------------------
-%	POST-CONTENT THESIS PAGES
-%------------------------------------------------------------------------------
-
-\include{frontbackmatter/bibliography}
+\label{app:bibliography}
+\bibliographystyle{ieeetr}
+\bibliography{content/backmatter/bibliography}
 
 \end{document}
 
