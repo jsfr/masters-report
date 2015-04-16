@@ -3,7 +3,7 @@
 %------------------------------------------------------------------------------
 
 \RequirePackage[l2tabu, orthodox, abort]{nag}
-\documentclass[11pt, a4paper, twoside, openright]{memoir}
+\documentclass[11pt, a4paper, openright, twoside]{memoir}
 
 \chapterstyle{southall}
 
@@ -19,35 +19,23 @@
 \usepackage{mathtools, amsmath, amsfonts, amssymb} % Math-support
 
 % Fonts
-%\usepackage{palatino} % font
-%\usepackage[sc]{mathpazo} % math font for palatino
 \usepackage{lmodern, tgpagella, eulervm}
 \usepackage[T1]{fontenc}
 
 % Customizable
 \usepackage[font={small,it},margin=.5cm]{caption}
 \usepackage{subcaption}
-%\usepackage[parfill]{parskip}
-\usepackage{acronym}
 \usepackage[dvipsnames]{xcolor}  % Coloured text etc.
 \usepackage{tikz, tikzscale}
 \usepackage{xargs}
 \usepackage[colorinlistoftodos,prependcaption,textsize=footnotesize,%
 obeyFinal,bordercolor=black,linecolor=black]{todonotes}
 \usepackage[final]{pdfpages} % include pdfs
-
-
-% Keep here to make sure it loads last (but it is a "Essentials")
 \usepackage{microtype}
 \usepackage[bookmarks]{hyperref} % hyperlinks
-\hypersetup{
-  bookmarks=true,
-  colorlinks=true, % colored links
-  linkcolor=red, % color of internal links
-  citecolor=NavyBlue, % color of links to bibliography
-  filecolor=cyan, % color of file links
-  urlcolor=blue % color of external links
-}
+\usepackage[nomain,acronym,xindy,toc,nonumberlist]{glossaries}
+
+% Keep here to make sure it loads last (but it is a "Essentials")
 \usepackage[noabbrev]{cleveref}
 
 % Tikz styles
@@ -74,17 +62,21 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
 
-% Remove hyperlinks from acronyms
-\makeatletter
-\AtBeginDocument{%
-  \renewcommand*{\AC@hyperlink}[2]{%
-    \begingroup
-      \hypersetup{hidelinks}%
-      \hyperlink{#1}{#2}%
-    \endgroup
-  }%
+% Hyperref setup
+\hypersetup{
+  bookmarks=true,
+  colorlinks=true, % colored links
+  linkcolor=MidnightBlue, % color of internal links
+  citecolor=NavyBlue, % color of links to bibliography
+  filecolor=cyan, % color of file links
+  urlcolor=blue % color of external links
 }
-\makeatother
+
+% Acronym setup
+\renewcommand*{\glstextformat}[1]{\textcolor{black}{#1}}
+\renewcommand*{\glsclearpage}{}
+\makeglossaries
+\input{content/glossaries}
 
 %------------------------------------------------------------------------------
 %	BEGIN DOCUMENT
@@ -104,32 +96,16 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 
 \pagenumbering{roman} % Roman page numbering prior to the start of the thesis content (i, ii, iii, etc)
 
-%\include{frontbackmatter/titlepage}
-\include{content/frontmatter/abstract}
+%\include{content/frontmatter/abstract}
 
+\begingroup
 \listoftodos
-\clearpage
-
-\hypersetup{
-  colorlinks=true, % colored links
-  linkcolor=MidnightBlue, % color of internal links
-}
 \tableofcontents
-\clearpage
-
-\listoffigures
-\clearpage
-
 \listoftables
-
-\chapter*{Acronyms}
-\begin{acronym}[UML]
-    \acro{SMT}{Steiner minimal tree}
-    \acro{ESMT}{euclidean Steiner minimal tree}
-    \acro{ESTP}{euclidean Steiner tree problem}
-    \acro{MST}{minimum spanning tree}
-    \acro{FST}{full Steiner tree}
-\end{acronym}
+\listoffigures
+\let\clearpage\relax
+\printglossary[type=\acronymtype,title=Abreviations]
+\endgroup
 
 %------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS
@@ -154,7 +130,6 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \label{app:bibliography}
 \bibliographystyle{ieeetr}
 \bibliography{content/backmatter/bibliography}
-
 \end{document}
 
 %%% Local Variables:

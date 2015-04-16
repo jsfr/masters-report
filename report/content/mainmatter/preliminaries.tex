@@ -6,6 +6,8 @@ This chapter contains all the preliminaries, basic concepts and definitions,
 which are needed to understand the work done in the thesis, and which are
 not necessarily known to the reader in full.
 
+\NOTE[inline]{This can be a bit more verbose.}
+
 \section{Topology}
 \label{sec:topology}
 
@@ -47,9 +49,8 @@ tree with the following properties:
 \end{enumerate}
 
 These two definitions are equivalent, however the second one gives some
-important information about the \NOTE{Is there a better word than structure?}
-structure of the Steiner tree. This thesis will therefore in general use the
-second definition.
+important information about the structure of the Steiner tree. This thesis will
+therefore in general use the second definition.
 
 That the two definitions are indeed equivalent can seen by considering each of
 the property of the second definition.
@@ -100,7 +101,7 @@ $N_1 + 2 N_2 + 3 N_3 \ge N$. We can then write the equation as
 \subsection{Full Steiner tree}
 \label{sec:full-steiner-tree}
 
-A \ac{FST} is a Steiner tree where all regular points have valence 1, which is
+A \gls{fst} is a Steiner tree where all regular points have valence 1, which is
 equivalent to the tree having exactly $N-2$ Steiner points, the maximal number
 of possible Steiner points. This can easily be seen by considering the
 definition of Steiner trees in \Cref{sec:steiner-tree}. This corresponds to the
@@ -108,16 +109,16 @@ proof of the fourth property, but here $N_1 = N$ and $N_2 = N_3 = 0$, meaning
 that the number of Steiner points will be exactly $N-2$.
 
 It can furthermore be shown that any Steiner tree is a union of edge-disjoint
-\acp{FST}, meaning that any edge of a \ac{SMT} joining to regular points is also
-an edge of \ac{MST} of the regular points. This is relatively easily seen, by
-realizing that every three points connected to a Steiner point is a \ac{FST} for
+\glspl{fst}, meaning that any edge of a \gls{smt} joining to regular points is also
+an edge of \gls{mst} of the regular points. This is relatively easily seen, by
+realizing that every three points connected to a Steiner point is a \gls{fst} for
 those three points. These are then either connected to the rest of the tree with
-a Steiner point, in which case they are part of a bigger \ac{FST}, or they are
+a Steiner point, in which case they are part of a bigger \gls{fst}, or they are
 connected to a regular point, in which case we can we can remove that edge to
-have one \ac{FST} and the rest of the tree.
+have one \gls{fst} and the rest of the tree.
 
-The topology of a \ac{FST} is called a full Steiner topology, also abbreviated
-\ac{FST}. Here we have the fixed coordinates of the regular points, but not the
+The topology of a \gls{fst} is called a full Steiner topology, also abbreviated
+\gls{fst}. Here we have the fixed coordinates of the regular points, but not the
 coordinates of the Steiner points, and as such we only think about the
 adjacencies of the points. Whether we are talking about the topology or tree
 will be clear from the context.
@@ -125,18 +126,18 @@ will be clear from the context.
 \subsection{Steiner minimal tree}
 \label{sec:steiner-minimal-tree}
 
-A minimal tree on $N$ points $y\vec{x}_{1},\vec{x}_{2},\ldots,\vec{x}{n}$ is the
+A minimal tree on $N$ points $\vec{x}_{1},\vec{x}_{2},\ldots,\vec{x}_{n}$ is the
 tree having these points as its vertices and having the smallest possible sum of
 the length of all its edges. When we are allowed to insert any number of extra
 points into the tree and connect the edges using these to further shorten the
-tree this is known as a \ac{SMT}~\cite{Gilbert1968}.
+tree this is known as a \gls{smt}~\cite{Gilbert1968}.
 
-\NOTE{This could probably be fleshed out a bit more}
+\NOTE[inline]{This could probably be fleshed out a bit more}
 
 \section{Euclidean Steiner tree problem}
 \label{sec:eucl-stein-tree}
 
-The \ac{ESTP} is the problem of finding the \ac{SMT} for the set of points $N$
+The \gls{estp} is the problem of finding the \gls{smt} for the set of points $N$
 in Euclidean $d$-space. I.e\ each point $x_{i}, 1 \le i \le n$ is a $d$-vector,
 and the metric used to calculate the length of the edges connecting the points
 is the $L^2$-norm, the Euclidean norm.

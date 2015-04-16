@@ -3,19 +3,18 @@
 
 % Short introduction to the chapter (max 1/2 page)
 The following chapter will describe the different parts of the algorithm used by
-Smith~\cite{Smith1992}. \TODO{Finish introduction}
+Smith~\cite{Smith1992}.
+
+\TODO[inline]{Finish introduction}
 
 \section{Overview}
 \label{sec:overview}
 
-The algorithm in general follow the form of as proposed by Gilbert and
-Pollak~\missingref{18 in Smith}
+% The algorithm in general follows the form, as proposed by Gilbert and Pollak.\missingref{18 in Smith}
 
-\TODO[inline]{Finish the overview}
-
-\TODO[inline]{Add a note that while there may not have been other ways to go at
-  the time, today we also have things such as the one described in Fonseca,
-  Pawel, et al.}
+\TODO[inline]{Finish the overview and add a note that while there may not have
+  been other ways to go at the time, today we also have things such as the one
+  described in Fonseca, Pawel, et al.}
 
 \section{Topologies}
 \label{sec:topologies}
@@ -24,38 +23,87 @@ The first step of the algorithm is, as described in \Cref{sec:overview}, to
 generate topologies. It is therefore natural that we need some way of
 representing and generating these topologies.
 
-The algorithm only considers full Steiner topologies where $K = N - 2$. This is
-a \NOTE{is there a better word than legal?} legal approach as we can simply
-regard any Steiner tree with $K \le N - 2$ as a \ac{FST} where some edges have
-length zero and thus some points have ``merged''.
+The algorithm only considers \glspl{fst} where $K = N - 2$. This simplification
+is allowed, as we can simply regard any Steiner tree with $K \le N - 2$ as a
+\gls{fst} where some edges have length zero and thus some points have
+``merged''.
+
+Note however that even with this simplification the number of \gls{fst} is still
+exponential in $N$, which is clear from \Cref{cor:number-of-fsts}.
 
 \subsection{Representation}
 \label{sec:representation}
 
-\begin{figure}[htbp]
-\centering
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-1}
-    \caption{Here be dragons.\label{fig:algorithm-topology-1}}
-  \end{subfigure}
-~
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-2}
-    \caption{Here be dragons.\label{fig:algorithm-topology-2}}
-  \end{subfigure}
-~
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-3}
-    \caption{Here be dragons.\label{fig:algorithm-topology-3}}
-  \end{subfigure}
-\caption[How to construct Steiner topologies]{Here be dragons.\label{fig:algorithm-topologies}}
-\end{figure}
+It turns out that every \gls{fst} can be represented using a vector, in
+particular we utilize the following theorem
 
+\begin{theorem}
 There is an 1--1 correspondence between full Steiner topologies with $N \ge 3$
 regular points, and $(N-3)$-vectors $\vec{a}$, whose $i$th entry $a_i$ is an
 integer between $1 \le a_i \le 2 i + 1$.
+\end{theorem}
 
-\TODO[inline]{Describe/Outline proof and the generation as shown in the figures.}
+The proof of this theorem is done constructively by induction on $N$. It is
+clear that the smallest \gls{fst}, or any Steiner topology for that matter, we
+can construct must have $N = 3$, as the number of Steiner points is $N - 2 = 1$.
+Thus we start with the initial null vector $\vec{a} = ()$ corresponding to the
+unique \gls{fst} for the points 1, 2 and 3 connected through the respective
+edges 1, 2 and 3 and one Steiner point $N+1$ as seen in
+\Cref{fig:algorithm-topology-1}. After this first step, each entry of the topology
+vector is considered, one at a time, where the $i$th entry of the topology
+vector describes the insertion of the $(N+1+i)$th Steiner point on the edge
+$a_{i}$ and its connection to the $(i+3)$th regular point. Thus for the $i$th
+insertion we will have $2i+1$\footnote{At the first iteration we clearly have 3
+  edges to insert on, and as each insertion generates two new edges we have
+  $3+\underbrace{2+\ldots+2}_{2(i-1)} = 2i + 1$.} different edges on which we
+can insert the Steiner point $N+1+i$ and connect it to the regular point $i+3$.
+
+\begin{figure}[htbp]
+\centering
+  \begin{subfigure}[t]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-1}
+    \caption{The initial null vector.\label{fig:algorithm-topology-1}}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-2}
+    \caption{Connecting point 4 on edge 2.\label{fig:algorithm-topology-2}}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-3}
+    \caption{Connecting point 5 on edge 4.\label{fig:algorithm-topology-3}}
+  \end{subfigure}
+\caption[Construction of \glspl{fst}]{Construction of the \gls{fst}
+  corresponding to the vector $\vec{a} = (2, 4)$.\label{fig:algorithm-topologies}}
+\end{figure}
+
+Furthermore we get a corollary saying that the number of \glspl{fst} is
+exponential in $N$
+
+\begin{corollary}
+\label{cor:number-of-fsts}
+The number of \glspl{fst} on $N$ regular points is
+$\prod_{i=0}^{N-3} 2i+1 = 1 \cdot 3 \cdot 5 \cdots (2N -
+5)$. I.e\ the number of \glspl{fst} is exponential in $N$.
+\end{corollary}
+
+Which is clear as we must insert $N-2$ Steiner points, where the null vector is
+the $0$th iteration. Thus the last iteration must be $N-3$, and for each
+iteration we have $2i+1$ different insertions.
+
+The way Smith chooses to enumerate the edges is not explained outright, but only
+in the form of a visual example~\cite{Smith1992}. However one must take care to
+keep the enumeration consistent to avoid generating the same topologies more
+than once. Thus we do the enumeration in the same way as Smith, and as in
+\Cref{fig:algorithm-topologies}. That is when we insert Steiner point $N+1+i$ on
+the edge $a_{i} = (a_{i}, j), N < j < N+i+1$, we split it such that we get the
+following three edges
+\begin{itemize}
+\item edge $a_{i} = (a_{i},N+1+i)$
+\item edge $ 2i + 2 = (i+3,N+1+i)$
+\item edge $ 2i + 3 = (j,N+1+i)$
+\end{itemize}
 
 \subsection{Generation}
 \label{sec:generation}
@@ -79,7 +127,7 @@ interconnecting $N$ points, with topology vector $a_1 \cdots a_{N-3}$.
 \TODO[inline]{Proof of above theorem}
 
 The algorithm utilizes this to prune in the following way. Imagine we have found
-some upper bound for the \ac{SMT}. If we then optimize any generated topology
+some upper bound for the \gls{smt}. If we then optimize any generated topology
 vector which does not yet include all the regular points, and it turns out to
 have length greater than the upper bound, we can prune any topologies that we
 would have generated from this vector, as the length of the larger topologies
@@ -87,7 +135,7 @@ cannot become any smaller than the length of the current, and thus cannot become
 smaller than the length of the upper bound.
 
 Thus the implementation of the algorithm generates and optimizes topologies
-depth-first to ensure we get a upper bound as quickly as possible. If it did
+depth-first to ensure we get an upper bound as quickly as possible. If it did
 breadth-first we would not be able to prune anything, as we would get all the
 full topologies as the last to optimize.
 
