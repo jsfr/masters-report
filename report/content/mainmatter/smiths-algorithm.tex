@@ -1,20 +1,54 @@
+{
+\abnormalparskip{0pt}
 \chapter{Smiths algorithm}
 \label{ch:algorithm}
+}
 
 % Short introduction to the chapter (max 1/2 page)
-The following chapter will describe the different parts of the algorithm used by
+
+The following chapter will introduce the main focus of this thesis, namely the
+algorithm for finding \glspl{smt} in $d$-space proposed by
 Smith~\cite{Smith1992}.
 
-\TODO[inline]{Finish introduction}
+The chapter will mainly be concerned with the algorithmic design of the
+algorithm, and the proofs and theorems surrounding it. It will however also
+delve into more some parts of the implementation done by Smith when this is
+relevant.
 
 \section{Overview}
 \label{sec:overview}
 
-% The algorithm in general follows the form, as proposed by Gilbert and Pollak.\missingref{18 in Smith}
+In general the algorithm follows the following form, proposed by Gilbert and
+Pollak~\cite{Gilbert1968}.
 
-\TODO[inline]{Finish the overview and add a note that while there may not have
-  been other ways to go at the time, today we also have things such as the one
-  described in Fonseca, Pawel, et al.}
+\begin{enumerate}
+\item Enumerate all Steiner topologies on $N$ regular points and $K$, $0 \le K
+  \le N-2$ Steiner points.
+\item Optimize the coordinates of the Steiner points for each topology, to find
+  the shortest possible Euclidean embedding (tree) of that topology.
+\item Select, and output, the shortest tree found.
+\end{enumerate}
+
+In other words this approach might be seen as an exhaustive search of the
+solution space, and the approach described is simply to ``try all
+possibilities''.
+
+Smith however does some things a little differently to avoid having to optimize
+every topology. Firstly he only looks at \glspl{fst} as it turns out we can
+regard any topology which is non-full, as a \gls{fst} where some points overlap.
+
+Secondly the algorithm not only finds the topologies for $N$ regular points, but
+for $3, 4, \ldots, N$ regular points, all as \glspl{fst} having
+$1, 2, \ldots, N-2$ Steiner points. The reason for this is to allow a \gls{bnb}
+approach where we wish to prune all descendants of a topology if we have a
+better upper bound than the length of the current topology.
+
+The optimization of the algorithm is done by a iterative process which updates
+all Steiner points of a topology every iteration, by Smith described as an
+iteration analogous to a Gauss-Seidel iteration~\cite[p.~145]{Smith1992}. The
+equations of each iteration are solved using Gauss-elimination.
+
+\NOTE[inline]{Am I missing something in the overview?}
 
 \section{Topologies}
 \label{sec:topologies}
@@ -28,7 +62,7 @@ is allowed, as we can simply regard any Steiner tree with $K \le N - 2$ as a
 \gls{fst} where some edges have length zero and thus some points have
 ``merged''.
 
-Note however that even with this simplification the number of \gls{fst} is still
+Note however that even with this simplification the number of \glspl{fst} is still
 exponential in $N$, which is clear from \Cref{cor:number-of-fsts}.
 
 \subsection{Representation}
@@ -55,7 +89,7 @@ vector describes the insertion of the $(N+1+i)$th Steiner point on the edge
 $a_{i}$ and its connection to the $(i+3)$th regular point. Thus for the $i$th
 insertion we will have $2i+1$\footnote{At the first iteration we clearly have 3
   edges to insert on, and as each insertion generates two new edges we have
-  $3+\underbrace{2+\ldots+2}_{2(i-1)} = 2i + 1$.} different edges on which we
+  $3 + \underbrace{2 + \cdots + 2}_{2 (i - 1)} = 2 i + 1$.} different edges on which we
 can insert the Steiner point $N+1+i$ and connect it to the regular point $i+3$.
 
 \begin{figure}[htbp]
@@ -74,8 +108,8 @@ can insert the Steiner point $N+1+i$ and connect it to the regular point $i+3$.
     \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-3}
     \caption{Connecting point 5 on edge 4.\label{fig:algorithm-topology-3}}
   \end{subfigure}
-\caption[Construction of \glspl{fst}]{Construction of the \gls{fst}
-  corresponding to the vector $\vec{a} = (2, 4)$.\label{fig:algorithm-topologies}}
+  \caption[Construction of \glspl{fst}]{Construction of the FSTs corresponding
+    to the vector $\vec{a} = (2, 4)$.\label{fig:algorithm-topologies}}
 \end{figure}
 
 Furthermore we get a corollary saying that the number of \glspl{fst} is
@@ -139,16 +173,19 @@ depth-first to ensure we get an upper bound as quickly as possible. If it did
 breadth-first we would not be able to prune anything, as we would get all the
 full topologies as the last to optimize.
 
-\section{Optimization of a topology}
+\section{Optimization of a prespecified topology}
 \label{sec:optim-topol}
 
-\TODO[inline]{TODO}
+\subsection{Error function}
+\label{sec:error-function}
 
 \subsection{Iteration}
 \label{sec:iter-fixm-could}
 
 \FIXME[inline]{This section could probably be better named}
 \TODO[inline]{TODO}
+
+\par\fancybreak{$***$}\par
 
 %%% Local Variables:
 %%% mode: latex
