@@ -146,8 +146,6 @@ Using the representation described in \Cref{sec:representation} the problem of
 generating all topologies can now be done as a backtracking problem generating
 all $(N-3)$-topology vectors.
 
-\TODO[inline]{Describe the backtracking here}
-
 To further speed up the generation of topologies, or rather to avoid generating
 unnecessary topologies, Smith also utilizes the following theorem
 
@@ -158,7 +156,14 @@ the shortest tree, interconnecting $N-1$ points, with topology vector $a_1
 interconnecting $N$ points, with topology vector $a_1 \cdots a_{N-3}$.
 \end{theorem}
 
-\TODO[inline]{Proof of above theorem}
+The above theorem is easily seen to be true, by simply considering removing the
+edge $e$ connecting the last regular point $N$, to the rest of the tree. This
+will obviously shorten the tree, or if the edge was length zero\footnote{This
+  might happen if the points are either not in general position, or if the point
+  removed lies exactly on top of a Steiner point. The last part seems to have
+  been missed by Smith~\cite[p.~144]{Smith1992}.} it would remain the
+same. Furthermore upon optimizing the tree with the last point removed we would
+either get a further shortening, or it would remain the same.
 
 The algorithm utilizes this to prune in the following way. Imagine we have found
 some upper bound for the \gls{smt}. If we then optimize any generated topology
@@ -173,17 +178,52 @@ depth-first to ensure we get an upper bound as quickly as possible. If it did
 breadth-first we would not be able to prune anything, as we would get all the
 full topologies as the last to optimize.
 
+The actual implementation of the backtracking is not described by Smith in
+article itself, but only by reading the code. The details of the current
+implementation will be discussed in\missingref{refer to implementation and the
+  correct section.}. The implementation does face some problems,
+one of which is the fact that the entire topology is rebuilt from scratch every
+time we need to either add of remove a point.
+
 \section{Optimization of a prespecified topology}
-\label{sec:optim-topol}
+\label{sec:optim-presp-topol}
+
+\NOTE[inline]{Remember to define R, S, T and L}
+
+\subsection{The iteration}
+\label{sec:iteration}
+
+\TODO[inline]{Write about the iteration and the proof of correctness}
+
+\subsection{Convergence}
+\label{sec:convergence}
+\NOTE[inline]{Do I need to touch on this? If so it is about the speed and proof
+  of convergence}
 
 \subsection{Error function}
 \label{sec:error-function}
 
-\subsection{Iteration}
-\label{sec:iter-fixm-could}
+To detect when convergence has happened, Smith warns about using the obvious way
+of testing whether one iterate differs substantially from the next and stop if
+it does not~\cite[p.~151]{Smith1992}\NOTE{why does he warn about this? Should we
+give an example where this could go wrong?}. Instead he proposes using the
+following error function
+\begin{equation}
+  E^2 = \sum_{
+    \begin{array}{c}
+      i \in S \\
+      (i,j) \in T \\
+      (i,k) \in T \\
+      j \ne k
+    \end{array}}
+  \text{pos} (2 (\vec x_j - \vec x_i) \cdot (\vec x_k - \vec x_i) +
+  | \vec x_j - \vec x_i | \cdot | \vec x_k - \vec x_i |)
+\end{equation}
+and then conclude that we have converged when $E \ll L$.
 
-\FIXME[inline]{This section could probably be better named}
-\TODO[inline]{TODO}
+\TODO[inline]{Describe how this comes from the angle = 120. Remeber to define
+  pos. Write about the uncertanity of this function, e.g. does it make sense
+  that $E \ll L$ instead of just $E < \epsilon$.}
 
 \chapterbreak{}
 
