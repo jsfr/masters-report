@@ -78,8 +78,11 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \makeglossaries{}
 \input{content/glossaries}
 
+% Remove indent and use a line-skip instead
 \nonzeroparskip{}
 \setlength{\parindent}{0pt}
+
+\newcommand{\chapterbreak}[0]{\par\fancybreak{$***$}\par}
 
 %------------------------------------------------------------------------------
 %	BEGIN DOCUMENT
@@ -99,7 +102,7 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 
 \pagenumbering{roman} % Roman page numbering prior to the start of the thesis content (i, ii, iii, etc)
 
-%\include{content/frontmatter/abstract}
+\include{content/frontmatter/abstract}
 
 {
 \hypersetup{
@@ -122,9 +125,13 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 
 \pagenumbering{arabic} % Arabic page numbering for thesis content (1, 2, 3, etc)
 
-%\include{chapters/introduction}
+\include{content/mainmatter/introduction}
 \include{content/mainmatter/preliminaries}
 \include{content/mainmatter/smiths-algorithm}
+\include{content/mainmatter/implementation}
+\include{content/mainmatter/benchmarks-tests}
+\include{content/mainmatter/discussion}
+\include{content/mainmatter/conclusion}
 
 %------------------------------------------------------------------------------
 %	POST-CONTENT  - APPENDIX AND BIBLIOGRAPHY
