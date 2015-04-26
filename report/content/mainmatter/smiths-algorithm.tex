@@ -133,6 +133,7 @@ than once. Thus we do the enumeration in the same way as Smith, and as in
 \Cref{fig:algorithm-topologies}. That is when we insert Steiner point $N+1+i$ on
 the edge $a_{i} = (a_{i}, j), N < j < N+i+1$, we split it such that we get the
 following three edges
+
 \begin{itemize}
 \item edge $a_{i} = (a_{i},N+1+i)$
 \item edge $ 2i + 2 = (i+3,N+1+i)$
@@ -181,9 +182,9 @@ full topologies as the last to optimize.
 The actual implementation of the backtracking is not described by Smith in
 article itself, but only by reading the code. The details of the current
 implementation will be discussed in\missingref{refer to implementation and the
-  correct section.}. The implementation does face some problems,
-one of which is the fact that the entire topology is rebuilt from scratch every
-time we need to either add of remove a point.
+  correct section.}. The implementation does face some problems, one of which is
+the fact that the entire topology is rebuilt from scratch every time we need to
+either add of remove a point.
 
 \section{Optimization of a prespecified topology}
 \label{sec:optim-presp-topol}
@@ -206,9 +207,13 @@ time we need to either add of remove a point.
 To detect when convergence has happened, Smith warns about using the obvious way
 of testing whether one iterate differs substantially from the next and stop if
 it does not~\cite[p.~151]{Smith1992}\NOTE{why does he warn about this? Should we
-give an example where this could go wrong?}. Instead he proposes using the
-following error function
+give an example where this could go wrong?}. Instead Smith proposed using an
+error-function which looks at all angles smaller than $120^{\circ}$, as an
+\gls{mst}, if it is also a \gls{fst}, will only have angles of
+$120^{\circ}$. The function Smith proposed is
+
 \begin{equation}
+  \label{eq:1}
   E^2 = \sum_{
     \begin{array}{c}
       i \in S \\
@@ -219,7 +224,39 @@ following error function
   \text{pos} (2 (\vec x_j - \vec x_i) \cdot (\vec x_k - \vec x_i) +
   | \vec x_j - \vec x_i | \cdot | \vec x_k - \vec x_i |)
 \end{equation}
-and then conclude that we have converged when $E \ll L$.
+
+Which would be used to conclude that we have converged when $E \ll L$. Here
+$\text{pos}(x) = \max(x, 0)$. The inner part of the function stems from the
+calculation of the angle between two vectors.
+
+\begin{align}
+  \label{eq:2}
+  \cos v &= \frac{\vec a \cdot \vec b}{|\vec a| \cdot |\vec b|} \Leftrightarrow
+  \\
+  \cos 120^{\circ} &= -\frac{1}{2} = \frac{\vec a \cdot \vec b}{|\vec a| \cdot |\vec b|} \Leftrightarrow
+  \\
+  0 &= \vec a \cdot \vec b + \frac{1}{2} (|\vec a| \cdot |\vec b|) \Leftrightarrow
+  \\
+  0 &= 2 (\vec a \cdot \vec b) + |\vec a| \cdot |\vec b|
+\end{align}
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{ccl}
+    \toprule
+    Angle $v$     & $\cos v$       & ``error function''                     \\
+    \midrule
+    $0^{\circ}$   & $1$            & $\vec a \cdot \vec b -
+                                     (|\vec a| \cdot |\vec b|)$             \\
+    $90^{\circ}$  & $0$            & $\vec a \cdot \vec b$                  \\
+    $120^{\circ}$ & $-\frac{1}{2}$ & $\vec a \cdot \vec b +
+                                     \frac{1}{2} (|\vec a| \cdot |\vec b|)$ \\
+    $180^{\circ}$ & $-1$           & $\vec a \cdot \vec b +
+                                     (|\vec a| \cdot |\vec b|)$             \\
+    \bottomrule
+  \end{tabular}
+  \caption[Here be dragons.]{Here be dragons.\label{tab:error-functions}}
+\end{table}
 
 \TODO[inline]{Describe how this comes from the angle = 120. Remember to define
   $\text{pos}$. Write about the uncertainty of this function, e.g.\ does it make sense
