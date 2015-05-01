@@ -62,8 +62,8 @@ is allowed, as we can simply regard any Steiner tree with $K \le N - 2$ as a
 \gls{fst} where some edges have length zero and thus some points have
 ``merged''.
 
-Note however that even with this simplification the number of \glspl{fst} is still
-exponential in $N$, which is clear from \Cref{cor:number-of-fsts}.
+Note however that even with this simplification the number of \glspl{fst} is
+still exponential in $N$, which is clear from \Cref{cor:number-of-fsts}.
 
 \subsection{Representation}
 \label{sec:representation}
@@ -83,14 +83,15 @@ can construct must have $N = 3$, as the number of Steiner points is $N - 2 = 1$.
 Thus we start with the initial null vector $\vec{a} = ()$ corresponding to the
 unique \gls{fst} for the points 1, 2 and 3 connected through the respective
 edges 1, 2 and 3 and one Steiner point $N+1$ as seen in
-\Cref{fig:algorithm-topology-1}. After this first step, each entry of the topology
-vector is considered, one at a time, where the $i$th entry of the topology
-vector describes the insertion of the $(N+1+i)$th Steiner point on the edge
-$a_{i}$ and its connection to the $(i+3)$th regular point. Thus for the $i$th
-insertion we will have $2i+1$\footnote{At the first iteration we clearly have 3
-  edges to insert on, and as each insertion generates two new edges we have
-  $3 + \underbrace{2 + \cdots + 2}_{2 (i - 1)} = 2 i + 1$.} different edges on which we
-can insert the Steiner point $N+1+i$ and connect it to the regular point $i+3$.
+\Cref{fig:algorithm-topology-1}. After this first step, each entry of the
+topology vector is considered, one at a time, where the $i$th entry of the
+topology vector describes the insertion of the $(N+1+i)$th Steiner point on the
+edge $a_{i}$ and its connection to the $(i+3)$th regular point. Thus for the
+$i$th insertion we will have $2i+1$\footnote{At the first iteration we clearly
+  have 3 edges to insert on, and as each insertion generates two new edges we
+  have $3 + \underbrace{2 + \cdots + 2}_{2 (i - 1)} = 2 i + 1$.} different edges
+on which we can insert the Steiner point $N+1+i$ and connect it to the regular
+point $i+3$.
 
 \begin{figure}[htbp]
 \centering
@@ -203,14 +204,16 @@ well
 \item $R$, the set of regular points.
 \item $S$, the set of Steiner points.
 \item $T$, the pre-specified topology. Defined as all edges it contains in the
-  form $(j,k)$ where $\vec x_j$ and $\vec x_k$ are contained in either $S$ or $R$ and an edge
-  exists in the topology from $x_j$ to $x_k$ or vice versa.
-\item $L$, the length of the tree. Defined as the sum of the euclidean lengths of
-  all edges in in the topology $T$. See \Cref{eq:length} for the exact definition.
+  form $(j,k)$ where $\vec x_j$ and $\vec x_k$ are contained in either $S$ or
+  $R$ and an edge exists in the topology from $x_j$ to $x_k$ or vice versa.
+\item $L$, the length of the tree. Defined as the sum of the euclidean lengths
+  of all edges in in the topology $T$. See \Cref{eq:length} for the exact
+  definition.
 \end{itemize}
 
 \FIXME[inline]{Smith is inconsistent with having the sets as containing either
-  the points of the indicies. This we should probably fix up just to clear the notation.}
+  the points of the indicies. This we should probably fix up just to clear the
+  notation.}
 
 \subsection{The iteration}
 \label{sec:iteration}
@@ -219,8 +222,9 @@ To optimize the topology Smith proposes iteratively solving the $N-2$ equations
 %
 \begin{equation}
   \label{eq:6}
-  \vec x_k^{(i+1)} = \left. \sum_{j : (j, k) \in T} \frac{\vec
-      x_j^{(i+1)}}{|\vec x_j^{(i)} - \vec x_k^{(i)}|} \hspace{0.5em}\middle/\hspace{-0.5em} \sum_{j: (j,k)
+  \vec x_k^{(i+1)} = \left. \sum_{j : (j, k) \in T}
+    \frac{\vec x_j^{(i+1)}}{|\vec x_j^{(i)} - \vec x_k^{(i)}|}
+    \hspace{0.5em}\middle/\hspace{-0.5em} \sum_{j: (j,k)
       \in T, j \in S} \frac{1}{|\vec x_k^{(i)} - \vec x_j^{(i)}|} \right.
 \end{equation}
 %
@@ -279,8 +283,10 @@ angle $v$ between the vectors $\vec a$ and $\vec b$. This is defined as
   \cos 120^{\circ} & = -\frac{1}{2} = \frac{\vec a \cdot \vec b}
                      {|\vec a| \cdot |\vec b|} \Leftrightarrow \label{eq:3} \\
   0                & = \vec a \cdot \vec b +
-                     \frac{1}{2} (|\vec a| \cdot |\vec b|) \Leftrightarrow \label{eq:4} \\
-  0                & = 2 (\vec a \cdot \vec b) + |\vec a| \cdot |\vec b| \label{eq:5}
+                     \frac{1}{2} (|\vec a| \cdot |\vec b|)
+                     \Leftrightarrow \label{eq:4} \\
+  0                & = 2 (\vec a \cdot \vec b)
+                     + |\vec a| \cdot |\vec b| \label{eq:5}
 \end{align}
 %
 Thus giving the inner part of Smiths error function, which uses the edges from
@@ -312,14 +318,15 @@ will give a negative number, and thus not count towards anything in \Cref{eq:1}.
     \bottomrule
   \end{tabular}
   \caption[Angles and their corresponding ``error functions'']{Angles smaller
-    $\mathit{120^{\circ}}$ clearly means that the error function becomes positive, whereas
-    those greater than $\mathit{120^{\circ}}$ will become negative.\label{tab:error-functions}}
+    $\mathit{120^{\circ}}$ clearly means that the error function becomes
+    positive, whereas those greater than $\mathit{120^{\circ}}$ will become
+    negative.\label{tab:error-functions}}
 \end{table}
 
-Note however that while it is now clear that the function is dependent on the length
-of the edges, it is still somewhat unclear how it exactly relates to the entire
-length of the tree, and why we are looking at $E \ll L$ instead of $E <
-\epsilon$ where $0 < \epsilon \ll 1$.\NOTE{Can I leave it at this?}
+Note however that while it is now clear that the function is dependent on the
+length of the edges, it is still somewhat unclear how it exactly relates to the
+entire length of the tree, and why we are looking at $E \ll L$ instead of
+$E < \epsilon$ where $0 < \epsilon \ll 1$.\NOTE{Can I leave it at this?}
 
 Smith does not go in to detail with this, and I suspect it may be due to the
 fact that he himself is unsure of the validity of the used error function.

@@ -62,9 +62,9 @@ The first property is by definition, and to name the regular points and the
 Steiner points.
 
 The second property can be shown in the following way. First of consider that
-any Steiner point must have at least valence three. This should be obvious as every
-point with valence one can simply be removed to make the length the same or
-shorter as they do not lead to any regular point Every Steiner point with
+any Steiner point must have at least valence three. This should be obvious as
+every point with valence one can simply be removed to make the length the same
+or shorter as they do not lead to any regular point Every Steiner point with
 valence two can be removed, and its edges be replaced with one edge which is of
 the same length or shorter as per the triangle inequality theorem.
 
@@ -115,13 +115,13 @@ proof of the fourth property, but here $N_1 = N$ and $N_2 = N_3 = 0$, meaning
 that the number of Steiner points will be exactly $N-2$.
 
 It can furthermore be shown that any Steiner tree is a union of edge-disjoint
-\glspl{fst}, meaning that any edge of a \gls{smt} joining to regular points is also
-an edge of \gls{mst} of the regular points. This is relatively easily seen, by
-realizing that every three points connected to a Steiner point is a \gls{fst} for
-those three points. These are then either connected to the rest of the tree with
-a Steiner point, in which case they are part of a bigger \gls{fst}, or they are
-connected to a regular point, in which case we can we can remove that edge to
-have one \gls{fst} and the rest of the tree.
+\glspl{fst}, meaning that any edge of a \gls{smt} joining to regular points is
+also an edge of \gls{mst} of the regular points. This is relatively easily seen,
+by realizing that every three points connected to a Steiner point is a \gls{fst}
+for those three points. These are then either connected to the rest of the tree
+with a Steiner point, in which case they are part of a bigger \gls{fst}, or they
+are connected to a regular point, in which case we can we can remove that edge
+to have one \gls{fst} and the rest of the tree.
 
 The topology of a \gls{fst} is called a full Steiner topology, also abbreviated
 \gls{fst}. Here we have the fixed coordinates of the regular points, but not the
