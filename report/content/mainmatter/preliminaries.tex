@@ -42,12 +42,12 @@ Another definition, used by Smith~\cite{Smith1992}, defines the Steiner tree a
 tree with the following properties
 
 \begin{enumerate}
-\item It contains $N$ ``regular points'' $\vec{x}_1 \cdots \vec{x}_N$, and
+\item It contains $N$ ``terminals'' $\vec{x}_1 \cdots \vec{x}_N$, and
   possibly $K$ additional ``Steiner points'' $\vec{x}_{N+1} \cdots
   \vec{x}_{N+K}$.
 \item Each Steiner point has valence 3, and the edges emanating from it lie in a
   plane and have mutual angle $120^{\circ}$
-\item Each regular point has valence between 1 and 3 (and generally $\le 2$).
+\item Each terminal has valence between 1 and 3 (and generally $\le 2$).
 \item $0 \le K \le N-2$.
 \end{enumerate}
 
@@ -58,13 +58,13 @@ therefore in general use the second definition.
 That the two definitions are indeed equivalent can seen by considering each of
 the property of the second definition.
 
-The first property is by definition, and to name the regular points and the
+The first property is by definition, and to name the terminals and the
 Steiner points.
 
 The second property can be shown in the following way. First of consider that
 any Steiner point must have at least valence three. This should be obvious as
 every point with valence one can simply be removed to make the length the same
-or shorter as they do not lead to any regular point Every Steiner point with
+or shorter as they do not lead to any terminal Every Steiner point with
 valence two can be removed, and its edges be replaced with one edge which is of
 the same length or shorter as per the triangle inequality theorem.
 
@@ -92,10 +92,10 @@ less than $120^{\circ}$, they must be exactly $120^{\circ}$.
 The fourth property follows in the following way from property 3 and 4. Any tree
 has one edge fewer than vertices. Thus a Steiner tree has $N+K-1$ edges. Every
 edge has two endpoints meaning there are $2N+2K-2$ edges. As every Steiner point
-has valence three they account for $3K$ of the endpoints. For the regular points
+has valence three they account for $3K$ of the endpoints. For the terminals
 we must split them in three groups -- $N_1$, those that have valence 1. $N_2$,
 those that have valence 2 and, $N_3$, those that have valence 3. Thus the
-regular points account for the rest of the endpoints as
+terminals account for the rest of the endpoints as
 $N_1 + 2 N_2 + 3 N_3 \ge N$. We can then write the equation as
 %
 \begin{align}
@@ -107,7 +107,7 @@ $N_1 + 2 N_2 + 3 N_3 \ge N$. We can then write the equation as
 \subsection{Full Steiner tree}
 \label{sec:full-steiner-tree}
 
-A \gls{fst} is a Steiner tree where all regular points have valence 1, which is
+A \gls{fst} is a Steiner tree where all terminals have valence 1, which is
 equivalent to the tree having exactly $N-2$ Steiner points, the maximal number
 of possible Steiner points. This can easily be seen by considering the
 definition of Steiner trees in \Cref{sec:steiner-tree}. This corresponds to the
@@ -115,16 +115,16 @@ proof of the fourth property, but here $N_1 = N$ and $N_2 = N_3 = 0$, meaning
 that the number of Steiner points will be exactly $N-2$.
 
 It can furthermore be shown that any Steiner tree is a union of edge-disjoint
-\glspl{fst}, meaning that any edge of a \gls{smt} joining to regular points is
-also an edge of \gls{mst} of the regular points. This is relatively easily seen,
+\glspl{fst}, meaning that any edge of a \gls{smt} joining to terminals is
+also an edge of \gls{mst} of the terminals. This is relatively easily seen,
 by realizing that every three points connected to a Steiner point is a \gls{fst}
 for those three points. These are then either connected to the rest of the tree
 with a Steiner point, in which case they are part of a bigger \gls{fst}, or they
-are connected to a regular point, in which case we can we can remove that edge
+are connected to a terminal, in which case we can we can remove that edge
 to have one \gls{fst} and the rest of the tree.
 
 The topology of a \gls{fst} is called a full Steiner topology, also abbreviated
-\gls{fst}. Here we have the fixed coordinates of the regular points, but not the
+\gls{fst}. Here we have the fixed coordinates of the terminals, but not the
 coordinates of the Steiner points, and as such we only think about the
 adjacencies of the points. Whether we are talking about the topology or tree
 will be clear from the context.

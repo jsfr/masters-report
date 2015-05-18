@@ -22,7 +22,7 @@ In general the algorithm follows the following form, proposed by Gilbert and
 Pollak~\cite{Gilbert1968}.
 
 \begin{enumerate}
-\item Enumerate all Steiner topologies on $N$ regular points and $K$, $0 \le K
+\item Enumerate all Steiner topologies on $N$ terminals and $K$, $0 \le K
   \le N-2$ Steiner points.
 \item Optimize the coordinates of the Steiner points for each topology, to find
   the shortest possible Euclidean embedding (tree) of that topology.
@@ -37,8 +37,8 @@ Smith however does some things a little differently to avoid having to optimize
 every topology. Firstly he only looks at \glspl{fst} as it turns out we can
 regard any topology which is non-full, as a \gls{fst} where some points overlap.
 
-Secondly the algorithm not only finds the topologies for $N$ regular points, but
-for $3, 4, \ldots, N$ regular points, all as \glspl{fst} having
+Secondly the algorithm not only finds the topologies for $N$ terminals, but
+for $3, 4, \ldots, N$ terminals, all as \glspl{fst} having
 $1, 2, \ldots, N-2$ Steiner points. The reason for this is to allow a \gls{bnb}
 approach where we wish to prune all descendants of a topology if we have a
 better upper bound than the length of the current topology.
@@ -73,7 +73,7 @@ particular we utilize the following theorem
 
 \begin{theorem}
 There is an 1--1 correspondence between full Steiner topologies with $N \ge 3$
-regular points, and $(N-3)$-vectors $\vec{a}$, whose $i$th entry $a_i$ is an
+terminals, and $(N-3)$-vectors $\vec{a}$, whose $i$th entry $a_i$ is an
 integer between $1 \le a_i \le 2 i + 1$.
 \end{theorem}
 
@@ -86,7 +86,7 @@ edges 1, 2 and 3 and one Steiner point $N+1$ as seen in
 \Cref{fig:algorithm-topology-1}. After this first step, each entry of the
 topology vector is considered, one at a time, where the $i$th entry of the
 topology vector describes the insertion of the $(N+1+i)$th Steiner point on the
-edge $a_{i}$ and its connection to the $(i+3)$th regular point. Thus for the
+edge $a_{i}$ and its connection to the $(i+3)$th terminal. Thus for the
 $i$th insertion we will have $2i+1$\footnote{At the first iteration we clearly
   have 3 edges to insert on, and as each insertion generates two new edges we
   have $3 + \underbrace{2 + \cdots + 2}_{2 (i - 1)} = 2 i + 1$.} different edges
@@ -118,7 +118,7 @@ exponential in $N$
 
 \begin{corollary}
 \label{cor:number-of-fsts}
-The number of \glspl{fst} on $N$ regular points is
+The number of \glspl{fst} on $N$ terminals is
 \[\prod_{i=0}^{N-3} 2i+1 = 1 \cdot 3 \cdot 5 \cdots (2N -
 5)\] I.e\ the number of \glspl{fst} is exponential in $N$.
 \end{corollary}
@@ -152,14 +152,14 @@ To further speed up the generation of topologies, or rather to avoid generating
 unnecessary topologies, Smith also utilizes the following theorem
 
 \begin{theorem}
-For any set of $N$ distinct regular points in any Euclidean space, the length of
+For any set of $N$ distinct terminals in any Euclidean space, the length of
 the shortest tree, interconnecting $N-1$ points, with topology vector $a_1
 \cdots a_{N-4}$ is no greater than the length of the shortest tree,
 interconnecting $N$ points, with topology vector $a_1 \cdots a_{N-3}$.
 \end{theorem}
 
 The above theorem is easily seen to be true, by simply considering removing the
-edge $e$ connecting the last regular point $N$, to the rest of the tree. This
+edge $e$ connecting the last terminal $N$, to the rest of the tree. This
 will obviously shorten the tree, or if the edge was length zero\footnote{This
   might happen if the points are either not in general position, or if the point
   removed lies exactly on top of a Steiner point. The last part seems to have
@@ -169,7 +169,7 @@ either get a further shortening, or it would remain the same.
 
 The algorithm utilizes this to prune in the following way. Imagine we have found
 some upper bound for the \gls{smt}. If we then optimize any generated topology
-vector which does not yet include all the regular points, and it turns out to
+vector which does not yet include all the terminals, and it turns out to
 have length greater than the upper bound, we can prune any topologies that we
 would have generated from this vector, as the length of the larger topologies
 cannot become any smaller than the length of the current, and thus cannot become
@@ -201,7 +201,7 @@ function for deciding convergence.
 Apart from the the already used $N$ and $K$, we define the following symbols as
 well
 \begin{itemize}
-\item $R$, the set of regular points.
+\item $R$, the set of terminals.
 \item $S$, the set of Steiner points.
 \item $T$, the pre-specified topology. Defined as all edges it contains in the
   form $(j,k)$ where $\vec x_j$ and $\vec x_k$ are contained in either $S$ or
