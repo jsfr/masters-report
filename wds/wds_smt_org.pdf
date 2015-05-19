@@ -1,0 +1,2234 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 24 24 571 818
+%%Title: Enscript Output
+%%For: 
+%%Creator: GNU Enscript 1.6.6
+%%CreationDate: Tue May 19 22:43:36 2015
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: A4 595 842 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 6
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 6
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 7 7 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [595 842] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-enscript 1.6 6
+%%IncludeResource: font Times-Bold
+%%IncludeResource: font Times-Roman
+
+% Fonts.
+/Times-Bold /HeaderFont-Bold MF
+/HeaderDateF /HeaderFont-Bold findfont 12 scalefont def
+
+/Times-Roman /HeaderFont-Times MF
+/HeaderHDRF /HeaderFont-Times findfont 14 scalefont def
+
+/HeaderPageNumF /Helvetica-Bold findfont 28.8 scalefont def
+
+/do_header {	% print enscript header
+  gsave
+    d_header_x d_header_y translate
+
+    % light bar
+    0 0 d_header_w d_header_h 2 div Box
+    .95 setgray fill
+
+    % dark gray boxes
+    /dbw d_header_h 2 mul def	% dark box width
+    /dbc .7 def			% dark box color
+
+    % left dark box.
+    0 0 dbw d_header_h Box
+    dbc setgray fill
+
+    0 setgray 
+    HeaderDateF setfont
+    moddatestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 2 div 2 add moveto show
+    modtimestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 5 div moveto show
+
+    % right dark box
+    d_header_w dbw sub 0 dbw d_header_h Box
+    dbc setgray fill
+
+    HeaderPageNumF setfont
+    1 setgray
+    pagenumstr dup
+    stringwidth pop dbw exch sub 2 div d_header_w dbw sub add
+    d_header_h .2 mul moveto show
+
+    % filename
+    0 setgray 
+    HeaderHDRF setfont
+    d_header_w fname stringwidth pop sub 2 div d_header_h 8 div moveto
+    fname show
+
+    % user supplied header string.
+    user_header_p {
+      /h d_header_h 8 div 5 mul def
+
+      % Implement strict enscript compatibility.
+      user_header_center_str () eq user_header_right_str () eq and {
+        d_header_w user_header_left_str stringwidth pop sub 2 div 
+        h moveto user_header_left_str show
+      } {
+        dbw 5 add h moveto user_header_left_str show
+
+        d_header_w user_header_center_str stringwidth pop sub 2 div 
+        h moveto user_header_center_str show
+
+	d_header_w dbw sub 5 sub user_header_right_str stringwidth pop
+	sub h moveto user_header_right_str show
+      } ifelse
+    } if
+
+  grestore
+} def
+%%EndResource
+/d_page_w 794 def
+/d_page_h 547 def
+/d_header_x 0 def
+/d_header_y 511 def
+/d_header_w 794 def
+/d_header_h 36 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 794 def
+/d_footer_h 0 def
+/d_output_w 794 def
+/d_output_h 511 def
+/cols 2 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 1 def
+/fname (wds_smt_org.c) def
+/fdir (.) def
+/ftail (wds_smt_org.c) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (03/17/15) def
+/modtimestr (19:17:05) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+/Courier-Oblique 7 7 SUF
+5 501 M
+(/* Simplified Steiner tree backtrack code. Warren D. Smith Jan 1989) s
+5 493 M
+( * Program contains about 341 C instructions. See main\(\) for I/O details; for an) s
+5 485 M
+( * input & output example, see table 1 of the text. */) s
+/F-gs-font 7 7 SF
+5 477 M
+(#) s
+/Courier-Bold 7 7 SUF
+9.2 477 M
+(include) s
+/F-gs-font 7 7 SF
+38.6 477 M
+( ) s
+/Courier-Bold 7 7 SUF
+42.8 477 M
+(<math.h>) s
+/F-gs-font 7 7 SF
+5 469 M
+(#) s
+/Courier-Bold 7 7 SUF
+9.2 469 M
+(include) s
+/F-gs-font 7 7 SF
+38.6 469 M
+( ) s
+/Courier-Bold 7 7 SUF
+42.8 469 M
+(<stdlib.h>) s
+/F-gs-font 7 7 SF
+5 461 M
+(#) s
+/Courier-Bold 7 7 SUF
+9.2 461 M
+(include) s
+/F-gs-font 7 7 SF
+38.6 461 M
+( ) s
+/Courier-Bold 7 7 SUF
+42.8 461 M
+(<stdio.h>) s
+/F-gs-font 7 7 SF
+5 453 M
+(#) s
+/Courier-Bold 7 7 SUF
+9.2 453 M
+(define) s
+/F-gs-font 7 7 SF
+34.4 453 M
+( ) s
+/Courier-Bold 7 7 SUF
+38.6 453 M
+(REAL) s
+/F-gs-font 7 7 SF
+55.4 453 M
+( double) s
+5 445 M
+(#) s
+/Courier-Bold 7 7 SUF
+9.2 445 M
+(define) s
+/F-gs-font 7 7 SF
+34.4 445 M
+( ) s
+/Courier-Bold 7 7 SUF
+38.6 445 M
+(SQROOT) s
+/F-gs-font 7 7 SF
+63.8 445 M
+(\(a\) sqrt\(a\)) s
+5 437 M
+(#) s
+/Courier-Bold 7 7 SUF
+9.2 437 M
+(define) s
+/F-gs-font 7 7 SF
+34.4 437 M
+( ) s
+/Courier-Bold 7 7 SUF
+38.6 437 M
+(RANDM) s
+/F-gs-font 7 7 SF
+59.6 437 M
+(\(\) drand48\(\) ) s
+/Courier-Oblique 7 7 SUF
+114.2 437 M
+(/* uniform random deviates in \(0,1\) */) s
+/F-gs-font 7 7 SF
+5 429 M
+(#) s
+/Courier-Bold 7 7 SUF
+9.2 429 M
+(define) s
+/F-gs-font 7 7 SF
+34.4 429 M
+( ) s
+/Courier-Bold 7 7 SUF
+38.6 429 M
+(INITRAND) s
+/F-gs-font 7 7 SF
+72.2 429 M
+(\(\) srand48\(57731\)) s
+5 421 M
+(#) s
+/Courier-Bold 7 7 SUF
+9.2 421 M
+(define) s
+/F-gs-font 7 7 SF
+34.4 421 M
+( ) s
+/Courier-Bold 7 7 SUF
+38.6 421 M
+(DoForever) s
+/F-gs-font 7 7 SF
+76.4 421 M
+( while\(1\)) s
+5 405 M
+(#) s
+/Courier-Bold 7 7 SUF
+9.2 405 M
+(define) s
+/F-gs-font 7 7 SF
+34.4 405 M
+( ) s
+/Courier-Bold 7 7 SUF
+38.6 405 M
+(MAXDIM) s
+/F-gs-font 7 7 SF
+63.8 405 M
+( 12  ) s
+/Courier-Oblique 7 7 SUF
+84.8 405 M
+(/* max space dimension permitted */) s
+/F-gs-font 7 7 SF
+5 397 M
+(#) s
+/Courier-Bold 7 7 SUF
+9.2 397 M
+(define) s
+/F-gs-font 7 7 SF
+34.4 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+38.6 397 M
+(NMAX) s
+/F-gs-font 7 7 SF
+55.4 397 M
+(  100  ) s
+/Courier-Oblique 7 7 SUF
+84.8 397 M
+(/* max number of sites permitted */) s
+/F-gs-font 7 7 SF
+/Courier-Oblique 7 7 SUF
+5 389 M
+(/* Global variables: */) s
+/F-gs-font 7 7 SF
+5 381 M
+(REAL STUB, SCALE, N;) s
+/Courier-Bold 7 7 SUF
+5 373 M
+(int) s
+/F-gs-font 7 7 SF
+17.6 373 M
+( NUMSITES, DIMENSION;) s
+/Courier-Bold 7 7 SUF
+5 365 M
+(static) s
+/F-gs-font 7 7 SF
+30.2 365 M
+( ) s
+/Courier-Bold 7 7 SUF
+34.4 365 M
+(int) s
+/F-gs-font 7 7 SF
+47 365 M
+( BESTVEC[NMAX], STACK[NMAX*NMAX], adj[NMAX-2][3], edge[2*NMAX][2];) s
+/Courier-Bold 7 7 SUF
+5 357 M
+(static) s
+/F-gs-font 7 7 SF
+30.2 357 M
+( REAL XX[NMAX*2][MAXDIM], LEN[NMAX], EL[NMAX][3];) s
+/Courier-Oblique 7 7 SUF
+5 341 M
+(/* SMT representation: Steiner point i is adjacent to points adj[i][0..2].) s
+5 333 M
+( * \(If neighbor is Steiner - NUMSITES added!\)) s
+5 325 M
+( * There are N-2 Steiner points and N regular sites.) s
+5 317 M
+( * The coordinates of Steiner point i are XX[i+NUMSITES][0..DIMENSION-1], and) s
+5 309 M
+( * The coordinates of regular site i are XX[i][DIMENSION-1], i=1,2,..) s
+5 301 M
+( * Edge i has endpoints edge[i][0] < edge[i][1] \(sam NUMSITES-add convention\).) s
+5 293 M
+(*/) s
+/F-gs-font 7 7 SF
+/Courier-Bold 7 7 SUF
+5 277 M
+(buildtree) s
+/F-gs-font 7 7 SF
+42.8 277 M
+(\(k, topvec\)) s
+/Courier-Bold 7 7 SUF
+5 269 M
+(int) s
+/F-gs-font 7 7 SF
+17.6 269 M
+( k, topvec[];) s
+5 261 M
+({ ) s
+/Courier-Oblique 7 7 SUF
+13.4 261 M
+(/* builds tree represented by topvec[1..k]. Initial location of new Steiner pts) s
+5 253 M
+(   * is a slightly random perturbation of the centroid of its neighbors */) s
+/F-gs-font 7 7 SF
+5 245 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 245 M
+(register) s
+/F-gs-font 7 7 SF
+47 245 M
+( ) s
+/Courier-Bold 7 7 SUF
+51.2 245 M
+(int) s
+/F-gs-font 7 7 SF
+63.8 245 M
+( i, e, m, j, sn, ea, eb, en;) s
+5 237 M
+(  ) s
+/Courier-Oblique 7 7 SUF
+13.4 237 M
+(/* First build the tree corresponding to the null vector */) s
+/F-gs-font 7 7 SF
+5 229 M
+(  N = 3; m = NUMSITES+1;) s
+5 221 M
+(  adj[1][0] = 1; adj[1][1] = 2; adj[1][2] = 3;) s
+5 213 M
+(  edge[1][0] = 1; edge[2][0] = 2; edge[3][0] = 3;) s
+5 205 M
+(  edge[1][1] = m; edge[2][1] = m; edge[3][1] = m;) s
+5 197 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 197 M
+(for) s
+/F-gs-font 7 7 SF
+26 197 M
+( \(i = 0; i < DIMENSION; i++\)) s
+5 189 M
+(    XX[m][i] = \(XX[1][i]+XX[2][i]+XX[3][i]\)/3.0 + 0.001*SCALE*RANDM\(\);) s
+5 173 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 173 M
+(for) s
+/F-gs-font 7 7 SF
+26 173 M
+( \(i = 1; i <= k; i++\){ ) s
+/Courier-Oblique 7 7 SUF
+122.6 173 M
+(/* Now: do vector element topvec[i] */) s
+/F-gs-font 7 7 SF
+5 165 M
+(    en = i+3; m = i+1; sn = m+NUMSITES;) s
+5 157 M
+(    e = topvec[i]; ea = edge[e][0]; eb = edge[e][1];) s
+5 149 M
+(    adj[m][0] = ea; adj[m][1] = eb; adj[m][2] = en;) s
+5 141 M
+(    m = ea - NUMSITES;) s
+5 133 M
+(    ) s
+/Courier-Bold 7 7 SUF
+21.8 133 M
+(if) s
+/F-gs-font 7 7 SF
+30.2 133 M
+( \(m > 0\) ) s
+/Courier-Bold 7 7 SUF
+68 133 M
+(for) s
+/F-gs-font 7 7 SF
+80.6 133 M
+( \(j = 0; j < 3; j++\) ) s
+/Courier-Bold 7 7 SUF
+168.8 133 M
+(if) s
+/F-gs-font 7 7 SF
+177.2 133 M
+( \(adj[m][j] == eb\) { adj[m][j] = sn; ) s
+/Courier-Bold 7 7 SUF
+332.6 133 M
+(break) s
+/F-gs-font 7 7 SF
+353.6 133 M
+(; }) s
+5 125 M
+(    m = eb - NUMSITES;) s
+5 117 M
+(    ) s
+/Courier-Bold 7 7 SUF
+21.8 117 M
+(if) s
+/F-gs-font 7 7 SF
+30.2 117 M
+( \(m > 0\) ) s
+/Courier-Bold 7 7 SUF
+68 117 M
+(for) s
+/F-gs-font 7 7 SF
+80.6 117 M
+( \(j = 0; j < 3; j++\) ) s
+/Courier-Bold 7 7 SUF
+168.8 117 M
+(if) s
+/F-gs-font 7 7 SF
+177.2 117 M
+( \(adj[m][j] == ea\) { adj[m][j] = sn; ) s
+/Courier-Bold 7 7 SUF
+332.6 117 M
+(break) s
+/F-gs-font 7 7 SF
+353.6 117 M
+(; }) s
+5 109 M
+(    edge[e][1] = sn; e = en+en-4; edge[e][0] = en; edge[e][1] = sn;) s
+5 101 M
+(    e++; edge[e][0] = eb; edge[e][1] = sn;) s
+5 93 M
+(    ) s
+/Courier-Bold 7 7 SUF
+21.8 93 M
+(for) s
+/F-gs-font 7 7 SF
+34.4 93 M
+( \(j = 0; j < DIMENSION; j++\)) s
+5 85 M
+(      XX[sn][j] = \(XX[ea][j] + XX[eb][j] + XX[en][j]\)/3.0 + 0.001*SCALE*RANDM\(\);) s
+5 77 M
+(  }) s
+5 69 M
+(  N = k + 3; ) s
+/Courier-Oblique 7 7 SUF
+59.6 69 M
+(/* Tree is now built. Initial coords in general position. */) s
+/F-gs-font 7 7 SF
+311.6 69 M
+( ) s
+/Courier-Bold 7 7 SUF
+315.8 69 M
+(return) s
+/F-gs-font 7 7 SF
+341 69 M
+(;) s
+5 61 M
+(}) s
+5 45 M
+(REAL ) s
+/Courier-Bold 7 7 SUF
+26 45 M
+(length) s
+/F-gs-font 7 7 SF
+51.2 45 M
+(\(\)) s
+5 37 M
+({ ) s
+/Courier-Oblique 7 7 SUF
+13.4 37 M
+(/* Stores edge lengths of tree T in array EL[1..k1][0..2] and returns total length. */) s
+/F-gs-font 7 7 SF
+5 29 M
+(#) s
+/Courier-Bold 7 7 SUF
+9.2 29 M
+(define) s
+/F-gs-font 7 7 SF
+34.4 29 M
+( ) s
+/Courier-Bold 7 7 SUF
+38.6 29 M
+(dist) s
+/F-gs-font 7 7 SF
+55.4 29 M
+(\(a,b\) t = 0.0; for \(m = 0; m < DIMENSION; m++\) { r = XX[a][m] - XX[b][m]; t += r) s
+5 21 M
+(*r; } \\) s
+5 13 M
+(  t = SQROOT\(t\);) s
+5 5 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 5 M
+(register) s
+/F-gs-font 7 7 SF
+47 5 M
+( ) s
+/Courier-Bold 7 7 SUF
+51.2 5 M
+(int) s
+/F-gs-font 7 7 SF
+63.8 5 M
+( m, i2, i, j; ) s
+/Courier-Bold 7 7 SUF
+122.6 5 M
+(int) s
+/F-gs-font 7 7 SF
+135.2 5 M
+( n0, n1, n2, k1; REAL leng, t, r;) s
+402 501 M
+(  leng = 0.0; k1 = N - 2;) s
+402 493 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 493 M
+(for) s
+/F-gs-font 7 7 SF
+423 493 M
+( \(i = 1; i <= k1; i++\) {) s
+402 485 M
+(    i2 = i + NUMSITES;) s
+402 477 M
+(    n0 = adj[i][0]; n1 = adj[i][1]; n2 = adj[i][2];) s
+402 469 M
+(    ) s
+/Courier-Bold 7 7 SUF
+418.8 469 M
+(if) s
+/F-gs-font 7 7 SF
+427.2 469 M
+( \(n0 < i2\) {) s
+402 461 M
+(      dist\(n0, i2\); leng += t; EL[i][0] = t; n0 -= NUMSITES;) s
+402 453 M
+(      ) s
+/Courier-Bold 7 7 SUF
+427.2 453 M
+(if) s
+/F-gs-font 7 7 SF
+435.6 453 M
+( \(n0 > 0\) ) s
+/Courier-Bold 7 7 SUF
+477.6 453 M
+(for) s
+/F-gs-font 7 7 SF
+490.2 453 M
+( \(j = 0; j < 3; j++\) ) s
+/Courier-Bold 7 7 SUF
+578.4 453 M
+(if) s
+/F-gs-font 7 7 SF
+586.8 453 M
+( \(adj[n0][j] == i2\) { EL[n0][j] = t; ) s
+/Courier-Bold 7 7 SUF
+742.2 453 M
+(break) s
+/F-gs-font 7 7 SF
+763.2 453 M
+(; }) s
+402 445 M
+(    }) s
+402 437 M
+(    ) s
+/Courier-Bold 7 7 SUF
+418.8 437 M
+(if) s
+/F-gs-font 7 7 SF
+427.2 437 M
+( \(n1 < i2\) {) s
+402 429 M
+(      dist\(n1, i2\); leng += t; EL[i][1] = t; n1 -= NUMSITES;) s
+402 421 M
+(      ) s
+/Courier-Bold 7 7 SUF
+427.2 421 M
+(if) s
+/F-gs-font 7 7 SF
+435.6 421 M
+( \(n1 > 0\) ) s
+/Courier-Bold 7 7 SUF
+477.6 421 M
+(for) s
+/F-gs-font 7 7 SF
+490.2 421 M
+( \(j = 0; j < 3; j++\) ) s
+/Courier-Bold 7 7 SUF
+578.4 421 M
+(if) s
+/F-gs-font 7 7 SF
+586.8 421 M
+( \(adj[n1][j] == i2\) { EL[n1][j] = t; ) s
+/Courier-Bold 7 7 SUF
+742.2 421 M
+(break) s
+/F-gs-font 7 7 SF
+763.2 421 M
+(; }) s
+402 413 M
+(    }) s
+402 405 M
+(    ) s
+/Courier-Bold 7 7 SUF
+418.8 405 M
+(if) s
+/F-gs-font 7 7 SF
+427.2 405 M
+( \(n2 < i2\) {) s
+402 397 M
+(      dist\(n2, i2\); leng += t; EL[i][2] = t; n2 -= NUMSITES;) s
+402 389 M
+(      ) s
+/Courier-Bold 7 7 SUF
+427.2 389 M
+(if) s
+/F-gs-font 7 7 SF
+435.6 389 M
+( \(n2 > 0\) ) s
+/Courier-Bold 7 7 SUF
+477.6 389 M
+(for) s
+/F-gs-font 7 7 SF
+490.2 389 M
+( \(j = 0; j < 3; j++\) ) s
+/Courier-Bold 7 7 SUF
+578.4 389 M
+(if) s
+/F-gs-font 7 7 SF
+586.8 389 M
+( \(adj[n2][j] == i2\) { EL[n2][j] = t; ) s
+/Courier-Bold 7 7 SUF
+742.2 389 M
+(break) s
+/F-gs-font 7 7 SF
+763.2 389 M
+(; }) s
+402 381 M
+(    }) s
+402 373 M
+(  } ) s
+/Courier-Oblique 7 7 SUF
+418.8 373 M
+(/* Have now figured out distance EL[i][00.3] from Steiner pt. i to neighbors. */) s
+/F-gs-font 7 7 SF
+402 365 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 365 M
+(return) s
+/F-gs-font 7 7 SF
+435.6 365 M
+( \(leng\);) s
+402 357 M
+(}) s
+/Courier-Bold 7 7 SUF
+402 341 M
+(optimize) s
+/F-gs-font 7 7 SF
+435.6 341 M
+(\(tol\)) s
+402 333 M
+(REAL tol; ) s
+/Courier-Oblique 7 7 SUF
+444 333 M
+(/* a small positive number */) s
+/F-gs-font 7 7 SF
+402 325 M
+({ ) s
+/Courier-Oblique 7 7 SUF
+410.4 325 M
+(/* finds better coordinates XX[NUMSITES+1..NUMSITES+k1][] for the k1 Steiner points) s
+402 317 M
+(  * of tree T by: doing a relaxation iteration. Assumes that edge lengths of old tree) s
+402 309 M
+(  * have been per-stored in array EL[][] */) s
+/F-gs-font 7 7 SF
+402 301 M
+(#) s
+/Courier-Bold 7 7 SUF
+406.2 301 M
+(define) s
+/F-gs-font 7 7 SF
+431.4 301 M
+( ) s
+/Courier-Bold 7 7 SUF
+435.6 301 M
+(prep) s
+/F-gs-font 7 7 SF
+452.4 301 M
+(\(a,b,c\) if \(b > NUMSITES\) { val[i]++; B[i][a] = c; } \\) s
+402 293 M
+(  else for \(m = 0; m < DIMENSION; m++\) C[i][m] += XX[b][m]*c;) s
+402 285 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 285 M
+(static) s
+/F-gs-font 7 7 SF
+435.6 285 M
+( REAL B[NMAX][3], C[NMAX][MAXDIM];) s
+402 277 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 277 M
+(static) s
+/F-gs-font 7 7 SF
+435.6 277 M
+( ) s
+/Courier-Bold 7 7 SUF
+439.8 277 M
+(int) s
+/F-gs-font 7 7 SF
+452.4 277 M
+( eqnstack[NMAX], leafQ[NMAX], val[NMAX];) s
+402 269 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 269 M
+(register) s
+/F-gs-font 7 7 SF
+444 269 M
+( ) s
+/Courier-Bold 7 7 SUF
+448.2 269 M
+(int) s
+/F-gs-font 7 7 SF
+460.8 269 M
+( i, m, j, i2;  ) s
+/Courier-Bold 7 7 SUF
+523.8 269 M
+(int) s
+/F-gs-font 7 7 SF
+536.4 269 M
+( n0, n1, n2, lqp, eqp, k1;  REAL q0, q1, q2, t;) s
+402 261 M
+(  lqp = eqp = 0; k1 = N - 2;) s
+402 253 M
+(  ) s
+/Courier-Oblique 7 7 SUF
+410.4 253 M
+(/* First: compute B array, C array, and valences. Set up leafQ. */) s
+/F-gs-font 7 7 SF
+402 245 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 245 M
+(for) s
+/F-gs-font 7 7 SF
+423 245 M
+( \(i = k1; i > 0; i--\) {) s
+402 237 M
+(    n0 = adj[i][0]; n1 = adj[i][1]; n2 = adj[i][2];) s
+402 229 M
+(    q0 = 1.0 / \(EL[i][0] + tol\); q1 = 1.0 / \(EL[i][1] + tol\); q2 = 1.0 / \(EL[i][2] + tol\);) s
+402 213 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+418.8 213 M
+(/* printf\("q: %20.20g %20.20g %20.20g\\n", q0, q1,  q2\); */) s
+/F-gs-font 7 7 SF
+402 197 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+418.8 197 M
+(/* Have now figured out reciprocal distances q0, q1, q2 from) s
+402 189 M
+(     * Steiner pt. i to neighbors n0, n1, n2 */) s
+/F-gs-font 7 7 SF
+402 181 M
+(    t = q0 + q1 + q2; q0 /= t; q1 /= t; q2 /= t;) s
+402 173 M
+(    val[i] = 0; B[i][0] = B[i][1] = B[i][2] = 0.0;) s
+402 165 M
+(    ) s
+/Courier-Bold 7 7 SUF
+418.8 165 M
+(for) s
+/F-gs-font 7 7 SF
+431.4 165 M
+( \(m = 0; m < DIMENSION; m++\) { C[i][m] = 0.0; }) s
+402 149 M
+(    prep\(0, n0, q0\); prep\(1, n1, q1\); prep\(2, n2, q2\);) s
+402 133 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+418.8 133 M
+(/* printf\("SP: %20.20g %20.20g\\n", XX[i + NUMSITES][0], XX[i + NUMSITES][1]\); */) s
+/F-gs-font 7 7 SF
+402 125 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+418.8 125 M
+(/* printf\("C: %20.20g %20.20g\\n", C[i][0], C[i][1]\); */) s
+/F-gs-font 7 7 SF
+402 109 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+418.8 109 M
+(/* Now: Steiner point i has Steiner valence val[i];) s
+402 101 M
+(     * coords obey eqns XX[i+NUMSITES][] = sum\(j\)of B[i][j]*XX[nj][] + C[i][] */) s
+/F-gs-font 7 7 SF
+402 93 M
+(    ) s
+/Courier-Bold 7 7 SUF
+418.8 93 M
+(if) s
+/F-gs-font 7 7 SF
+427.2 93 M
+( \(val[i] <= 1\) { leafQ[lqp] = i; lqp++; } ) s
+/Courier-Oblique 7 7 SUF
+603.6 93 M
+(/* puts leafs on leafQ */) s
+/F-gs-font 7 7 SF
+402 85 M
+(  } ) s
+/Courier-Oblique 7 7 SUF
+418.8 85 M
+(/* Have set up equations - now to solve them. */) s
+/F-gs-font 7 7 SF
+402 77 M
+(  ) s
+/Courier-Oblique 7 7 SUF
+410.4 77 M
+(/* Second: eliminate leaves */) s
+/F-gs-font 7 7 SF
+402 69 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 69 M
+(while) s
+/F-gs-font 7 7 SF
+431.4 69 M
+(\(lqp > 1\) {) s
+402 61 M
+(    lqp--; i = leafQ[lqp]; val[i]--; i2 = i + NUMSITES;) s
+402 53 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+418.8 53 M
+(/* now to eliminate leaf i */) s
+/F-gs-font 7 7 SF
+402 45 M
+(    eqnstack[eqp] = i; eqp++; ) s
+/Courier-Oblique 7 7 SUF
+528 45 M
+(/* push i onto stack */) s
+/F-gs-font 7 7 SF
+402 37 M
+(    ) s
+/Courier-Bold 7 7 SUF
+418.8 37 M
+(for) s
+/F-gs-font 7 7 SF
+431.4 37 M
+( \(j = 0; j < 3; j++\) ) s
+/Courier-Bold 7 7 SUF
+519.6 37 M
+(if) s
+/F-gs-font 7 7 SF
+528 37 M
+( \(B[i][j] != 0.0\) ) s
+/Courier-Bold 7 7 SUF
+603.6 37 M
+(break) s
+/F-gs-font 7 7 SF
+624.6 37 M
+(; ) s
+/Courier-Oblique 7 7 SUF
+633 37 M
+(/* neighbor is #j */) s
+/F-gs-font 7 7 SF
+402 29 M
+(    q0 = B[i][j];) s
+402 21 M
+(    j = adj[i][j] - NUMSITES; ) s
+/Courier-Oblique 7 7 SUF
+528 21 M
+(/* neighbor is j */) s
+/F-gs-font 7 7 SF
+402 13 M
+(    val[j]--; ) s
+/Courier-Bold 7 7 SUF
+460.8 13 M
+(if) s
+/F-gs-font 7 7 SF
+469.2 13 M
+( \(val[j] == 1\) { leafQ[lqp] = j; lqp++; } ) s
+/Courier-Oblique 7 7 SUF
+645.6 13 M
+(/* new leaf? */) s
+/F-gs-font 7 7 SF
+402 5 M
+(    ) s
+/Courier-Bold 7 7 SUF
+418.8 5 M
+(for) s
+/F-gs-font 7 7 SF
+431.4 5 M
+( \(m = 0; m < 3; m++\) ) s
+/Courier-Bold 7 7 SUF
+519.6 5 M
+(if) s
+/F-gs-font 7 7 SF
+528 5 M
+( \(adj[j][m] == i2\) ) s
+/Courier-Bold 7 7 SUF
+607.8 5 M
+(break) s
+/F-gs-font 7 7 SF
+628.8 5 M
+(;) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 2 def
+/fname (wds_smt_org.c) def
+/fdir (.) def
+/ftail (wds_smt_org.c) def
+% User defined strings:
+/pagenumstr (2) def
+/moddatestr (03/17/15) def
+/modtimestr (19:17:05) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+5 501 M
+(    q1 = B[j][m]; B[j][m] = 0.0;) s
+5 493 M
+(    t = 1.0 - q1*q0; t = 1.0 / t;) s
+5 485 M
+(    ) s
+/Courier-Bold 7 7 SUF
+21.8 485 M
+(for) s
+/F-gs-font 7 7 SF
+34.4 485 M
+( \(m = 0; m < 3; m++\) B[j][m] *= t;) s
+5 477 M
+(    ) s
+/Courier-Bold 7 7 SUF
+21.8 477 M
+(for) s
+/F-gs-font 7 7 SF
+34.4 477 M
+( \(m = 0; m < DIMENSION; m++\) { C[j][m] += q1*C[i][m]; C[j][m] *= t; }) s
+5 469 M
+(  }) s
+5 461 M
+(  ) s
+/Courier-Oblique 7 7 SUF
+13.4 461 M
+(/* Third: Solve 1-vertex tree! */) s
+/F-gs-font 7 7 SF
+5 453 M
+(  i = leafQ[0]; i2 = i + NUMSITES;) s
+5 445 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 445 M
+(for) s
+/F-gs-font 7 7 SF
+26 445 M
+( \(m = 0; m < DIMENSION; m++\) XX[i2][m] = C[i][m];) s
+5 429 M
+(  ) s
+/Courier-Oblique 7 7 SUF
+13.4 429 M
+(/* printf\("SP\(1\): %20.20g %20.20g\\n", XX[i + NUMSITES][0], XX[i + NUMSITES][1]\); */) s
+/F-gs-font 7 7 SF
+5 413 M
+(  ) s
+/Courier-Oblique 7 7 SUF
+13.4 413 M
+(/* Fourth: backsolve */) s
+/F-gs-font 7 7 SF
+5 405 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 405 M
+(while) s
+/F-gs-font 7 7 SF
+34.4 405 M
+( \(eqp > 0\) {) s
+5 397 M
+(    eqp--; i = eqnstack[eqp]; i2 = i + NUMSITES;) s
+5 389 M
+(    ) s
+/Courier-Bold 7 7 SUF
+21.8 389 M
+(for) s
+/F-gs-font 7 7 SF
+34.4 389 M
+( \(j = 0; j < 3; j++\) ) s
+/Courier-Bold 7 7 SUF
+122.6 389 M
+(if) s
+/F-gs-font 7 7 SF
+131 389 M
+( \(B[i][j] != 0.0\) ) s
+/Courier-Bold 7 7 SUF
+206.6 389 M
+(break) s
+/F-gs-font 7 7 SF
+227.6 389 M
+(; ) s
+/Courier-Oblique 7 7 SUF
+236 389 M
+(/* neighbor is #j */) s
+/F-gs-font 7 7 SF
+5 381 M
+(    q0 = B[i][j];) s
+5 373 M
+(    j = adj[i][j]; ) s
+/Courier-Oblique 7 7 SUF
+84.8 373 M
+(/* neighbor is j */) s
+/F-gs-font 7 7 SF
+5 365 M
+(    ) s
+/Courier-Bold 7 7 SUF
+21.8 365 M
+(for) s
+/F-gs-font 7 7 SF
+34.4 365 M
+( \(m = 0; m < DIMENSION; m++\) XX[i2][m] = C[i][m] + q0*XX[j][m];) s
+5 357 M
+(  }) s
+5 341 M
+(  ) s
+/Courier-Oblique 7 7 SUF
+13.4 341 M
+(/* printf\("SP\(2\): %20.20g %20.20g\\n", XX[i + NUMSITES][0], XX[i + NUMSITES][1]\); */) s
+/F-gs-font 7 7 SF
+5 325 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 325 M
+(return) s
+/F-gs-font 7 7 SF
+38.6 325 M
+(;) s
+5 317 M
+(}) s
+5 301 M
+(REAL ) s
+/Courier-Bold 7 7 SUF
+26 301 M
+(error) s
+/F-gs-font 7 7 SF
+47 301 M
+(\(\)) s
+5 293 M
+({ ) s
+/Courier-Oblique 7 7 SUF
+13.4 293 M
+(/* Returns the error figure of tree T with Steiner coords in XX[][].) s
+5 285 M
+(   * Assumes edge lengths have been pre-stored in array EL[][]. */) s
+/F-gs-font 7 7 SF
+5 277 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 277 M
+(register) s
+/F-gs-font 7 7 SF
+47 277 M
+( ) s
+/Courier-Bold 7 7 SUF
+51.2 277 M
+(int) s
+/F-gs-font 7 7 SF
+63.8 277 M
+( i, m, i2, n0, n1, n2;  ) s
+/Courier-Bold 7 7 SUF
+164.6 277 M
+(int) s
+/F-gs-font 7 7 SF
+177.2 277 M
+( k1;  REAL r, s, t, efig, d01, d12, d02;) s
+5 269 M
+(  k1 = N - 2; efig = 0.0;) s
+5 261 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 261 M
+(for) s
+/F-gs-font 7 7 SF
+26 261 M
+( \(i = 1; i <= k1; i++\) {) s
+5 253 M
+(    i2 = i + NUMSITES;) s
+5 245 M
+(    n0 = adj[i][0]; n1 = adj[i][1]; n2 = adj[i][2];) s
+5 229 M
+(    d12 = d01 = d02 = 0.0;) s
+5 221 M
+(    ) s
+/Courier-Bold 7 7 SUF
+21.8 221 M
+(for) s
+/F-gs-font 7 7 SF
+34.4 221 M
+( \(m = 0; m < DIMENSION; m++\) {) s
+5 213 M
+(      t = XX[i2][m];) s
+5 205 M
+(      r = XX[n0][m] - t; s = XX[n1][m] - t; t = XX[n2][m] - t;) s
+5 197 M
+(      d12 += s*t; d01 += r*s; d02 += r*t;) s
+5 189 M
+(    }) s
+5 181 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+21.8 181 M
+(/* only angles < 120 cause error */) s
+/F-gs-font 7 7 SF
+5 173 M
+(    t = d12 + d12 + EL[i][1]*EL[i][2]; ) s
+/Courier-Bold 7 7 SUF
+168.8 173 M
+(if) s
+/F-gs-font 7 7 SF
+177.2 173 M
+( \(t > 0.0\) efig += t;) s
+5 165 M
+(    t = d01 + d01 + EL[i][0]*EL[i][1]; ) s
+/Courier-Bold 7 7 SUF
+168.8 165 M
+(if) s
+/F-gs-font 7 7 SF
+177.2 165 M
+( \(t > 0.0\) efig += t;) s
+5 157 M
+(    t = d02 + d02 + EL[i][0]*EL[i][2]; ) s
+/Courier-Bold 7 7 SUF
+168.8 157 M
+(if) s
+/F-gs-font 7 7 SF
+177.2 157 M
+( \(t > 0.0\) efig += t;) s
+5 149 M
+(  }) s
+5 141 M
+(  efig = SQROOT\(efig\); ) s
+/Courier-Bold 7 7 SUF
+101.6 141 M
+(return) s
+/F-gs-font 7 7 SF
+126.8 141 M
+( \(efig\);) s
+5 133 M
+(}) s
+/Courier-Bold 7 7 SUF
+5 117 M
+(output_tree) s
+/F-gs-font 7 7 SF
+51.2 117 M
+(\(\)) s
+5 109 M
+({) s
+5 101 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 101 M
+(int) s
+/F-gs-font 7 7 SF
+26 101 M
+( i, j;) s
+5 93 M
+(  printf\() s
+/Courier-Bold 7 7 SUF
+42.8 93 M
+("topology-describing vector:") s
+/F-gs-font 7 7 SF
+164.6 93 M
+(\);) s
+5 85 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 85 M
+(for) s
+/F-gs-font 7 7 SF
+26 85 M
+( \(i = 1; i <= NUMSITES-3; i++\) printf\() s
+/Courier-Bold 7 7 SUF
+185.6 85 M
+(" %d") s
+/F-gs-font 7 7 SF
+206.6 85 M
+(, BESTVEC[i]\);) s
+5 77 M
+(  printf\() s
+/Courier-Bold 7 7 SUF
+42.8 77 M
+("\\nsteiner point coords\\n") s
+/F-gs-font 7 7 SF
+152 77 M
+(\);) s
+5 69 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 69 M
+(for) s
+/F-gs-font 7 7 SF
+26 69 M
+( \(i = NUMSITES+1; i <= 2*NUMSITES-2; i++\) {) s
+5 61 M
+(    ) s
+/Courier-Bold 7 7 SUF
+21.8 61 M
+(for) s
+/F-gs-font 7 7 SF
+34.4 61 M
+( \(j = 0; j < DIMENSION; j++\) printf\() s
+/Courier-Bold 7 7 SUF
+185.6 61 M
+(" %20.20g") s
+/F-gs-font 7 7 SF
+227.6 61 M
+(, XX[i][j]\);) s
+5 53 M
+(    printf\() s
+/Courier-Bold 7 7 SUF
+51.2 53 M
+("\\n") s
+/F-gs-font 7 7 SF
+68 53 M
+(\);) s
+5 45 M
+(  }) s
+5 37 M
+(  printf\() s
+/Courier-Bold 7 7 SUF
+42.8 37 M
+("edges\\n") s
+/F-gs-font 7 7 SF
+80.6 37 M
+(\);) s
+5 29 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 29 M
+(for) s
+/F-gs-font 7 7 SF
+26 29 M
+( \(i = 1; i <= 2*NUMSITES-3; i++\) printf\() s
+/Courier-Bold 7 7 SUF
+194 29 M
+("%d-%d;") s
+/F-gs-font 7 7 SF
+227.6 29 M
+(, edge[i][0], edge[i][1]\);) s
+5 21 M
+(  printf\() s
+/Courier-Bold 7 7 SUF
+42.8 21 M
+("\\n") s
+/F-gs-font 7 7 SF
+59.6 21 M
+(\);) s
+5 13 M
+(  fflush\(stdout\);) s
+5 5 M
+(  ) s
+/Courier-Bold 7 7 SUF
+13.4 5 M
+(return) s
+/F-gs-font 7 7 SF
+38.6 5 M
+(;) s
+402 501 M
+(}) s
+/Courier-Bold 7 7 SUF
+402 485 M
+(main) s
+/F-gs-font 7 7 SF
+418.8 485 M
+(\(\) { ) s
+/Courier-Oblique 7 7 SUF
+439.8 485 M
+(/* Inputs NUMSITES, DIMENSION, sites; outputs succesive best Steiner) s
+402 477 M
+(          * trees found. Best tree's topology-vector is stored in BESTVEC. */) s
+/F-gs-font 7 7 SF
+402 469 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 469 M
+(int) s
+/F-gs-font 7 7 SF
+423 469 M
+( i, j, x, k, m, nc, ct;  REAL q, r; ) s
+/Courier-Bold 7 7 SUF
+574.2 469 M
+(int) s
+/F-gs-font 7 7 SF
+586.8 469 M
+( A[NMAX];) s
+402 461 M
+(  INITRAND\(\);) s
+402 445 M
+(  ) s
+/Courier-Oblique 7 7 SUF
+410.4 445 M
+(/* \(1\) Input */) s
+/F-gs-font 7 7 SF
+402 437 M
+(  scanf\() s
+/Courier-Bold 7 7 SUF
+435.6 437 M
+("%d") s
+/F-gs-font 7 7 SF
+452.4 437 M
+(, &NUMSITES\);) s
+402 429 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 429 M
+(if) s
+/F-gs-font 7 7 SF
+418.8 429 M
+( \(NUMSITES < 3 || NUMSITES > NMAX\) {) s
+402 421 M
+(    fprintf\(stderr, ) s
+/Courier-Bold 7 7 SUF
+486 421 M
+("NUMSITES=%d out of range\\n") s
+/F-gs-font 7 7 SF
+603.6 421 M
+(, NUMSITES\); exit\(0\);) s
+402 413 M
+(  }) s
+402 405 M
+(  printf\() s
+/Courier-Bold 7 7 SUF
+439.8 405 M
+("NUMSITES = %d\\n") s
+/F-gs-font 7 7 SF
+511.2 405 M
+(, NUMSITES\);) s
+402 389 M
+(  scanf\() s
+/Courier-Bold 7 7 SUF
+435.6 389 M
+("%d") s
+/F-gs-font 7 7 SF
+452.4 389 M
+(, &DIMENSION\);) s
+402 381 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 381 M
+(if) s
+/F-gs-font 7 7 SF
+418.8 381 M
+( \(DIMENSION < 2 || DIMENSION > MAXDIM\) {) s
+402 373 M
+(    fprintf\(stderr, ) s
+/Courier-Bold 7 7 SUF
+486 373 M
+("DIMENSION=%d out of range\\n") s
+/F-gs-font 7 7 SF
+607.8 373 M
+(, DIMENSION\); exit\(0\);) s
+402 365 M
+(  }) s
+402 357 M
+(  printf\() s
+/Courier-Bold 7 7 SUF
+439.8 357 M
+("DIMENSION = %d\\n") s
+/F-gs-font 7 7 SF
+515.4 357 M
+(, DIMENSION\);) s
+402 341 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 341 M
+(for) s
+/F-gs-font 7 7 SF
+423 341 M
+( \(i = 1; i <= NUMSITES; i++\) ) s
+/Courier-Bold 7 7 SUF
+544.8 341 M
+(for) s
+/F-gs-font 7 7 SF
+557.4 341 M
+( \(j = 0; j < DIMENSION; j++\) scanf\() s
+/Courier-Bold 7 7 SUF
+704.4 341 M
+("%lf") s
+/F-gs-font 7 7 SF
+725.4 341 M
+(, &\(XX[i][j]\)\);) s
+402 333 M
+(  SCALE = 0.0;) s
+402 325 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 325 M
+(for) s
+/F-gs-font 7 7 SF
+423 325 M
+( \(i = 1; i <= NUMSITES; i++\) {) s
+402 317 M
+(    ) s
+/Courier-Bold 7 7 SUF
+418.8 317 M
+(for) s
+/F-gs-font 7 7 SF
+431.4 317 M
+( \(j = 0; j < DIMENSION; j++\) {) s
+402 309 M
+(      q = XX[i][j] - XX[1][j]; ) s
+/Courier-Bold 7 7 SUF
+532.2 309 M
+(if) s
+/F-gs-font 7 7 SF
+540.6 309 M
+( \(q < 0.0\) q = -q; ) s
+/Courier-Bold 7 7 SUF
+620.4 309 M
+(if) s
+/F-gs-font 7 7 SF
+628.8 309 M
+( \(q > SCALE\) SCALE = q;) s
+402 301 M
+(      printf\() s
+/Courier-Bold 7 7 SUF
+456.6 301 M
+(" %g") s
+/F-gs-font 7 7 SF
+477.6 301 M
+(, XX[i][j]\);) s
+402 293 M
+(    }) s
+402 285 M
+(    printf\() s
+/Courier-Bold 7 7 SUF
+448.2 285 M
+("\\n") s
+/F-gs-font 7 7 SF
+465 285 M
+(\);) s
+402 277 M
+(  }) s
+402 269 M
+(  printf\() s
+/Courier-Bold 7 7 SUF
+439.8 269 M
+("SCALE = %g\\n") s
+/F-gs-font 7 7 SF
+498.6 269 M
+(, SCALE\);) s
+402 261 M
+(  fflush\(stdout\);) s
+402 245 M
+(  ) s
+/Courier-Bold 7 7 SUF
+410.4 245 M
+(if) s
+/F-gs-font 7 7 SF
+418.8 245 M
+( \(NUMSITES == 3\) { ) s
+/Courier-Oblique 7 7 SUF
+498.6 245 M
+(/* Deal with special case of 3 sites */) s
+/F-gs-font 7 7 SF
+402 237 M
+(    buildtree\(0, A\);) s
+402 229 M
+(    q = length\(\); r = error\(\);) s
+402 221 M
+(    ) s
+/Courier-Bold 7 7 SUF
+418.8 221 M
+(do) s
+/F-gs-font 7 7 SF
+427.2 221 M
+( {) s
+402 213 M
+(      ) s
+/Courier-Oblique 7 7 SUF
+427.2 213 M
+(/* printf\("%20.20g %20.20g\\n", q, r\); */) s
+/F-gs-font 7 7 SF
+402 205 M
+(      optimize\(0.0001*r/NUMSITES\);) s
+402 197 M
+(      q = length\(\); r = error\(\);) s
+402 189 M
+(    } ) s
+/Courier-Bold 7 7 SUF
+427.2 189 M
+(while) s
+/F-gs-font 7 7 SF
+448.2 189 M
+( \( r > q *0.0001\);) s
+402 181 M
+(    printf\() s
+/Courier-Bold 7 7 SUF
+448.2 181 M
+("\\nnew record length %20.20g\\n") s
+/F-gs-font 7 7 SF
+578.4 181 M
+(, q\);) s
+402 173 M
+(    output_tree\(\);) s
+402 165 M
+(    printf\() s
+/Courier-Bold 7 7 SUF
+448.2 165 M
+("done\\n") s
+/F-gs-font 7 7 SF
+481.8 165 M
+(\); fflush\(stdout\); exit\(0\);) s
+402 157 M
+(  }) s
+402 141 M
+(  ) s
+/Courier-Oblique 7 7 SUF
+410.4 141 M
+(/* \(2\) Preprocessing and initialization */) s
+/F-gs-font 7 7 SF
+402 133 M
+(  ) s
+/Courier-Oblique 7 7 SUF
+410.4 133 M
+(/* Optionally, sort sites in some nice order here. */) s
+/F-gs-font 7 7 SF
+402 125 M
+(  ) s
+/Courier-Oblique 7 7 SUF
+410.4 125 M
+(/* STUB = any upper bound ont the length of the SMT. */) s
+/F-gs-font 7 7 SF
+402 117 M
+(  STUB = HUGE; k = 1; m = 0; ct = 0; ) s
+/Courier-Oblique 7 7 SUF
+557.4 117 M
+(/*  ct counts backtrack iters. Unused at present */) s
+/F-gs-font 7 7 SF
+402 101 M
+(  DoForever{ ) s
+/Courier-Oblique 7 7 SUF
+456.6 101 M
+(/* 3: candidate leaf generation and backtracking */) s
+/F-gs-font 7 7 SF
+402 93 M
+(    nc = 0; ct++;) s
+402 85 M
+(    ) s
+/Courier-Bold 7 7 SUF
+418.8 85 M
+(if) s
+/F-gs-font 7 7 SF
+427.2 85 M
+( \(ct % 10000 == 0\) { printf\() s
+/Courier-Bold 7 7 SUF
+544.8 85 M
+("still running \(%ld\)!\\n") s
+/F-gs-font 7 7 SF
+645.6 85 M
+(,ct\); fflush\(stdout\); }) s
+402 77 M
+(    ) s
+/Courier-Bold 7 7 SUF
+418.8 77 M
+(for) s
+/F-gs-font 7 7 SF
+431.4 77 M
+( \( x = 2*k + 1; x > 0 && k <= NUMSITES-3; x--\) {) s
+402 69 M
+(      A[k] = x;) s
+402 61 M
+(      buildtree\(k, A\); ) s
+/Courier-Oblique 7 7 SUF
+498.6 61 M
+(/* Build the tree represented by the topol. vector A[1..k] */) s
+/F-gs-font 7 7 SF
+402 53 M
+(    ) s
+/Courier-Bold 7 7 SUF
+418.8 53 M
+(ITER) s
+/F-gs-font 7 7 SF
+435.6 53 M
+(: ) s
+/Courier-Oblique 7 7 SUF
+444 53 M
+(/* .. and optimize it until either obviously bad or small error figure happens */) s
+/F-gs-font 7 7 SF
+402 45 M
+(      q = length\(\);) s
+402 37 M
+(      r = error\(\);) s
+402 29 M
+(      ) s
+/Courier-Bold 7 7 SUF
+427.2 29 M
+(if) s
+/F-gs-font 7 7 SF
+435.6 29 M
+( \( q - r < STUB\) {) s
+402 21 M
+(        ) s
+/Courier-Bold 7 7 SUF
+435.6 21 M
+(if) s
+/F-gs-font 7 7 SF
+444 21 M
+( \(r > 0.005*q\) { optimize\(0.0001*r/NUMSITES\); ) s
+/Courier-Bold 7 7 SUF
+637.2 21 M
+(goto) s
+/F-gs-font 7 7 SF
+654 21 M
+( ) s
+/Courier-Bold 7 7 SUF
+658.2 21 M
+(ITER) s
+/F-gs-font 7 7 SF
+675 21 M
+(; }) s
+402 13 M
+(        ) s
+/Courier-Bold 7 7 SUF
+435.6 13 M
+(if) s
+/F-gs-font 7 7 SF
+444 13 M
+( \(k >= NUMSITES-3\) {) s
+402 5 M
+(          ) s
+/Courier-Bold 7 7 SUF
+444 5 M
+(do) s
+/F-gs-font 7 7 SF
+452.4 5 M
+( { optimize\(0.0001*r/NUMSITES\); q = length\(\); r = error\(\);) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 3 def
+/fname (wds_smt_org.c) def
+/fdir (.) def
+/ftail (wds_smt_org.c) def
+% User defined strings:
+/pagenumstr (3) def
+/moddatestr (03/17/15) def
+/modtimestr (19:17:05) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+5 501 M
+(               ) s
+/Courier-Oblique 7 7 SUF
+68 501 M
+(/* printf\("%20.20g %20.20g\\n", q, r\); */) s
+/F-gs-font 7 7 SF
+5 493 M
+(             } ) s
+/Courier-Bold 7 7 SUF
+68 493 M
+(while) s
+/F-gs-font 7 7 SF
+89 493 M
+( \(r > q*0.0001\);) s
+5 485 M
+(          ) s
+/Courier-Bold 7 7 SUF
+47 485 M
+(if) s
+/F-gs-font 7 7 SF
+55.4 485 M
+( \(q < STUB\) {) s
+5 477 M
+(            printf\() s
+/Courier-Bold 7 7 SUF
+84.8 477 M
+("\\nnew record length %20.20g\\n") s
+/F-gs-font 7 7 SF
+215 477 M
+(, q\);) s
+5 469 M
+(            ) s
+/Courier-Bold 7 7 SUF
+55.4 469 M
+(for) s
+/F-gs-font 7 7 SF
+68 469 M
+( \(i = 1; i <= k; i++\) BESTVEC[i] = A[i];) s
+5 461 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+55.4 461 M
+(/* if \(q < STUB*0.99999\) output_tree\(\); */) s
+/F-gs-font 7 7 SF
+5 453 M
+(            output_tree\(\);) s
+5 445 M
+(            STUB = q;) s
+5 437 M
+(          }) s
+5 429 M
+(        }) s
+5 421 M
+(        ) s
+/Courier-Bold 7 7 SUF
+38.6 421 M
+(else) s
+/F-gs-font 7 7 SF
+55.4 421 M
+( {) s
+5 413 M
+(          i = nc; nc++;) s
+5 405 M
+(          ) s
+/Courier-Bold 7 7 SUF
+47 405 M
+(while) s
+/F-gs-font 7 7 SF
+68 405 M
+( \(i > 0 && LEN[i] < q\) {) s
+5 397 M
+(            STACK[m+i+1] = STACK[m+i]; LEN[i+1] = LEN[i]; i--;) s
+5 389 M
+(          }) s
+5 381 M
+(          i = i + 1; STACK[m+i] = x; LEN[i] = q;) s
+5 373 M
+(        }) s
+5 365 M
+(      }) s
+5 357 M
+(    }) s
+5 349 M
+(    m = m + nc;) s
+5 333 M
+(    ) s
+/Courier-Bold 7 7 SUF
+21.8 333 M
+(while) s
+/F-gs-font 7 7 SF
+42.8 333 M
+( \(nc <= 0\) {) s
+5 325 M
+(      k--;) s
+5 317 M
+(      ) s
+/Courier-Bold 7 7 SUF
+30.2 317 M
+(if) s
+/F-gs-font 7 7 SF
+38.6 317 M
+( \(k <= 0\) { printf\() s
+/Courier-Bold 7 7 SUF
+118.4 317 M
+("done\\n") s
+/F-gs-font 7 7 SF
+152 317 M
+(\); fflush\(stdout\); exit\(0\); }) s
+5 309 M
+(      nc = STACK[m]; m--;) s
+5 301 M
+(    }) s
+5 285 M
+(    A[k] = STACK[m]; STACK[m] = nc - 1;) s
+5 277 M
+(    ) s
+/Courier-Bold 7 7 SUF
+21.8 277 M
+(if) s
+/F-gs-font 7 7 SF
+30.2 277 M
+( \(k < NUMSITES-3\) k++; ) s
+/Courier-Bold 7 7 SUF
+126.8 277 M
+(else) s
+/F-gs-font 7 7 SF
+143.6 277 M
+( m--;) s
+5 269 M
+(  }) s
+5 261 M
+(} ) s
+/Courier-Oblique 7 7 SUF
+13.4 261 M
+(/* End of Steiner tree program. */) s
+/F-gs-font 7 7 SF
+_R
+S
+%%Trailer
+%%Pages: 3
+%%DocumentNeededResources: font Times-Roman Courier-Oblique Courier-Bold 
+%%+ font Courier Times-Bold 
+%%EOF
