@@ -37,6 +37,7 @@
 *.tdo
 *.fls
 *.glsdefs
+_region_.tex
 
 ### Go ###
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
