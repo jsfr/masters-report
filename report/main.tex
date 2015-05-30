@@ -27,6 +27,7 @@
 \usepackage{subcaption}
 \usepackage[dvipsnames]{xcolor}  % Coloured text etc.
 \usepackage{tikz, tikzscale}
+\usepackage{xifthen}
 \usepackage{xargs}
 \usepackage[colorinlistoftodos,prependcaption,textsize=footnotesize,%
 obeyFinal,bordercolor=black,linecolor=black]{todonotes}
@@ -36,12 +37,12 @@ obeyFinal,bordercolor=black,linecolor=black]{todonotes}
 \usepackage[nomain,acronym,xindy,toc,nonumberlist]{glossaries}
 
 % Keep here to make sure it loads last (but it is a "Essentials")
-\usepackage[noabbrev]{cleveref}
+\usepackage[noabbrev,capitalize]{cleveref}
 
 % Tikz styles
 \tikzset{%
-stein/.style 2 args={circle,inner sep=1pt,fill=white,draw,minimum size=5pt,label={#2:#1},name=#1},%
-reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1},name=#1}%
+stein/.style 2 args={circle,inner sep=1pt,fill=white,draw,minimum size=5pt,label={#2:#1}},%
+reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1}}%
 }
 
 % To-do commands
