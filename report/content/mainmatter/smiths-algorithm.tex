@@ -55,14 +55,39 @@ elimination. This iteration and how to solve it is described in
 \section{Topologies}
 \label{sec:topologies}
 
-The first step of the algorithm is, as described in \cref{sec:overview}, to
-generate topologies.  It is therefore natural that we need some way of
-representing and generating these topologies.
+The first step of the algorithm is to generate topologies.  It is therefore
+natural that we need some way of representing and generating these topologies.
 
 The algorithm only considers \glspl{fst} where $K = N - 2$.  This simplification
 is allowed, as we can simply regard any Steiner tree with $K \le N - 2$ as a
 \gls{fst} where some edges have length zero and thus some points have
 ``merged''.
+
+An incentive for only looking at \glspl{fst} can be found in~\cite{Gilbert1968}
+by looking which presents a table, here presented in
+\cref{tab:number-of-topologies}, for the number of Steiner topologies for
+different numbers of terminals and Steiner points.  As can clearly be seen the
+numbers on the diagonal, corresponding to the possible \glspl{fst}, are a lot
+smaller than the others.  Thus not having to optimize the degenerate topologies
+is clearly desirable.
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{cccccc}
+    \toprule
+    $S$ & $N = 3$    & $N = 4$    & $N = 5$     & $N = 6$      & $N = 7$      \\
+    \midrule
+    0   & 3          & 12         & 60          & 360          & 2520         \\
+    1   & \textbf{1} & 12         & 120         & 1200         & 12600        \\
+    2   &            & \textbf{3} & 75          & 1350         & 22050        \\
+    3   &            &            & \textbf{15} & 630          & 17640        \\
+    4   &            &            &             & \textbf{105} & 6615         \\
+    5   &            &            &             &              & \textbf{945} \\
+    \bottomrule
+  \end{tabular}
+  \caption{The number of possible topologies for a Steiner tree with $N$
+    terminals and $S$ Steiner points.\label{tab:number-of-topologies}}
+\end{table}
 
 Note however that even with this simplification the number of \glspl{fst} is
 still exponential in $N$, which is clear from \cref{cor:number-of-fsts}.
@@ -71,39 +96,44 @@ still exponential in $N$, which is clear from \cref{cor:number-of-fsts}.
 \label{sec:representation}
 
 It turns out that every \gls{fst} can be represented using a vector, in
-particular we utilize the following theorem
+particular we utilize the following theorem put forth by Smith~cite{Smith1992}
 
-\begin{theorem} There is an 1--1 correspondence between full Steiner topologies
-with $N \ge 3$ terminals, and $(N-3)$-vectors $\vec{a}$, whose $i$th entry $a_i$
-is an integer between $1 \le a_i \le 2 i + 1$.
+\begin{theorem}
+  There is an 1--1 correspondence between \glspl{fst} with $N \ge 3$ terminals,
+  and $(N-3)$-vectors $\vec{a}$, whose $i$th entry $a_i$ is an integer between
+  $1 \le a_i \le 2 i + 1$.
 \end{theorem}
+
+Here terminals have indicies $1, 2, \ldots, N$, and Steiner points have indicies
+$N+1, N+2, \ldots, 2N-2$.
 
 The proof of this theorem is done constructively by induction on $N$.  It is
 clear that the smallest \gls{fst}\footnote{This holds not only for \glspl{fst}
-  but for any Steiner topology} we
-can construct, must have $N = 3$ as the number of Steiner points is $N - 2 = 1$.
-Thus we start with the initial null vector $\vec{a} = ()$ corresponding to the
-unique \gls{fst} for the points 1, 2 and 3 connected through the respective
-edges 1, 2 and 3 and one Steiner point $N+1$ as seen in
-\cref{fig:algorithm-topology-1}.  After this first step, each entry of the
-topology vector is considered, one at a time, where the $i$th entry of the
-topology vector describes the insertion of the $(N+1+i)$th Steiner point on the
-edge $a_{i}$ and its connection to the $(i+3)$th terminal.  Thus for the $i$th
-insertion we will have $2i+1$\footnote{At the first iteration we clearly have 3
-edges to insert on, and as each insertion generates two new edges we have $3 +
-\underbrace{2 + \cdots + 2}_{2 (i - 1)} = 2 i + 1$.} different edges on which we
-can insert the Steiner point $N+1+i$ and connect it to the regular point $i+3$.
+  but for any Steiner topology} we can construct, must have $N = 3$ as the
+number of Steiner points is $N - 2 = 1$.  Thus we start with the initial null
+vector $\vec{a} = ()$ corresponding to the unique \gls{fst} for the terminals
+$1$, $2$ and $3$ connected through the respective edges 1, 2 and 3 and one
+Steiner point $N+1$ as seen in \cref{fig:algorithm-topology-1}.  After this
+first step, each entry of the topology vector is considered, one at a time,
+where the $i$th entry of the topology vector describes the insertion of the
+$(N+1+i)$th Steiner point on the edge $a_{i}$ and its connection to the
+$(i+3)$th terminal.  Thus for the $i$th insertion we will have
+$2i+1$\footnote{At the first iteration we clearly have 3 edges to insert on, and
+  as each subsequent insertion generates two new edges we have, after $i$
+  insertions, $3 + \underbrace{2 + \cdots + 2}_{2 i} = 2 i + 1$.} different
+edges on which we can insert the Steiner point $N+1+i$ and connect it to the
+regular point $i+3$.
 
 \begin{figure}[htbp] \centering
-  \begin{subfigure}[t]{0.3\textwidth}
+  \begin{subfigure}[t]{0.267\textwidth}
     \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-1}
     \caption{The initial null vector.\label{fig:algorithm-topology-1}}
-  \end{subfigure} \hfill
-  \begin{subfigure}[t]{0.3\textwidth}
+  \end{subfigure} ~
+  \begin{subfigure}[t]{0.267\textwidth}
     \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-2}
     \caption{Connecting point 4 on edge 2.\label{fig:algorithm-topology-2}}
-  \end{subfigure} \hfill
-  \begin{subfigure}[t]{0.3\textwidth}
+  \end{subfigure} ~
+  \begin{subfigure}[t]{0.267\textwidth}
     \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-3}
     \caption{Connecting point 5 on edge 4.\label{fig:algorithm-topology-3}}
   \end{subfigure}
@@ -124,8 +154,13 @@ Which is clear as we must insert $N-2$ Steiner points, where the null vector is
 the $0$th iteration.  Thus the last iteration must be $N-3$, and for each
 iteration we have $2i+1$ different insertions.
 
+Something which might not be completely obvious from the above proof is, that we
+not only generate all topologies, but that we generate all topologies exactly
+once.  This is important as we would otherwise risk doing a lot of double work
+when optimizing.\FIXME{Hos does one prove this?}
+
 The way Smith chooses to enumerate the edges is not explained outright, but only
-in the form of a visual example~\cite{Smith1992}.  However one must take care to
+in the form of a visual example~\cite[p.~143]{Smith1992}.  However one must take care to
 keep the enumeration consistent to avoid generating the same topologies more
 than once.  Thus we do the enumeration in the same way as Smith, and as in
 \cref{fig:algorithm-topologies}.  That is when we insert Steiner point $N+1+i$
@@ -133,8 +168,9 @@ on the $\text{edge}~a_{i}$ going from $\text{vertex}~a_i$ to $\text{vertex}~j$
 with $N < j < N+i+1$, we split it such that we get the following three
 edges\footnote{An edge is represented as $x = (y, z)$, meaning the edge with
   index $x$ going from the vertex with index $y$ to the vertex with index
-  $z$.}\NOTE{Consider making all vertices bold or with an arrow to indicate the
-  difference between edges and vertices, and to indicate that the vertices are vectors.}
+  $z$.}\FIXME{This paragraph needs to be rewritten. Also note that we dont
+  actually label the edges as described below in the new implementation. Thus
+  this is currently incorrect.}
 
 \begin{itemize}
 \item edge $a_{i} = (a_{i},N+1+i)$
@@ -147,24 +183,36 @@ edges\footnote{An edge is represented as $x = (y, z)$, meaning the edge with
 
 Using the representation described in \cref{sec:representation} the problem of
 generating all topologies can now be done as a backtracking problem generating
-all $(N-3)$-topology vectors.
+all $(N-3)$-topology vectors. An example of how the generation works can be seen
+in \cref{fig:topology-sprouting}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.8\textwidth]{gfx/tikz/topology-sprouting}
+  \caption{Upon splitting an edge and connecting a new terminal to the topology
+    the algorithm can perform the split on any of the existing edges. Thus in
+    this case the algorithm branch in to three different topologies. In general
+    the splitting result in the topology branching into as many branches as
+    there are edges in the topology on which the split is perfomed.\label{fig:topology-sprouting}}
+\end{figure}
 
 To further speed up the generation of topologies, or rather to avoid generating
 unnecessary topologies, Smith also utilizes the following theorem
-
-\begin{theorem} For any set of $N$ distinct terminals in any Euclidean space,
-the length of the shortest tree, interconnecting $N-1$ points, with topology
-vector $a_1 \cdots a_{N-4}$ is no greater than the length of the shortest tree,
-interconnecting $N$ points, with topology vector $a_1 \cdots a_{N-3}$.
+%
+\begin{theorem}
+  For any set of $N$ distinct terminals in any Euclidean space, the length of
+  the shortest tree, interconnecting $N-1$ points, with topology vector
+  $a_1 \cdots a_{N-4}$ is no greater than the length of the shortest tree,
+  interconnecting $N$ points, with topology vector $a_1 \cdots a_{N-3}$.
 \end{theorem}
-
-The above theorem is easily seen to be true, by simply considering removing the
-edge $e$ connecting the last terminal $N$, to the rest of the tree.  This will
-obviously shorten the tree, or if the edge was length zero\footnote{This might
+%
+The above theorem is easily seen to be true, simply by considering removing the
+edge $e$ connecting the last terminal $N$ to the rest of the tree.  This will
+obviously shorten the tree, or if the edge was length zero\NOTE{This might
 happen if the points are either not in general position, or if the point removed
 lies exactly on top of a Steiner point.  The last part seems to have been missed
 by Smith~\cite[p.~144]{Smith1992}.} it would remain the same.  Furthermore upon
-optimizing the tree with the last point removed we would either get a further
+optimizing the tree with the last point removed, we would either get a further
 shortening, or it would remain the same.
 
 The algorithm utilizes this to prune in the following way.  Imagine we have
@@ -175,22 +223,18 @@ would have generated from this vector, as the length of the larger topologies
 cannot become any smaller than the length of the current, and thus cannot become
 smaller than the length of the upper bound.
 
-Thus the implementation of the algorithm generates and optimizes topologies
-depth-first to ensure we get an upper bound as quickly as possible.  If it did
-breadth-first we would not be able to prune anything, as we would get all the
-full topologies as the last to optimize.
+This way of pruning means the algorithm must generate and optimize topologies
+depth-first to get a good upper bound as quickly as possible.  If it was instead
+breadth-first, nothing would  be left to prune anything, as all the \glspl{fst}
+would be the last topologies on which we optimize, and these are the only ones
+that can give a new upper bound.
 
 The actual implementation of the backtracking is not described by Smith in
 article itself, but only by reading the code.  The details of the current
-implementation will be discussed in\missingref{refer to implementation and the
-correct section.}.  The implementation does face some problems, one of which is
-the fact that the entire topology is rebuilt from scratch every time we need to
-either add of remove a point.
-
-\begin{figure}[htbp] \centering
-    \includegraphics[width=1\textwidth]{gfx/tikz/topology-sprouting}
-    \caption{Here be dragons.\label{fig:topology-sprouting}}
-\end{figure}
+implementation will be discussed in \cref{cha:implementation}.  The
+implementation does face some problems, one of which is the fact that the entire
+topology is rebuilt from scratch every time we need to either add of remove a
+point.
 
 \section{Optimization of a prespecified topology}
 \label{sec:optim-presp-topol}
@@ -205,6 +249,7 @@ and the error function for deciding convergence.
 
 Apart from the the already used $N$ and $K$, we define the following symbols as
 well
+%
 \begin{itemize}
 \item $R$, the set of terminals.
 \item $S$, the set of Steiner points.
@@ -292,16 +337,23 @@ $120^{\circ}$ will give a negative number, and thus not count towards anything
 in \cref{eq:1}.
 
 \begin{table}[htbp] \centering
-  \begin{tabular}{ccl} \toprule $v$ & $\cos v$ & ``error function'' \\ \midrule
-$0^{\circ}$ & $1$ & $\vec a \cdot \vec b - (|\vec a| \cdot |\vec b|)$ \\
-$90^{\circ}$ & $0$ & $\vec a \cdot \vec b$ \\ $120^{\circ}$ & $-\frac{1}{2}$ &
-$\vec a \cdot \vec b + \frac{1}{2} (|\vec a| \cdot |\vec b|)$ \\ $180^{\circ}$ &
-$-1$ & $\vec a \cdot \vec b + (|\vec a| \cdot |\vec b|)$ \\ \bottomrule
+  \begin{tabular}{ccl}
+    \toprule
+    $v$           & $\cos v$       & ``error function''                    \\
+    \midrule
+    $0^{\circ}$   & $1$            & $\vec a \cdot \vec b -
+                                     (|\vec a| \cdot |\vec b|)$            \\
+    $90^{\circ}$  & $0$            & $\vec a \cdot \vec b$                 \\
+    $120^{\circ}$ & $-\frac{1}{2}$ & $\vec a \cdot \vec b +
+                                     \frac{1}{2}(|\vec a| \cdot |\vec b|)$ \\
+    $180^{\circ}$ & $-1$           & $\vec a \cdot \vec b +
+                                     (|\vec a| \cdot |\vec b|)$            \\
+    \bottomrule
   \end{tabular}
   \caption[Angles and their corresponding ``error functions'']{Angles smaller
-$\mathit{120^{\circ}}$ clearly means that the error function becomes positive,
-whereas those greater than $\mathit{120^{\circ}}$ will become
-negative.\label{tab:error-functions}}
+    $\mathit{120^{\circ}}$ clearly means that the error function becomes positive,
+    whereas those greater than $\mathit{120^{\circ}}$ will become
+    negative.\label{tab:error-functions}}
 \end{table}
 
 Note however that while it is now clear that the function is dependent on the
