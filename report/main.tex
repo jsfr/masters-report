@@ -23,7 +23,6 @@
 \usepackage[T1]{fontenc}
 
 % Customizable
-\usepackage[font={small,it},margin=.5cm]{caption}
 \usepackage{subcaption}
 \usepackage[dvipsnames]{xcolor}  % Coloured text etc.
 \usepackage{tikz, tikzscale}
@@ -35,7 +34,18 @@ obeyFinal,bordercolor=black,linecolor=black]{todonotes}
 \usepackage{microtype}
 \usepackage[bookmarks]{hyperref} % hyperlinks
 \usepackage[nomain,acronym,xindy,toc,nonumberlist]{glossaries}
-\usepackage{slashbox/slashbox}
+\usepackage{enumitem}
+
+\usepackage[linesnumbered,noend,noline]{algorithm2e}
+\usepackage[font={small,it},margin=.5cm]{caption}
+\usepackage{etoolbox}
+\AtBeginEnvironment{algorithm}{%
+  \captionsetup{margin={-.5cm,.5cm}}%
+}
+\SetAlCapSkip{1.5ex}
+\renewcommand\AlCapNameSty{\small\textit}
+\renewcommand\AlCapSty{\small\textit}
+
 
 % Keep here to make sure it loads last (but it is a "Essentials")
 \usepackage[noabbrev,capitalize]{cleveref}
