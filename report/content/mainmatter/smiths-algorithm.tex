@@ -297,18 +297,18 @@ loop several times for each Steiner point.
     }
   }
   \Return{$T$}
-  \caption{Here be dragons.\label{alg:simple-iteration}}
+  \caption[Simple iteration]{Pseudo code describing the optimization strategy
+    using the simple iteration.\label{alg:simple-iteration}}
 \end{algorithm}
 
-\TODO[inline]{Proof that algorithm one terminates, and with an optimal
+\TODO[inline]{Proof that the algorithm terminates. And that it does so with an optimal
   solution}.
 
 Now that we have proved that \cref{alg:simple-iteration} terminates, and that it
 will do so with an optimal solution we have only left to look at the two
 approaches\footnote{I.e.\ analytical and iterative/numeric.}.  The analytical
-solution is described \cref{sec:analyt-solut-ferm}.
-
-\TODO[inline]{Describe an iterative approach to finding a single Steiner point.}
+solution is described \cref{sec:analyt-solut-ferm}. As an analytical solution
+exists for $d$-space we will not look any further at possible iterations.
 
 The problem Smith poses for the simple iteration described here is that while it
 quickly becomes optimal ``locally'' it may still converge slowly as it does not

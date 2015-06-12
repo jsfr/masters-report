@@ -35,8 +35,9 @@ obeyFinal,bordercolor=black,linecolor=black]{todonotes}
 \usepackage[bookmarks]{hyperref} % hyperlinks
 \usepackage[nomain,acronym,xindy,toc,nonumberlist]{glossaries}
 \usepackage{enumitem}
+\usepackage{minted}
 
-\usepackage[linesnumbered,noend,noline]{algorithm2e}
+\usepackage[linesnumbered,noend,noline,boxed]{algorithm2e}
 \usepackage[font={small,it},margin=.5cm]{caption}
 \usepackage{etoolbox}
 \AtBeginEnvironment{algorithm}{%
@@ -156,6 +157,10 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \label{app:bibliography}
 \bibliographystyle{ieeetr}
 \bibliography{content/backmatter/bibliography}
+
+\label{app:sourcecode}
+\include{content/backmatter/sourcecode}
+
 \end{document}
 
 %%% Local Variables:
