@@ -89,7 +89,7 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \renewcommand*{\glstextformat}[1]{\textcolor{black}{#1}}
 \renewcommand*{\glsclearpage}{}
 \makeglossaries{}
-\input{content/glossaries}
+\input{content/frontmatter/glossaries}
 
 % Remove indent and use a line-skip instead
 \nonzeroparskip{}
@@ -158,8 +158,7 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \bibliographystyle{ieeetr}
 \bibliography{content/backmatter/bibliography}
 
-\label{app:sourcecode}
-\include{content/backmatter/sourcecode}
+% \include{content/backmatter/sourcecode}
 
 \end{document}
 

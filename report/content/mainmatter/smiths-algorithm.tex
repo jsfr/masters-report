@@ -64,12 +64,11 @@ is allowed, as we can simply regard any Steiner tree with $K \le N - 2$ as a
 ``merged''.
 
 An incentive for only looking at \glspl{fst} can be found in~\cite{Gilbert1968}
-by looking which presents a table, here presented in
-\cref{tab:number-of-topologies}, for the number of Steiner topologies for
-different numbers of terminals and Steiner points.  As can clearly be seen the
-numbers on the diagonal, corresponding to the possible \glspl{fst}, are a lot
-smaller than the others.  Thus not having to optimize the degenerate topologies
-is clearly desirable.
+which presents a table, here presented in \cref{tab:number-of-topologies},
+containing the number of possible Steiner topologies for different numbers of
+terminals and Steiner points.  As can clearly be seen the number of \glspl{fst}
+(the diagonal) is a lot smaller than the total number of topologies.  Thus not
+having to optimize the non-full topologies is clearly desirable.
 
 \begin{table}[htbp]
   \centering
@@ -156,21 +155,22 @@ iteration we have $2i+1$ different insertions.
 
 Something which might not be completely obvious from the above proof is, that we
 not only generate all topologies, but that we generate all topologies exactly
-once.  This is important as we would otherwise risk doing a lot of double work
-when optimizing.\FIXME{Hos does one prove this?}
+once.  This is important as duplicate topologies would risk significantly
+increase the run time of the algorithm.
+
+\FIXME[inline]{Prove the above statement. I.e.\ that we cannot generate the same
+  topology twice.}
 
 The way Smith chooses to enumerate the edges is not explained outright, but only
-in the form of a visual example~\cite[p.~143]{Smith1992}.  However one must take care to
-keep the enumeration consistent to avoid generating the same topologies more
-than once.  Thus we do the enumeration in the same way as Smith, and as in
-\cref{fig:algorithm-topologies}.  That is when we insert Steiner point $N+1+i$
+in the form of a visual example~\cite[p.~143]{Smith1992}.  Exactly how one
+enumerates the edges on a split is actually not so important, more so is it
+important to keep it consistent.  The way Smith does it is as in
+\cref{fig:algorithm-topologies}.  That is when inserting Steiner point $N+1+i$
 on the $\text{edge}~a_{i}$ going from $\text{vertex}~a_i$ to $\text{vertex}~j$
-with $N < j < N+i+1$, we split it such that we get the following three
+with $N < j < N+i+1$, split it such that we get the following three
 edges\footnote{An edge is represented as $x = (y, z)$, meaning the edge with
   index $x$ going from the vertex with index $y$ to the vertex with index
-  $z$.}\FIXME{This paragraph needs to be rewritten.  Also note that we dont
-  actually label the edges as described below in the new implementation.  Thus
-  this is currently incorrect.}
+  $z$.}
 
 \begin{itemize}
 \item edge $a_{i} = (a_{i},N+1+i)$
@@ -261,25 +261,18 @@ of all edges in in the topology $T$.  See \cref{eq:length} for the exact
 definition.
 \end{itemize}
 
-\FIXME[inline]{Smith is inconsistent with having the sets as containing either
-the points of the indicies.  This we should probably fix up just to clear the
-notation.}
+\NOTE[inline]{Smith is inconsistent with having the sets as containing either
+the points of the indicies.  This could perhaps be fixed and clarified here.}
 
 \subsection{Simple iteration}
 \label{sec:simple-iteration}
 
 To first get a sense of how we might go about optimizing the tree in a simple
 manner we first look at a iteration which only optimizes one Steiner point at a
-time.  This is a simpler approach to the one proposed by Smith, but will probably
-also take longer time to converge.  The iteration is described by
-\cref{alg:simple-iteration}.  The algorithm is intentionally a bit vague, as even
-the simple iteration has several choices we can make.  First of we should choose
-how a single Steiner point is optimized.  This can either be done
-analytically\missingref{refer to something here.} or iteratively.  If it is done
-analytically each Steiner point immediately lands where it is supposed to be in
-the current iteration and the inner loop only runs once per Steiner point (in
-each iteration).  If the point is found iteratively we may have to run the inner
-loop several times for each Steiner point.
+time.  This is a simpler approach to the one proposed by Smith, but will
+probably also take longer time to converge.  The iteration is described by
+\cref{alg:simple-iteration}.  The algorithm is intentionally a bit vague, as
+even the simple iteration has several choices we can make.
 
 \begin{algorithm}[htbp]
   \KwData{
@@ -301,14 +294,24 @@ loop several times for each Steiner point.
     using the simple iteration.\label{alg:simple-iteration}}
 \end{algorithm}
 
-\TODO[inline]{Proof that the algorithm terminates. And that it does so with an optimal
-  solution}.
+First of we should choose how a single Steiner point is optimized.  This is in
+reality the problem of finding the Fermat-Torricelli point~\missingref{maybe a
+  ref here?} for three points connected to the Steiner point we wish to
+optimize.  There are several ways this can be done -- Either one can go about it
+geometrically~\missingref{ref here!}, iteratively (using e.g.\ a descent
+algorithm)~\missingref{ref here!} or analytically~\missingref{ref of the article
+  from alexei here.}.  The geometrical approach cannot be taken for any
+dimension above 2~\TODO{Check if this is correct, and add a reference}.  There
+are several iterative approaches, but all have in common that several iterations
+have to performed to place a single Steiner point.  Finally there exists the
+analytical solution, which seems promising as it immediatly places a Steiner
+point correctly according to the points it is connected to.  Of course some of
+the neighbors may also be Steiner points, and thus when they are replaced the
+Steiner point will have to be recalculated.
 
-Now that we have proved that \cref{alg:simple-iteration} terminates, and that it
-will do so with an optimal solution we have only left to look at the two
-approaches\footnote{I.e.\ analytical and iterative/numeric.}.  The analytical
-solution is described \cref{sec:analyt-solut-ferm}. As an analytical solution
-exists for $d$-space we will not look any further at possible iterations.
+\TODO[inline]{Prove that the algorithm terminates. And that it does so with an optimal
+  solution. This can probably be seen from the physical spring model, where we
+  relax the springs}
 
 The problem Smith poses for the simple iteration described here is that while it
 quickly becomes optimal ``locally'' it may still converge slowly as it does not
@@ -316,6 +319,8 @@ regard the ``global'' structure.
 
 \subsection{Smith's iteration}
 \label{sec:smiths-iteration}
+
+\TODO[inline]{THIS SECTION IS NOT DONE!}
 
 Now that we have looked at a simple way of optimizing the topology, by finding
 the coordinates of one Steiner point at a time, we can progress to the iteration
@@ -349,11 +354,11 @@ j,k: 1 \le j < k \le 2 N - 2 \\ (j,k) \in T
 \label{eq:length}
 \end{equation}
 %
-\TODO[inline]{Write about the iteration and the proof of correctness}
 
 \subsection{Convergence}
-\label{sec:convergence} \NOTE[inline]{Do I need to touch on this? If so it is
-about the speed and proof of convergence}
+\label{sec:convergence}
+
+\TODO[inline]{THIS SECTION IS NOT DONE!}
 
 \subsection{Error function}
 \label{sec:error-function}
@@ -433,6 +438,34 @@ entire length of the tree, and why we are looking at $E \ll L$ instead of $E <
 
 Smith does not go in to detail with this, and I suspect it may be due to the
 fact that he himself is unsure of the validity of the used error function.
+
+\section{Questionable elements of Smiths article}
+\label{sec:quest-elem-smiths}
+
+There are a number of elements in the article and the given implementation~\cite{Smith1992} which are
+somewhat questionable. These I will try to discuss here.
+
+\subsection{Choice of error function}
+\label{sec:choice-error-funct}
+Where does it come from. Convergence of some trees might not happen
+
+\subsection{The implementation}
+\label{sec:implementation}
+
+\subsubsection{SCALE}
+\label{sec:scale}
+
+\subsubsection{tol}
+\label{sec:tol}
+
+\subsubsection{Pruning}
+\label{sec:pruning}
+
+\subsubsection{Loop condition when optimizing}
+\label{sec:loop-condition-when-1}
+
+\subsubsection{If clause when outputting tree}
+\label{sec:if-clause-when}
 
 \chapterbreak{}
 
