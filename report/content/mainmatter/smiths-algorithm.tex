@@ -158,7 +158,7 @@ not only generate all topologies, but that we generate all topologies exactly
 once.  This is important as duplicate topologies would risk significantly
 increase the run time of the algorithm.
 
-\FIXME[inline]{Prove the above statement. I.e.\ that we cannot generate the same
+\FIXME[inline]{Prove the above statement.  I.e.\ that we cannot generate the same
   topology twice.}
 
 The way Smith chooses to enumerate the edges is not explained outright, but only
@@ -208,12 +208,9 @@ unnecessary topologies, Smith also utilizes the following theorem
 %
 The above theorem is easily seen to be true, simply by considering removing the
 edge $e$ connecting the last terminal $N$ to the rest of the tree.  This will
-obviously shorten the tree, or if the edge was length zero\NOTE{This might
-happen if the points are either not in general position, or if the point removed
-lies exactly on top of a Steiner point.  The last part seems to have been missed
-by Smith~\cite[p.~144]{Smith1992}.} it would remain the same.  Furthermore upon
-optimizing the tree with the last point removed, we would either get a further
-shortening, or it would remain the same.
+obviously shorten the tree, or if the edge was length zero it would remain the
+same.  Furthermore upon optimizing the tree with the last point removed, we
+would either get a further shortening, or it would remain the same.
 
 The algorithm utilizes this to prune in the following way.  Imagine we have
 found some upper bound for the \gls{smt}.  If we then optimize any generated
@@ -309,8 +306,8 @@ point correctly according to the points it is connected to.  Of course some of
 the neighbors may also be Steiner points, and thus when they are replaced the
 Steiner point will have to be recalculated.
 
-\TODO[inline]{Prove that the algorithm terminates. And that it does so with an optimal
-  solution. This can probably be seen from the physical spring model, where we
+\TODO[inline]{Prove that the algorithm terminates.  And that it does so with an optimal
+  solution.  This can probably be seen from the physical spring model, where we
   relax the springs}
 
 The problem Smith poses for the simple iteration described here is that while it
@@ -319,8 +316,6 @@ regard the ``global'' structure.
 
 \subsection{Smith's iteration}
 \label{sec:smiths-iteration}
-
-\TODO[inline]{THIS SECTION IS NOT DONE!}
 
 Now that we have looked at a simple way of optimizing the topology, by finding
 the coordinates of one Steiner point at a time, we can progress to the iteration
@@ -340,6 +335,7 @@ progressed as such.}
     \frac{1}{|\vec x_k^{(i)} - \vec x_j^{(i)}|}}, & \quad
     N+1 &\le k \le 2N-2
 \intertext{which can be rewritten as}
+\label{eq:9}
   \vec 0
   &= \sum_{j:(j,k) \in T}
     \frac{\vec x_k^{(i+1)} - \vec x_j^{(i+1)}}
@@ -347,16 +343,74 @@ progressed as such.}
      N+1 &\le k \le 2N-2
 \end{alignat}
 %
+Here $\vec x_k \in S$ represents the $k$-th Steiner point, being a
+$d$-vector.  Iteratively solving this system from the initial coordinates
+$x^{(0)}_k$, the iteration will converge towards the unique optimum Steiner
+point coordinates that minimize the total length, $L$\footnote{The tree length
+  is as is normally the case calculated as the sum of all edge lengths.  In this
+  case we use the regular Euclidean (L2) norm.  One could however think to
+  possibly use other norms, e.g.\ the rectilinear L1.}, of the tree.  The
+convergence happens in such a way that the sequence of tree lengths $L(S^{(i)})$
+is monotonically decreasing.  Note that since the unknowns in the iteration are
+vectors we actually have $d$ independent equation systems of $N-2$ equations, $d$ being the
+dimension.
+
+The proof that this iteration actually converges to an optimal solution is done
+as following.  Firstly after each ($i$th) iteration, $S^{(i+1)}$ exactly
+minimizes the following quadratic form $Q^{(i)}(S)$
 %
-\begin{equation} L(\vec x_{N+1}, \ldots, \vec x_{2N-2}) = \sum_{\begin{array}{c}
-j,k: 1 \le j < k \le 2 N - 2 \\ (j,k) \in T
-\end{array}} | \vec x_{k} - \vec x_{j} |
-\label{eq:length}
+\begin{equation}
+  \label{eq:7}
+  Q^{(i)}(S) = \sum_{(j,k) \in T, k \in S, j < k } \frac{|\vec x_k - \vec x_j|^2}{|\vec x^{(i)}_k - \vec x^{(i)}_j|}
 \end{equation}
 %
+It is easily seen that $Q(S)$ is related to the length $L(S)$ as follows
+%
+\begin{equation}
+  \label{eq:8}
+  L(S^{(i)}) = Q^{(i)}(S^{(i)}), \quad \nabla L(S^{(i)}) \propto \nabla Q^{(i)}(S^{(i)})
+\end{equation}
+
+Secondly one can think of $Q$ as the potential energy of a system of ideal
+springs on the tree edges, where the force constant of each spring is
+proportional to the reciprocal of its original length before each iteration.  The
+$i$th iteration causes all springs to relax, minimizing $Q^{(i)}$.  Furthermore
+as can be seen from \cref{eq:9} the forces of the $k$th Steiner point are
+clearly in equilibrium.  Now write
+%
+\begin{align}
+  \label{eq:10}
+  L(S^{(i)}) &= Q^{(i)}(S^{(i)}) \ge Q^{(i)}(S^{(i+1)}) \\
+             &= \sum_{j, k : j < k, (j,k) \in T, k \in S} \frac{{(
+               |\vec x_k^{(i)} - \vec x_j^{(j)}| + |\vec x_k^{(i+1)} -
+               \vec x_j^{(i+1)}| - |\vec x_k^{(i)} - \vec x_j^{(j)}|)}^2}{
+               |\vec x_k^{(i)} - \vec x_j^{(i)}|} \\
+             &= L(S^{(i)}) + 2 [ L(S^{(i+1)}) - L(S^{(i)})] \nonumber \\
+             &+ \sum_{j, k : j < k, (j,k) \in T, k \in S} \frac{{(
+               |\vec x_k^{(i+1)} -
+               \vec x_j^{(i+1)}| - |\vec x_k^{(i)} - \vec x_j^{(j)}|)}^2}{
+               |\vec x_k^{(i)} - \vec x_j^{(i)}|}
+\end{align}
+%
+It is obvious that the last sum is non-negative, and thus
+$L(S^{(i)}) \ge L(S^{(i+1)})$.  Smiths furthermore goes into detail on how the
+only stable fixed point is the optimum, and thus even if the iteration reaches
+one such point, any small perturbation of $S$ in any $L$-decreasing direction
+will cause the iteration to resume decreasing $L$ until it has been
+minimized. The exact details of this part will not be covered here, but can be
+found in~\cite[p.~147--148]{Smith1992}.
+
+The equation system of each iteration can be solved using Gaussian elimination.
+This is done by identifying an equation which only has at most one unknown on the right
+hand side.  This corresponds to a Steiner point being connected to two or more
+terminals, which is always guaranteed to exist.  Thus if we use a $\mathcal
+O(N)$ algorithm for solving a single system and we actually have $d$ systems, we
+can solve a single iteration in $\mathcal O(Nd)$.
 
 \subsection{Convergence}
 \label{sec:convergence}
+
+
 
 \TODO[inline]{THIS SECTION IS NOT DONE!}
 
@@ -442,12 +496,13 @@ fact that he himself is unsure of the validity of the used error function.
 \section{Questionable elements of Smiths article}
 \label{sec:quest-elem-smiths}
 
-There are a number of elements in the article and the given implementation~\cite{Smith1992} which are
-somewhat questionable. These I will try to discuss here.
+There are a number of elements in the article and the given
+implementation~\cite{Smith1992} which are somewhat questionable.  These I will
+try to discuss here.
 
 \subsection{Choice of error function}
 \label{sec:choice-error-funct}
-Where does it come from. Convergence of some trees might not happen
+Where does it come from.  Convergence of some trees might not happen
 
 \subsection{The implementation}
 \label{sec:implementation}
