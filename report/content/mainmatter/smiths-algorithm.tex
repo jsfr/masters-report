@@ -189,11 +189,12 @@ in \cref{fig:topology-sprouting}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.8\textwidth]{gfx/tikz/topology-sprouting}
-  \caption{Upon splitting an edge and connecting a new terminal to the topology
-    the algorithm can perform the split on any of the existing edges.  Thus in
-    this case the algorithm branch in to three different topologies.  In general
-    the splitting result in the topology branching into as many branches as
-    there are edges in the topology on which the split is perfomed.\label{fig:topology-sprouting}}
+  \caption[Here be dragons.]{Upon splitting an edge and connecting a new
+    terminal to the topology the algorithm can perform the split on any of the
+    existing edges.  Thus in this case the algorithm branch in to three
+    different topologies.  In general the splitting result in the topology
+    branching into as many branches as there are edges in the topology on which
+    the split is perfomed.\label{fig:topology-sprouting}}
 \end{figure}
 
 To further speed up the generation of topologies, or rather to avoid generating
@@ -254,8 +255,7 @@ well
 form $(j,k)$ where $\vec x_j$ and $\vec x_k$ are contained in either $S$ or $R$
 and an edge exists in the topology from $x_j$ to $x_k$ or vice versa.
 \item $L$, the length of the tree.  Defined as the sum of the euclidean lengths
-of all edges in in the topology $T$.  See \cref{eq:length} for the exact
-definition.
+of all edges in the topology $T$.
 \end{itemize}
 
 \NOTE[inline]{Smith is inconsistent with having the sets as containing either
@@ -393,7 +393,7 @@ clearly in equilibrium.  Now write
 \end{align}
 %
 It is obvious that the last sum is non-negative, and thus
-$L(S^{(i)}) \ge L(S^{(i+1)})$.  Smiths furthermore goes into detail on how the
+$L(S^{(i)}) \ge L(S^{(i+1)})$.  Smith furthermore goes into detail on how the
 only stable fixed point is the optimum, and thus even if the iteration reaches
 one such point, any small perturbation of $S$ in any $L$-decreasing direction
 will cause the iteration to resume decreasing $L$ until it has been
@@ -407,25 +407,26 @@ terminals, which is always guaranteed to exist.  Thus if we use a $\mathcal
 O(N)$ algorithm for solving a single system and we actually have $d$ systems, we
 can solve a single iteration in $\mathcal O(Nd)$.
 
-\subsection{Convergence}
-\label{sec:convergence}
+According to Smith~\cite[p.~150]{Smith1992} the iteration has a good speed of
+convergence. In most cases geometric convergence will occur. However some
+degenerate configurations of terminals can cause sublinear convergence.
 
+\NOTE[inline]{Should I perhaps touch on the speed of convergence more in-depth?}
 
+\section{Questionable elements of Smith's article}
+\label{sec:quest-elem-smiths}
 
-\TODO[inline]{THIS SECTION IS NOT DONE!}
+There are a number of elements in the article and the given
+implementation~\cite{Smith1992} which are somewhat questionable.  These I will
+try to discuss here.
 
-\subsection{Error function}
-\label{sec:error-function}
+\subsection{Choice of error function}
+\label{sec:choice-error-funct}
 
-\FIXME[inline]{Redo this section especially the part with the table!}
-
-To detect when convergence has happened, Smith warns about using the obvious way
-of testing whether one iterate differs substantially from the next and stop if
-it does not~\cite[p.~151]{Smith1992}\NOTE{why does he warn about this? Should we
-give an example where this could go wrong?}.  Instead Smith proposed using an
-error-function which looks at all angles smaller than $120^{\circ}$, as an
-\gls{mst}, if it is also a \gls{fst}, will only have angles of $120^{\circ}$.
-The function Smith proposed is
+To detect when convergence has happened Smith proposes using a special
+error function instead of the one often used where one stops when the
+improvements from iteration to iteration falls below some $\epsilon$.  The
+function proposed by Smith is
 %
 \begin{equation}
   \label{eq:1} E^2 = \sum_{
@@ -434,10 +435,9 @@ The function Smith proposed is
 + | \vec x_j - \vec x_i | \cdot | \vec x_k - \vec x_i |)
 \end{equation}
 %
-Which would be used to conclude that we have converged when $E \ll L$.  Here
-$\text{pos}(x) = \max(x, 0)$.  The inner part of the function stems from the
-calculation of the angle between two vectors.  Say we wish to find the cosine to
-angle $v$ between the vectors $\vec a$ and $\vec b$.  This is defined as
+Here $\text{pos}(x) = \max(x, 0)$.  This error function sums together all angles which
+are smaller than $120^{\circ}$.  The error function is derived from calculating
+the angle between edges in the following way:
 %
 \begin{align}
   \cos v & = \frac{\vec a \cdot \vec b}
@@ -451,76 +451,174 @@ angle $v$ between the vectors $\vec a$ and $\vec b$.  This is defined as
   0      & = 2 (\vec a \cdot \vec b) + |\vec a| \cdot |\vec b| \label{eq:5}
 \end{align}
 %
-Thus giving the inner part of Smith's error function, which uses the edges from
-the Steiner points as the vectors between which we look at the angle.
+Thus any angle less than $120^{\circ}$ gives a positive number when inserted in
+the function, and any angle below will give a negative number (which is set to
+zero by $\text{pos}(x)$).
 
-How this error function relates to the length $L$ of the tree can be a bit hard
-to figure out, but looking at \cref{eq:4} and the same for of the equation for
-other angles might give some idea.  If we look at \cref{tab:error-functions} we
-see that the angles less than $120^{\circ}$ has a smaller second term, comprised
-of the lengths of the vectors.  This means that when we calculate the error
-function for $120^{\circ}$ using the two vectors with a smaller angle, that they
-will give a positive number instead of zero as would be the case if the angle
-was indeed $120^{\circ}$.  In the same way those angles larger than
-$120^{\circ}$ will give a negative number, and thus not count towards anything
-in \cref{eq:1}.
+Why this error function is supposed to be better is not explained very
+thoroughly by Smith. He only refers to doing some experimentation which led him
+to believe that this would be a good function.  The idea behind the function
+seems to be that, as the final tree should only have angles of $120^{\circ}$ any
+angle less than this must still need to be optimized.
 
-\begin{table}[htbp] \centering
-  \begin{tabular}{ccl}
-    \toprule
-    $v$           & $\cos v$       & ``error function''                    \\
-    \midrule
-    $0^{\circ}$   & $1$            & $\vec a \cdot \vec b -
-                                     (|\vec a| \cdot |\vec b|)$            \\
-    $90^{\circ}$  & $0$            & $\vec a \cdot \vec b$                 \\
-    $120^{\circ}$ & $-\frac{1}{2}$ & $\vec a \cdot \vec b +
-                                     \frac{1}{2}(|\vec a| \cdot |\vec b|)$ \\
-    $180^{\circ}$ & $-1$           & $\vec a \cdot \vec b +
-                                     (|\vec a| \cdot |\vec b|)$            \\
-    \bottomrule
-  \end{tabular}
-  \caption[Angles and their corresponding ``error functions'']{Angles smaller
-    $\mathit{120^{\circ}}$ clearly means that the error function becomes positive,
-    whereas those greater than $\mathit{120^{\circ}}$ will become
-    negative.\label{tab:error-functions}}
-\end{table}
+There are however some problems with this choice of error function.  Consider
+the configuration as shown in the first tree of \cref{fig:error-function}. Here
+there are two pairs of terminals, very far apart.  These are connected by two
+Steiner points as seen.  Running Smith's iteration the two Steiner points will
+move together, and up towards the center of the rectangle of the four
+terminals.  However suppose the two points reach each other before they reach
+the center.  In this case the angles on the left and right will be more than
+$120^{\circ}$ and thus not count towards the error.  Furthermore the edge
+between the Steiner points become zero (or practically zero).  This means, that
+even though the angles using this edge all are less than $120^{\circ}$ and would
+count towards the error, the error they contribute with is zero, which is clear
+by looking at the definition of the error.
 
-Note however that while it is now clear that the function is dependent on the
-length of the edges, it is still somewhat unclear how it exactly relates to the
-entire length of the tree, and why we are looking at $E \ll L$ instead of $E <
-\epsilon$ where $0 < \epsilon \ll 1$.\NOTE{Can I leave it at this?}
+This means that the algorithm will stop before it should with a tree which has
+not been minimized.
 
-Smith does not go in to detail with this, and I suspect it may be due to the
-fact that he himself is unsure of the validity of the used error function.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{gfx/tikz/errorfunction}
+  \caption[Here be dragons.]{Here be dragons.\label{fig:error-function}}
+\end{figure}
 
-\section{Questionable elements of Smiths article}
-\label{sec:quest-elem-smiths}
-
-There are a number of elements in the article and the given
-implementation~\cite{Smith1992} which are somewhat questionable.  These I will
-try to discuss here.
-
-\subsection{Choice of error function}
-\label{sec:choice-error-funct}
-Where does it come from.  Convergence of some trees might not happen
+Note however that the topology used in \cref{fig:error-function} is not the
+one which gives the \gls{mst} for the four terminals.  The optimal topology
+would have the top pair connected with one Steiner point, the two bottom
+terminals connected with another Steiner point, and those two Steiner points
+connected.  This topology when optimized will not face the same problem, as the
+two Steiner points will not move towards each other.  Thus it is still unclear
+whether this problem can occur with a topology which optimizes to a \gls{smt}.
+Should this be the case then the algorithm cannot actually be considered an
+exact algorithm, but only a approximation algorithm.
 
 \subsection{The implementation}
 \label{sec:implementation}
 
+The implementation by Smith contains several unexplained variables and conditionals not
+directly related to the algorithm as it is explained in the article by Smith.
+
 \subsubsection{SCALE}
 \label{sec:scale}
+
+The variable \texttt{SCALE} is used by Smith when calculating the initial
+placement of a Steiner point.  Steiner points are initially placed at the
+centroid of its three neighbors.  However the point is not placed exactly at the
+centroid, but is instead pertubed slightly.  To each coordinate of the centroid
+is added $0.001 \cdot \texttt{SCALE} \cdot \texttt{RANDM()}$, where \texttt{RANDM()} is a
+random number between $0$ and $1$.  \texttt{SCALE} is a number defined as shown
+in \cref{fig:randm}.
+
+\begin{figure}[htbp]
+  \begin{c-code}
+    SCALE = 0.0;
+    for (i = 1; i <= NUMSITES; i++) {
+      for (j = 0; j < DIMENSION; j++) {
+        q = XX[i][j] - XX[1][j];
+        if (q < 0.0) q = -q;
+        if (q > SCALE) SCALE = q;
+        printf(" %g", XX[i][j]);
+      }
+      printf("\n");
+    }
+    printf("SCALE = %g\n", SCALE);
+  \end{c-code}
+\caption[here be dragons]{here be dragons.\label{fig:randm}}
+\end{figure}
+
+As can be seen the variable finds the largest difference in coordinates between the first
+terminal and all other terminals.  Why this extra variable should be a part of
+the perturbation is however unclear.  The name of the variable might be a hint,
+as it seems Smith wished to scale the perturbation in correspondence to the
+points.  If this is the case however the code in \cref{fig:randm} seems to be
+faulty as it should then not only compare the first point to all other, but
+instead compare every point, to every other.
+
+Thus it seems that the variable is not only not needed, but actually faulty.
+This of course depends on what Smith is trying to achieve with \texttt{SCALE}.
+But overall the variable seems unneeded, and thus the new implementation does
+not use \texttt{SCALE}.
 
 \subsubsection{tol}
 \label{sec:tol}
 
+\texttt{tol} is the parameter given to the optimize function and is described as
+a small positive number.  In the code whenever the function is called the
+variable has the value $0.0001*r/\text{NUMSITES}$ where $r$ is the current
+error and and $\text{NUMSITES}$ is the number of terminals, $N$.  Having some
+small positive number in the optimize function makes sense, as it is used to
+avoid divisions with zero (by adding it to the edge lengths, some of which may
+be zero).  However the specific choice which is both dependent on the error and
+the number of terminals seems selected somewhat at random.  A perhaps more
+obvious choice would be some small \textit{fixed} number, e.g.\ just $0.0001$.
+
+\TODO[inline]{run different trees with this random factor, and with a fixed
+  random factor and see if it makes a difference}
+
 \subsubsection{Pruning}
 \label{sec:pruning}
+
+\TODO[inline]{Write about the way the main loop runs and how it prunes. It seems
+to skip some trees it should not.}
 
 \subsubsection{Loop condition when optimizing}
 \label{sec:loop-condition-when-1}
 
+In the main function when performing the optimization of a topology, the loop
+condition seems to suffer from the same arbitrariness as both \texttt{tol} and
+\texttt{SCALE}.  Depending on whether we are optimizing a regular topology, or a
+topology with all $N-2$ Steiner points the condition is either $r > 0.005 \cdot
+q$ or $r > q \cdot 0.0001$, $r$ being the error and $q$ the tree length.  The
+problem here is that there is no direct relation between the error and the
+length of the tree, and as such this loop condition seems very arbitrary.  While
+it seems to work in practice, it seems that a better loop condition would be
+when the error falls below some small number $\epsilon$.
+
+\NOTE[inline]{Perhaps perform an experiment on this as well.}
+
 \subsubsection{If clause when outputting tree}
 \label{sec:if-clause-when}
+
+This is most probably a bug.  When a full topology with $N-2$ Steiner points is
+optimized its length is compared to the current upper bound, \texttt{STUB}. If
+it is better than the upper bound, this is updated to the newly found tree
+length.  However the tree is only outputted as a record if its length is smaller
+than the previous upper bound times $0.99999$.  This means we risk situations
+where the upper bound is updated, but the tree never outputted.  Most likely
+this extra check should have been removed.  As we are dealing with floating
+point arithmetic doing the multiplication might make sense in the initial check,
+however the double check is faulty and may lead to wrong behavior. The faulty
+snippet and its possible corrections can be found in \cref{fig:if-clause-snippet}.
+
+\begin{figure}[htbp]
+  \begin{c-code}
+    /* The faulty snippet */
+    if (q < STUB) {
+      printf("\nnew record length %20.20g\n", q);
+      for (i = 1; i <= k; i++) BESTVEC[i] = A[i];
+      if (q < STUB*0.99999) output_tree();
+      STUB = q;
+    }
+
+    /* First possible correction */
+    if (q < STUB) {
+      printf("\nnew record length %20.20g\n", q);
+      for (i = 1; i <= k; i++) BESTVEC[i] = A[i];
+      output_tree();
+      STUB = q;
+    }
+
+    /* Second possible correction */
+    if (q < STUB*0.99999) {
+      printf("\nnew record length %20.20g\n", q);
+      for (i = 1; i <= k; i++) BESTVEC[i] = A[i];
+      output_tree();
+      STUB = q;
+    }
+  \end{c-code}
+  \caption[Here be dragons]{Here be dragons.\label{fig:if-clause-snippet}}
+\end{figure}
 
 \chapterbreak{}
 

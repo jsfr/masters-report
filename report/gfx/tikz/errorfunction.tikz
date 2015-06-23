@@ -1,0 +1,68 @@
+\begin{tikzpicture}[thick]
+  \begin{scope}[shift={(0,0)}]
+    \tikzstyle{every node}=[font=\footnotesize]
+    \node [reg](v1) at (0,0) {};
+    \node [reg](v2) at (4,0) {};
+    \node [reg](v3) at (0,8) {};
+    \node [reg](v4) at (4,8) {};
+    \node [stein](s1) at (1.6,1.5) {};
+    \node [stein](s2) at (2.4,1.5) {};
+    \draw (v1) -- (s1);
+    \draw (v2) -- (s2);
+    \draw (v3) -- (s1);
+    \draw (v4) -- (s2);
+    \draw (s1) -- (s2);
+  \end{scope}
+  \begin{scope}[shift={(5,0)}]
+    \tikzstyle{every node}=[font=\footnotesize]
+    \node [reg](v1) at (0,0) {};
+    \node [reg](v2) at (4,0) {};
+    \node [reg](v3) at (0,8) {};
+    \node [reg](v4) at (4,8) {};
+    \node [stein](s1) at (1.8,2) {};
+    \node [stein](s2) at (2.2,2) {};
+    \draw (v1) -- (s1);
+    \draw (v2) -- (s2);
+    \draw (v3) -- (s1);
+    \draw (v4) -- (s2);
+    \draw (s1) -- (s2);
+  \end{scope}
+  \begin{scope}[shift={(10,0)}]
+    \tikzstyle{every node}=[font=\footnotesize]
+    \node [reg](v1) at (0,0) {};
+    \node [reg](v2) at (4,0) {};
+    \node [reg](v3) at (0,8) {};
+    \node [reg](v4) at (4,8) {};
+    \node [stein](s1) at (2,2.5) {};
+    \node [stein](s2) at (2,2.5) {};
+    \draw (v1) -- (s1);
+    \draw (v2) -- (s2);
+    \draw (v3) -- (s1);
+    \draw (v4) -- (s2);
+    \draw (s1) -- (s2);
+  \end{scope}
+  \begin{scope}[shift={(20,0)}]
+    \tikzstyle{every node}=[font=\footnotesize]
+    \node [reg](v1) at (0,0) {};
+    \node [reg](v2) at (4,0) {};
+    \node [reg](v3) at (0,8) {};
+    \node [reg](v4) at (4,8) {};
+    \node [stein](s1) at (2,4) {};
+    \node [stein](s2) at (2,4) {};
+    \draw (v1) -- (s1);
+    \draw (v2) -- (s2);
+    \draw (v3) -- (s1);
+    \draw (v4) -- (s2);
+    \draw (s1) -- (s2);
+  \end{scope}
+  \begin{scope}[shift={(17.5,0)}]
+    \node (v1) at (0,0) {};
+    \node (v2) at (0,8) {};
+    \draw (v1) -- (v2);
+  \end{scope}
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

@@ -4,9 +4,7 @@
 
 \RequirePackage[l2tabu, orthodox, abort]{nag}
 \documentclass[11pt, a4paper, openright, twoside]{memoir}
-
 \chapterstyle{southall}
-
 \checkandfixthelayout[nearest] % WHAT DOES THIS DO?
 
 % Essentials
@@ -36,20 +34,16 @@ obeyFinal,bordercolor=black,linecolor=black]{todonotes}
 \usepackage[nomain,acronym,xindy,toc,nonumberlist]{glossaries}
 \usepackage{enumitem}
 \usepackage{minted}
-
 \usepackage[linesnumbered,noend,noline,boxed]{algorithm2e}
 \usepackage[font={small,it},margin=.5cm]{caption}
 \usepackage{etoolbox}
-\AtBeginEnvironment{algorithm}{%
-  \captionsetup{margin={-.5cm,.5cm}}%
-}
+% Keep here to make sure it loads last (but it is a "Essentials")
+\usepackage[noabbrev,capitalize]{cleveref}
+
+\AtBeginEnvironment{algorithm}{\captionsetup{margin={-.5cm,.5cm}}}
 \SetAlCapSkip{1.5ex}
 \renewcommand\AlCapNameSty{\small\textit}
 \renewcommand\AlCapSty{\small\textit}
-
-
-% Keep here to make sure it loads last (but it is a "Essentials")
-\usepackage[noabbrev,capitalize]{cleveref}
 
 % Tikz styles
 \tikzset{%
@@ -96,6 +90,13 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \setlength{\parindent}{0pt}
 
 \newcommand{\chapterbreak}[0]{\par\fancybreak{$***$}\par}
+
+\definecolor{bg}{rgb}{0.85,0.85,0.95}
+\newminted[c-code]{c}{%
+  bgcolor=bg,%
+  fontsize=\footnotesize,%
+  baselinestretch=0.8%
+}
 
 %------------------------------------------------------------------------------
 %	BEGIN DOCUMENT
@@ -156,7 +157,7 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 
 \label{app:bibliography}
 \bibliographystyle{ieeetr}
-\bibliography{content/backmatter/bibliography}
+\bibliography{content/backmatter/bibliography,content/backmatter/sites}
 
 % \include{content/backmatter/sourcecode}
 
