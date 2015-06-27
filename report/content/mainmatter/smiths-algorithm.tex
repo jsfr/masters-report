@@ -555,6 +555,10 @@ obvious choice would be some small \textit{fixed} number, e.g.\ just $0.0001$.
 
 \TODO[inline]{run different trees with this random factor, and with a fixed
   random factor and see if it makes a difference}
+\NOTE[inline]{Current experimentation shows that a fixed tol can make the
+  iteration move very slowly when small optimizations has to be made. This might
+be an argument for letting it depend on the error and N. The exact numbers seem
+to originate from experiments though.}
 
 \subsubsection{Pruning}
 \label{sec:pruning}
