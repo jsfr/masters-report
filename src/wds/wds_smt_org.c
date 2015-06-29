@@ -9,6 +9,8 @@
 #define RANDM() drand48() /* uniform random deviates in (0,1) */
 #define INITRAND() srand48(57731)
 #define DoForever while(1)
+#define HUGE           3.40282347e+38F
+
 
 #define MAXDIM 12  /* max space dimension permitted */
 #define NMAX  100  /* max number of sites permitted */

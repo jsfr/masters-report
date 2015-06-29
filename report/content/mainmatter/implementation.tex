@@ -10,6 +10,9 @@ from Smiths implementation.
 The new implementation is written in Googles, still relatively new, language
 Golang~\cite{GolangHomepage}
 
+\section{Overview}
+\label{sec:overview-1}
+
 \section{Building topologies}
 \label{sec:building-topologies}
 
@@ -20,8 +23,67 @@ promising results. This cuts from ~10s to ~0.5s.
 \section{Analytical solution to the Fermat-Torricelli problem}
 \label{sec:analyt-solut-ferm}
 
+An analytical solution for finding the Fermat-Torricelli point of three
+prespecified points is presented in~\cite{Uteshev2012}, which is the same as
+finding the Steiner point of those three points.  The article presents a
+solution for two dimensions which will be described in \cref{sec:2d} and
+afterwards I will generalize the solution to higher dimensions
+in \cref{sec:gener-high-dimens}.
+
+\TODO[inline]{Why is this interesting/how has it been used in the code?}
+
 \subsection{2D}
 \label{sec:2d}
+
+The solution for two dimensions is presented in~\cite{Uteshev2012}.  The solution
+presented is for the generalized Fermat-Torricelli problem, which given three
+noncolinear points $P_1 = (x_1, y_1)$, $P_2 = (x_2, y_2)$ and $P_3 = (x_3, y_3)$
+in the plane, finds the point $P_\ast = (x_\ast, y_\ast)$ which gives a solution
+to the optimization problem
+%
+\begin{equation}
+  \label{eq:11}
+  \min_{(x,y)} F(x,y) \quad \text{for} \quad F(x,y) = \sum_{j=1}^3 m_j
+  \sqrt{{(x-x_j)}^2 + {(y-y_j)}^2}
+\end{equation}
+%
+Where the weight of point $j$th point, $m_j$, is a real positive number.  The
+instance where $m_1 = m_2 = m_3 = 1$ is exactly the classical Fermat-Torricelli
+problem, which has a unique solution either coinciding with one of the points
+$P_1$, $P_2$, $P_3$ or with the Fermat-Torricelli or Steiner point of the
+triangle $P_1 P_2 P_3$.  The instance with unequal weights is known as the
+generalized Fermat-Torricelli point.
+
+Existence and uniqueness of the solution is guaranteed by
+\cref{thm:fermat-torricelli}
+%
+\begin{theorem}
+  Denote the corner angles of the triangle $P_1 P_2 P_3$ by $\alpha_1, \alpha_2,
+  \alpha_3$. Then if the conditions
+  \begin{equation}
+    \label{eq:12}
+    \left\{
+      \begin{array}{c}
+        m_1^2 < m_2^2 + m_3^2 + 2 m_2 m_3 \cos \alpha_1 , \\
+        m_2^2 < m_1^2 + m_3^2 + 2 m_1 m_3 \cos \alpha_2 , \\
+        m_3^2 < m_1^2 + m_2^2 + 2 m_1 m_2 \cos \alpha_3 , \\
+      \end{array}
+    \right.
+  \end{equation}
+  are fulfilled then there exists a unique solution $P_\ast = (x_\ast, y_\ast)
+  \in \mathbb{R}^2$ for the generalized Fermat-Torricelli problem lying inside
+  the triangle $P_1 P_2 P_3$.  This point is a stationary point for the function
+  $F(x,y)$, i.e.\ a real solution of the system
+  \begin{equation}
+    \label{eq:13}
+    \sum_{j=1}^3 \frac{m_j(x-x_j)}{\sqrt{{(x-x_j)}^2 + {(y - y_j)}^2}} = 0, \quad
+    \sum_{j=1}^3 \frac{m_j(y-y_j)}{\sqrt{{(x-x_j)}^2 + {(y - y_j)}^2}} = 0.
+  \end{equation}
+  If any of the conditions in \cref{eq:12} is violated then $F(x,y)$ attains its
+  minimum value at the corresponding vertex of triangle.
+\end{theorem}
+%
+
 
 \subsection{Generalization to higher dimensions}
 \label{sec:gener-high-dimens}
