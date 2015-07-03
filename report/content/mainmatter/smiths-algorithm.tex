@@ -328,19 +328,18 @@ one have been $j:(j,k) \in T$.  Thus I believe this is just a typo and have
 progressed as such.}
 %
 \begin{alignat}{2}
-  \label{eq:6} \vec x_k^{(i+1)}
+  \vec x_k^{(i+1)}
   &= \frac{\sum_{j : (j, k) \in T}
     \frac{\vec x_j^{(i+1)}}{|\vec x_k^{(i)} - \vec x_j^{(i)}|}}
     {\sum_{j: (j,k) \in T}
     \frac{1}{|\vec x_k^{(i)} - \vec x_j^{(i)}|}}, & \quad
-    N+1 &\le k \le 2N-2
+    N+1 &\le k \le 2N-2 \label{eq:6}
 \intertext{which can be rewritten as}
-\label{eq:9}
-  \vec 0
+\vec 0
   &= \sum_{j:(j,k) \in T}
     \frac{\vec x_k^{(i+1)} - \vec x_j^{(i+1)}}
     {|\vec x_k^{(i)} - \vec x_j^{(i)}|}, & \quad
-     N+1 &\le k \le 2N-2
+     N+1 &\le k \le 2N-2 \label{eq:9}
 \end{alignat}
 %
 Here $\vec x_k \in S$ represents the $k$-th Steiner point, being a
@@ -360,14 +359,12 @@ as following.  Firstly after each ($i$th) iteration, $S^{(i+1)}$ exactly
 minimizes the following quadratic form $Q^{(i)}(S)$
 %
 \begin{equation}
-  \label{eq:7}
   Q^{(i)}(S) = \sum_{(j,k) \in T, k \in S, j < k } \frac{|\vec x_k - \vec x_j|^2}{|\vec x^{(i)}_k - \vec x^{(i)}_j|}
 \end{equation}
 %
 It is easily seen that $Q(S)$ is related to the length $L(S)$ as follows
 %
 \begin{equation}
-  \label{eq:8}
   L(S^{(i)}) = Q^{(i)}(S^{(i)}), \quad \nabla L(S^{(i)}) \propto \nabla Q^{(i)}(S^{(i)})
 \end{equation}
 
@@ -379,7 +376,6 @@ as can be seen from \cref{eq:9} the forces of the $k$th Steiner point are
 clearly in equilibrium.  Now write
 %
 \begin{align}
-  \label{eq:10}
   L(S^{(i)}) &= Q^{(i)}(S^{(i)}) \ge Q^{(i)}(S^{(i+1)}) \\
              &= \sum_{j, k : j < k, (j,k) \in T, k \in S} \frac{{(
                |\vec x_k^{(i)} - \vec x_j^{(j)}| + |\vec x_k^{(i+1)} -
@@ -429,7 +425,7 @@ improvements from iteration to iteration falls below some $\epsilon$.  The
 function proposed by Smith is
 %
 \begin{equation}
-  \label{eq:1} E^2 = \sum_{
+  E^2 = \sum_{
     \begin{array}{c} i \in S \\ (i,j) \in T \\ (i,k) \in T \\ j \ne k
     \end{array}} \text{pos} (2 (\vec x_j - \vec x_i) \cdot (\vec x_k - \vec x_i)
 + | \vec x_j - \vec x_i | \cdot | \vec x_k - \vec x_i |)
@@ -441,14 +437,14 @@ the angle between edges in the following way:
 %
 \begin{align}
   \cos v & = \frac{\vec a \cdot \vec b}
-    {|\vec a| \cdot |\vec b|} \label{eq:2}                 \\
+    {|\vec a| \cdot |\vec b|}                 \\
   \intertext{If we then wish to find the cosine for $120^{\circ}$}
   \cos 120^{\circ}
          & = -\frac{1}{2} = \frac{\vec a \cdot \vec b}
-    {|\vec a| \cdot |\vec b|} \Leftrightarrow \label{eq:3} \\
+    {|\vec a| \cdot |\vec b|} \Leftrightarrow \\
   0      & = \vec a \cdot \vec b + \frac{1}{2}
-    (|\vec a| \cdot |\vec b|) \Leftrightarrow \label{eq:4} \\
-  0      & = 2 (\vec a \cdot \vec b) + |\vec a| \cdot |\vec b| \label{eq:5}
+    (|\vec a| \cdot |\vec b|) \Leftrightarrow \\
+  0      & = 2 (\vec a \cdot \vec b) + |\vec a| \cdot |\vec b|
 \end{align}
 %
 Thus any angle less than $120^{\circ}$ gives a positive number when inserted in
@@ -511,20 +507,20 @@ random number between $0$ and $1$.  \texttt{SCALE} is a number defined as shown
 in \cref{fig:randm}.
 
 \begin{figure}[htbp]
-  \begin{c-code}
-    SCALE = 0.0;
-    for (i = 1; i <= NUMSITES; i++) {
-      for (j = 0; j < DIMENSION; j++) {
-        q = XX[i][j] - XX[1][j];
-        if (q < 0.0) q = -q;
-        if (q > SCALE) SCALE = q;
-        printf(" %g", XX[i][j]);
-      }
-      printf("\n");
-    }
-    printf("SCALE = %g\n", SCALE);
-  \end{c-code}
-\caption[here be dragons]{here be dragons.\label{fig:randm}}
+\begin{c-code}
+SCALE = 0.0;
+for (i = 1; i <= NUMSITES; i++) {
+  for (j = 0; j < DIMENSION; j++) {
+    q = XX[i][j] - XX[1][j];
+    if (q < 0.0) q = -q;
+    if (q > SCALE) SCALE = q;
+    printf(" %g", XX[i][j]);
+  }
+  printf("\n");
+}
+printf("SCALE = %g\n", SCALE);
+\end{c-code}
+  \captionof{listing}[Here be dragons 1]{here be dragons.\label{fig:randm}}
 \end{figure}
 
 As can be seen the variable finds the largest difference in coordinates between the first
@@ -596,32 +592,32 @@ however the double check is faulty and may lead to wrong behavior. The faulty
 snippet and its possible corrections can be found in \cref{fig:if-clause-snippet}.
 
 \begin{figure}[htbp]
-  \begin{c-code}
-    /* The faulty snippet */
-    if (q < STUB) {
-      printf("\nnew record length %20.20g\n", q);
-      for (i = 1; i <= k; i++) BESTVEC[i] = A[i];
-      if (q < STUB*0.99999) output_tree();
-      STUB = q;
-    }
+\begin{c-code}
+/* The faulty snippet */
+if (q < STUB) {
+  printf("\nnew record length %20.20g\n", q);
+  for (i = 1; i <= k; i++) BESTVEC[i] = A[i];
+  if (q < STUB*0.99999) output_tree();
+  STUB = q;
+}
 
-    /* First possible correction */
-    if (q < STUB) {
-      printf("\nnew record length %20.20g\n", q);
-      for (i = 1; i <= k; i++) BESTVEC[i] = A[i];
-      output_tree();
-      STUB = q;
-    }
+/* First possible correction */
+if (q < STUB) {
+  printf("\nnew record length %20.20g\n", q);
+  for (i = 1; i <= k; i++) BESTVEC[i] = A[i];
+  output_tree();
+  STUB = q;
+}
 
-    /* Second possible correction */
-    if (q < STUB*0.99999) {
-      printf("\nnew record length %20.20g\n", q);
-      for (i = 1; i <= k; i++) BESTVEC[i] = A[i];
-      output_tree();
-      STUB = q;
-    }
-  \end{c-code}
-  \caption[Here be dragons]{Here be dragons.\label{fig:if-clause-snippet}}
+/* Second possible correction */
+if (q < STUB*0.99999) {
+  printf("\nnew record length %20.20g\n", q);
+  for (i = 1; i <= k; i++) BESTVEC[i] = A[i];
+  output_tree();
+  STUB = q;
+}
+\end{c-code}
+  \captionof{listing}[Here be dragons 2]{Here be dragons.\label{fig:if-clause-snippet}}
 \end{figure}
 
 \chapterbreak{}

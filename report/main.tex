@@ -39,6 +39,7 @@ obeyFinal,bordercolor=black,linecolor=black]{todonotes}
 \usepackage{etoolbox}
 % Keep here to make sure it loads last (but it is a "Essentials")
 \usepackage[noabbrev,capitalize]{cleveref}
+\usepackage{autonum}
 
 \AtBeginEnvironment{algorithm}{\captionsetup{margin={-.5cm,.5cm}}}
 \SetAlCapSkip{1.5ex}
@@ -50,6 +51,9 @@ obeyFinal,bordercolor=black,linecolor=black]{todonotes}
 stein/.style 2 args={circle,inner sep=1pt,fill=white,draw,minimum size=5pt,label={#2:#1}},%
 reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1}}%
 }
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
 
 % To-do commands
 \newcommandx{\NOTE}[2][1=]{%
@@ -98,6 +102,11 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
   baselinestretch=0.8%
 }
 
+\makeatletter
+\renewcommand*{\thelisting}{\thechapter.\arabic{listing}}
+\@addtoreset{listing}{chapter}
+\makeatother
+
 %------------------------------------------------------------------------------
 %	BEGIN DOCUMENT
 %------------------------------------------------------------------------------
@@ -127,6 +136,8 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \tableofcontents
 \listoftables
 \listoffigures
+\let\clearpage\relax
+\listoflistings
 \let\clearpage\relax
 \printglossary[type=\acronymtype,title=Abbreviations]
 }

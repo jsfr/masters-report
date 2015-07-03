@@ -1,33 +1,44 @@
 \begin{tikzpicture}[thick]
-  \begin{scope}[shift={(0,0)}]
+  \begin{scope}[xshift=-6cm]
     \tikzstyle{every node}=[font=\footnotesize]
     \node [reg](v1) at (0,0) {};
     \node [reg](v2) at (4,0) {};
     \node [reg](v3) at (0,8) {};
     \node [reg](v4) at (4,8) {};
     \node [stein](s1) at (1.6,1.5) {};
-    \node [stein](s2) at (2.4,1.5) {};
     \draw (v1) -- (s1);
-    \draw (v2) -- (s2);
     \draw (v3) -- (s1);
-    \draw (v4) -- (s2);
-    \draw (s1) -- (s2);
+    \draw (v4) -- (s1);
   \end{scope}
-  \begin{scope}[shift={(5,0)}]
+  \begin{scope}
     \tikzstyle{every node}=[font=\footnotesize]
     \node [reg](v1) at (0,0) {};
     \node [reg](v2) at (4,0) {};
     \node [reg](v3) at (0,8) {};
     \node [reg](v4) at (4,8) {};
-    \node [stein](s1) at (1.8,2) {};
-    \node [stein](s2) at (2.2,2) {};
+    \node [stein](s1) at (1.6,1.5) {};
+    \node [stein](s2) at (2.5,1.1) {};
     \draw (v1) -- (s1);
     \draw (v2) -- (s2);
     \draw (v3) -- (s1);
     \draw (v4) -- (s2);
     \draw (s1) -- (s2);
   \end{scope}
-  \begin{scope}[shift={(10,0)}]
+  \begin{scope}[xshift=6cm]
+    \tikzstyle{every node}=[font=\footnotesize]
+    \node [reg](v1) at (0,0) {};
+    \node [reg](v2) at (4,0) {};
+    \node [reg](v3) at (0,8) {};
+    \node [reg](v4) at (4,8) {};
+    \node [stein](s1) at (1.7,2) {};
+    \node [stein](s2) at (2.3,1.9) {};
+    \draw (v1) -- (s1);
+    \draw (v2) -- (s2);
+    \draw (v3) -- (s1);
+    \draw (v4) -- (s2);
+    \draw (s1) -- (s2);
+  \end{scope}
+  \begin{scope}[xshift=12cm]
     \tikzstyle{every node}=[font=\footnotesize]
     \node [reg](v1) at (0,0) {};
     \node [reg](v2) at (4,0) {};
@@ -41,7 +52,7 @@
     \draw (v4) -- (s2);
     \draw (s1) -- (s2);
   \end{scope}
-  \begin{scope}[shift={(20,0)}]
+  \begin{scope}[xshift=20cm]
     \tikzstyle{every node}=[font=\footnotesize]
     \node [reg](v1) at (0,0) {};
     \node [reg](v2) at (4,0) {};
@@ -55,11 +66,12 @@
     \draw (v4) -- (s2);
     \draw (s1) -- (s2);
   \end{scope}
-  \begin{scope}[shift={(17.5,0)}]
-    \node (v1) at (0,0) {};
-    \node (v2) at (0,8) {};
-    \draw (v1) -- (v2);
-  \end{scope}
+  \begin{pgfonlayer}{background}
+    \filldraw [line width=4mm,join=round,blue!10]
+    (-7, -1)  rectangle (17, 9);
+    \filldraw [line width=4mm,join=round,green!10]
+    (19, -1)  rectangle (25, 9);
+  \end{pgfonlayer}
 \end{tikzpicture}
 
 %%% Local Variables:

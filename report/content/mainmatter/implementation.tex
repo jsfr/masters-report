@@ -13,12 +13,14 @@ Golang~\cite{GolangHomepage}
 \section{Overview}
 \label{sec:overview-1}
 
+Overview of the source code. What has been done where. About the language etc.
+
 \section{Building topologies}
 \label{sec:building-topologies}
 
 Naive approach when building and pruning significantly increases run
 time. Explain Smiths approach with a stack sorted on the best seen/most
-promising results. This cuts from ~10s to ~0.5s.
+promising results.
 
 \section{Analytical solution to the Fermat-Torricelli problem}
 \label{sec:analyt-solut-ferm}
@@ -26,9 +28,9 @@ promising results. This cuts from ~10s to ~0.5s.
 An analytical solution for finding the Fermat-Torricelli point of three
 prespecified points is presented in~\cite{Uteshev2012}, which is the same as
 finding the Steiner point of those three points.  The article presents a
-solution for two dimensions which will be described in \cref{sec:2d} and
-afterwards I will generalize the solution to higher dimensions
-in \cref{sec:gener-high-dimens}.
+solution for two dimensions which will be described.  However as we are dealing
+with  higher dimensions, a generalization of the solution, not presented
+in~\cite{Uteshev2012}, will also be described.
 
 \TODO[inline]{Why is this interesting/how has it been used in the code?}
 
@@ -42,7 +44,6 @@ in the plane, finds the point $P_\ast = (x_\ast, y_\ast)$ which gives a solution
 to the optimization problem
 %
 \begin{equation}
-  \label{eq:11}
   \min_{(x,y)} F(x,y) \quad \text{for} \quad F(x,y) = \sum_{j=1}^3 m_j
   \sqrt{{(x-x_j)}^2 + {(y-y_j)}^2}
 \end{equation}
@@ -58,6 +59,7 @@ Existence and uniqueness of the solution is guaranteed by
 \cref{thm:fermat-torricelli}
 %
 \begin{theorem}
+\label{thm:fermat-torricelli}
   Denote the corner angles of the triangle $P_1 P_2 P_3$ by $\alpha_1, \alpha_2,
   \alpha_3$. Then if the conditions
   \begin{equation}
@@ -70,6 +72,7 @@ Existence and uniqueness of the solution is guaranteed by
       \end{array}
     \right.
   \end{equation}
+  \TODO[inline]{Describe these equations and from where they come.}
   are fulfilled then there exists a unique solution $P_\ast = (x_\ast, y_\ast)
   \in \mathbb{R}^2$ for the generalized Fermat-Torricelli problem lying inside
   the triangle $P_1 P_2 P_3$.  This point is a stationary point for the function
@@ -79,11 +82,171 @@ Existence and uniqueness of the solution is guaranteed by
     \sum_{j=1}^3 \frac{m_j(x-x_j)}{\sqrt{{(x-x_j)}^2 + {(y - y_j)}^2}} = 0, \quad
     \sum_{j=1}^3 \frac{m_j(y-y_j)}{\sqrt{{(x-x_j)}^2 + {(y - y_j)}^2}} = 0.
   \end{equation}
+  \TODO[inline]{Describe these equations and from where they come.}
   If any of the conditions in \cref{eq:12} is violated then $F(x,y)$ attains its
   minimum value at the corresponding vertex of triangle.
 \end{theorem}
 %
+Calculating the coordinates of the point $(x_\ast, y_\ast)$, if the conditions
+in \cref{eq:12} are fulfilled, is done as follows
+\begin{gather}
+  \label{eq:15}
+  x_\ast = \frac{K_1 K_2 K_3}{4 S \sigma d} \left( \frac{x_1}{K_1} +
+  \frac{x_2}{K_2} + \frac{x_3}{K_3} \right), \quad
+  y_\ast = \frac{K_1 K_2 K_3}{4 S \sigma d} \left( \frac{y_1}{K_1} +
+  \frac{y_2}{K_2} + \frac{y_3}{K_3} \right)
+  \intertext{with}
+  \label{eq:11}
+  F(x_\ast, y_\ast) = \min_{(x,y)} F(x,y) = \sqrt{d}
+  \intertext{Here}
+  \label{eq:20}
+  S = | x_1 y_2 + x_2 y_3 + x_3 y_1 - x_1 y_3 -x_3 y_2 - x_2 y_1 | \\
+  \sigma = \frac{1}{2} \sqrt{-m_1^4 - m_2^4 - m_3^4
+    + 2 m_1^2 m_2^2 + 2 m_1^2 m_3^2 + 2 m_2^2 m_3^2} \\
+  r_{jl} = \sqrt{{(x_j - x_l)}^2 + {(y_j - y_l)}^2} = |P_j P_l| \label{eq:1}
+  \quad \{j,l\} \in \{ 1, 2, 3 \} \\
+  \label{eq:3}
+  \left\{
+    \begin{array}{c}
+      K_1 = (r_{12}^2 + r_{13}^2 - r_{23}^2) \sigma + (m_2^2 + m_3^2 - m_1^2) S
+      \\
+      K_2 = (r_{12}^2 + r_{23}^2 - r_{13}^2) \sigma + (m_1^2 + m_3^2 - m_2^2) S
+      \\
+      K_3 = (r_{23}^2 + r_{13}^2 - r_{12}^2) \sigma + (m_1^2 + m_2^2 - m_3^2) S
+    \end{array}
+  \right. \\
+  d = \frac{1}{2 \sigma} (m_1^2 K_1 + m_2^2 K_2 + m_3^2 + K_3) \\
+\end{gather}
 
+To prove \cref{eq:15} the first step is to prove the two following
+equations\footnote{Note that all the following calculations can also be found
+  in~\cite{Uteshev2012}, however as these are a bit convoluted they are also
+  presented with a few clarifying intermediate calculations}
+%
+\begin{align}
+  \label{eq:16}
+  K_1 K_2 + K_1 K_3 + K_2 K_3 &= 4 \sigma S d \\
+  \label{eq:2}
+  r_{23}^2 K_1 + r_{13}^2 K_2 + r_{12}^2 K_3 &= 2 S d
+\end{align}
+%
+\NOTE[inline]{Possibly actually do this calculations.}
+Both can relatively easily be proven by simply substituting the
+right hand sides with the definition of each symbol.  Using \cref{eq:16} we can
+rewrite \cref{eq:15} as
+%
+\begin{gather}
+  \label{eq:17}
+  x_\ast = \frac{1}{\frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3}} \left( \frac{x_1}{K_1} +
+    \frac{x_2}{K_2} + \frac{x_3}{K_3} \right), \quad
+  y_\ast = \frac{1}{\frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3}} \left( \frac{y_1}{K_1} +
+    \frac{y_2}{K_2} + \frac{y_3}{K_3} \right)
+  \intertext{Which will be useful in later calculations.  The second part is to
+    prove that}
+  \label{eq:18}
+  \sqrt{{(x_\ast - x_j)}^2 + {(y_\ast - y_j)}^2} = \frac{m_j K_j}{2 \sigma
+    \sqrt{d}}, \quad j \in \{ 1, 2, 3 \}
+\end{gather}
+%
+As the calculations are similar for all $j$, only the one for $j = 1$ is shown
+here. Thus
+%
+\begin{align}
+  {(x_\ast - x_1)}^2
+  &+ {(y_\ast - y_1)}^2 \\
+  &= {\left( \frac{K_1 K_2 K_3}{4 S \sigma d} \left( \frac{x_1}{K_1} +
+    \frac{x_2}{K_2} + \frac{x_3}{K_3} \right) - x_1 \right)}^2 +
+    {\left( \frac{K_1 K_2 K_3}{4 S \sigma d} \left( \frac{y_1}{K_1} +
+    \frac{y_2}{K_2} + \frac{y_3}{K_3} \right) - y_1 \right)}^2 \\
+  &= {\left( \frac{K_1 K_2 K_3}{4 S \sigma d} \right)}^2 \left[{\left(
+    \frac{x_1}{K_1} + \frac{x_2}{K_2} + \frac{x_3}{K_3} -
+    \frac{x_1 4 S \sigma d}{K_1 K_2 K_3} \right)}^2 + {\left(
+    \frac{y_1}{K_1} + \frac{y_2}{K_2} + \frac{y_3}{K_3} -
+    \frac{y_1 4 S \sigma d}{K_1 K_2 K_3} \right)}^2 \right] \\
+  &\stackrel{\mathclap{(\ref{eq:16})}}{=}
+    {\left( \frac{K_1 K_2 K_3}{4 S \sigma d} \right)}^2
+    \left[ {\left( \frac{x_2}{K_2} + \frac{x_3}{K_3} - \frac{x_1}{K_2} -
+    \frac{x_1}{K_3} \right)}^2 + {\left( \frac{y_2}{K_2} + \frac{y_3}{K_3} -
+    \frac{y_1}{K_2} - \frac{y_1}{K_3} \right)}^2 \right] \\
+  &= {\left( \frac{K_1 K_2 K_3}{4 S \sigma d} \right)}^2
+    \left[ \frac{{(x_2 - x_1)}^2 + {(y_2 - y_1)}^2}{K_2^2} +
+    \frac{{(x_3 - x_1)}^2 + {(y_3 - y_1)}^2}{K_3^2} \right. \\
+  &\hspace{7em} \left. + \; 2 \frac{(x_2 - x_1)(x_3 - x_1) +
+    (y_2 - y_1)(y_3 - y_1)}{K_2 K_3} \right] \\
+  &\stackrel{\mathclap{(\ref{eq:1})}}{=}
+    {\left( \frac{K_1 K_2 K_3}{4 S \sigma d} \right)}^2
+    \left[ \frac{r_{12}^2}{K_2^2} + \frac{r_{13}^2}{K_3^2} +
+    \frac{r_{12}^2 + r_{13}^2 - r_{23}^2}{K_2 K_3} \right] \\
+  &= \frac{K_1^2}{{(4 S \sigma d)}^2}
+    \left[ r_{12}^2 K_3^2 + r_{13}^2 K_2^2 +
+    (r_{12}^2 + r_{13}^2 - r_{23}^2) K_2 K_3 \right] \\
+  &= \frac{K_1^2}{{(4 S \sigma d)}^2}
+    \left[ (r_{12}^2 K_3 + r_{13}^2 K_2) (K_2 + K_3) -
+    r_{23}^2 K_2 K_3 \right] \\
+  &\stackrel{\mathclap{(\ref{eq:2})}}{=}
+    \frac{K_1^2}{{(4 S \sigma d)}^2}
+    \left[ (2 S d - r_{23}^2 K_1) (K_2 + K_3) - r_{23}^2 K_2 K_3 \right] \\
+  &= \frac{K_1^2}{{(4 S \sigma d)}^2}
+    \left[ 2 S d (K_2 + K_3) - r_{23}^2 (K_1 K_2 + K_1 K_3 + K_2 K_3) \right] \\
+  &\stackrel{\mathclap{(\ref{eq:16})}}{=}
+    \frac{K_1^2}{{(4 S \sigma d)}^2}
+    \left[ 2 S d (K_2 + K_3) - 4 r_{23}^2 \sigma S d \right] \\
+  &= \frac{2 S d K_1^2}{{(4 S \sigma d)}^2}
+    \left[ K_2 + K_3 - 2 r_{23}^2 \sigma \right] \\
+  &\stackrel{\mathclap{(\ref{eq:3})}}{=}
+    \frac{K_1^2}{8 S d \sigma^2}
+    \left[ 2 m_1^2 S \right] \\
+  &= \frac{m_1^2 K_1^2}{4 \sigma^2 d}
+\end{align}
+%
+To finish the proof one would also have to show that $K_1, K_2, K_3$ are
+nonnegative.  The proof of this can be found~\cite[p.~5-6]{Uteshev2012}.
+
+We can now prove \cref{eq:15}, by substituting it into \cref{eq:13}. As the
+equations are similar for $x$ and $y$, only $x$ is shown here
+%
+\begin{align}
+  0
+  &= \frac{m_1 (x_\ast - x_1)}{\sqrt{{(x_\ast - x_1)}^2 + {(y_\ast - y_1)}^2}} +
+    \frac{m_2 (x_\ast - x_2)}{\sqrt{{(x_\ast - x_2)}^2 + {(y_\ast - y_2)}^2}} +
+    \frac{m_3 (x_\ast - x_3)}{\sqrt{{(x_\ast - x_3)}^2 + {(y_\ast - y_3)}^2}} \\
+  &\stackrel{\mathclap{(\ref{eq:18})}}=
+    \frac{m_1 (x_\ast - x_1)}{\frac{m_1 K_1}{2 \sigma \sqrt{d}}} +
+    \frac{m_2 (x_\ast - x_2)}{\frac{m_2 K_2}{2 \sigma \sqrt{d}}} +
+    \frac{m_3 (x_\ast - x_3)}{\frac{m_3 K_3}{2 \sigma \sqrt{d}}} \\
+  &= 2 \sigma \sqrt{d} \left[
+    \frac{x_\ast - x_1}{K_1} +
+    \frac{x_\ast - x_2}{K_2} +
+    \frac{x_\ast - x_3}{K_3} \right] \\
+  &= 2 \sigma \sqrt{d} \left[
+    x_\ast \left( \frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3} \right) -
+    \left( \frac{x_1}{K_1} + \frac{x_2}{K_2} + \frac{x_3}{K_3} \right)
+    \right] \\
+  &\stackrel{\mathclap{(\ref{eq:17})}}=
+    2 \sigma \sqrt{d} \left[
+    \frac{1}{\frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3}} \left( \frac{x_1}{K_1} +
+    \frac{x_2}{K_2} + \frac{x_3}{K_3} \right)
+    \left( \frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3} \right) -
+    \left( \frac{x_1}{K_1} + \frac{x_2}{K_2} + \frac{x_3}{K_3} \right)
+    \right] \\
+  &= 2 \sigma \sqrt{d} \left[
+    \frac{1}{\frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3}}
+    \left( \frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3} \right) -
+    1 \right] \\
+  &= 2 \sigma \sqrt{d} \left[ 1 - 1 \right] = 0
+\end{align}
+%
+As can be seen \cref{eq:15} is a solution to \cref{eq:13}.  Secondly we can also
+prove \cref{eq:11}
+%
+\begin{align}
+  F(x_\ast,y_\ast)
+  &= \sum_{j=1}^3 m_j \sqrt{{(x_\ast - x_j)}^2 + {(y_\ast - y_j)}^2} \\
+  &\stackrel{\mathclap{(\ref{eq:18})}}{=}
+    \sum_{j=1}^3 \frac{m_j^2 K_j}{2 \sigma \sqrt{d}} \\
+  &\stackrel{\mathclap{(\ref{eq:20})}}{=}
+    \frac{2 \sigma d}{2 \sigma \sqrt{d}} = \sqrt{d}
+\end{align}
 
 \subsection{Generalization to higher dimensions}
 \label{sec:gener-high-dimens}
