@@ -251,6 +251,52 @@ prove \cref{eq:11}
 \subsection{Generalization to higher dimensions}
 \label{sec:gener-high-dimens}
 
+Generalizing the solution described above to higher dimensions is in general
+pretty straight forward. The first change is that we no longer try to minimize a
+function of just two parameters, but instead we intend to minimize a function of
+$d$ parameters, where our points are contained in $R^d$, i.e.\ we have $d$
+dimensions.  As we normally represent this using vectors, we would not actually
+have $d$ parameters, but instead one parameter being a $d$-vector. Thus we wish
+to find a point $P_\ast = (x_{\ast,1}, x_{\ast,2}, \ldots, x_{\ast,d}) \in R^d$
+which minimizes the following function for the three points
+$P_1 = (x_{1,1}, x_{1,2}, \ldots, x_{1,d}), P_2 = (x_{2,1}, x_{2,2}, \ldots,
+x_{2,d}), P_3 = (x_{3,1}, x_{3,2}, \ldots, x_{3,d}) \in R^d$.
+%
+\begin{gather}
+  \min_{(x_1, x_2, \ldots, x_d)} F(x_1, x_2, \ldots, x_d) \quad \text{for} \quad
+  F(x_1, x_2, \ldots, x_d) = \sum_{j=1}^3 m_j \sqrt{\sum_{i=1}^d {(x_i -
+    x_{j,i})}^2 }
+  \\ \Updownarrow \\
+  \label{eq:4}
+  \min_{(P)} F(P) \quad \text{for} \quad
+  F(P) = \sum_{j=1}^3 m_j | P P_j |, \quad P \in R^d
+\end{gather}
+%
+Where $|P P_j|$ is the Euclidean distance between $P$ and $P_j$.
+The point $P_\ast$ now no longer has to be a solution to the
+equation system in \cref{eq:13}, but to a similar system containing $d$
+equations, as follows
+%
+\begin{equation}
+\label{eq:7}
+  \left\{
+    \begin{array}{c}
+    \sum_{j=1}^3 \frac{m_j(x_1-x_{j,1})}{| P P_j|} = 0
+    \\
+    \sum_{j=1}^3 \frac{m_j(x_2-x_{j,2})}{| P P_j|} = 0
+    \\
+    \vdots
+    \\
+    \sum_{j=1}^3 \frac{m_j(x_d-x_{j,d})}{| P P_j|} = 0
+  \end{array}
+  \right.
+\end{equation}
+%
+Then under the conditions in  presented in \cref{eq:12} the solution to the
+\cref{eq:7} can be found as follows
+
+
+
 \section{Sorting points}
 \label{sec:sorting-points}
 
