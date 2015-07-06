@@ -13,14 +13,61 @@ Golang~\cite{GolangHomepage}
 \section{Overview}
 \label{sec:overview-1}
 
-Overview of the source code. What has been done where. About the language etc.
+\TODO[inline]{Overview of the source code. What has been done where. About the
+  language etc.}
 
 \section{Building topologies}
 \label{sec:building-topologies}
 
-Naive approach when building and pruning significantly increases run
+In Smiths implementation of the algorithm when generating topologies every new
+topology is rebuilt completely from the bottom.  E.g.\ say that we have just
+optimized the topology corresponding to the topology vector $A_1 = (1, 2)$.  If we
+now wish to optimize the topology vector $A_2 = (1, 2, 3)$.  In the old
+implementation $A_2$ would have to be built again from scratch instead of simply
+splitting and building on to $A_1$.  To try and do this is in a slightly more
+clever way the new implementation is instead able to either split or restore a
+topology, thus from $A_1$ we could either split an edge and get $A_2$, or any
+other length three topology vector, or we could restore and go back from $A_1$
+to $A_0 = (1)$\footnote{From $A_0$ we could then either split again to e.g.\ the
+next length two topology vector $A_1' = (1, 3)$ or restore once again.}
+
+The way this is implemented is a follows:
+
+- All edges of the tree is kept in an array/list. all edges a represented as a
+tuple (j, k) representing an edge going from point j to point k
+- When splitting an edge this is done
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tabular}{|c|ccc|c|ccc|c|}
+    \multicolumn{1}{c}{$1$} &
+    \multicolumn{3}{c}{ } &
+    \multicolumn{1}{c}{$i$} &
+    \multicolumn{3}{c}{ } &
+    \multicolumn{1}{c}{$k$} \\
+    \cline{1-2} \cline{4-6} \cline{8-9}
+    $(a,b)$ & & \ldots & & $(c,d)$ & & \ldots & & $(e,f)$ \\
+    \cline{1-2} \cline{4-6} \cline{8-9}
+  \end{tabular}
+
+  \begin{tabular}{|c|ccc|c|ccc|c|c|c|}
+    \multicolumn{1}{c}{$1$} &
+    \multicolumn{3}{c}{ } &
+    \multicolumn{1}{c}{$i$} &
+    \multicolumn{3}{c}{ } &
+    \multicolumn{1}{c}{$k$} &
+    \multicolumn{1}{c}{$k+1$} &
+    \multicolumn{1}{c}{$k+2$} \\
+    \cline{1-2} \cline{4-6} \cline{8-11}
+    $(a,b)$ & & \ldots & & $(g,s)$ & & \ldots & & $(e,f)$ & $(c,s)$ & $(d,s)$ \\
+    \cline{1-2} \cline{4-6} \cline{8-11}
+  \end{tabular}
+  \caption{Here be dragons}
+\end{figure}
+
+\TODO[inline]{Naive approach when building and pruning significantly increases run
 time. Explain Smiths approach with a stack sorted on the best seen/most
-promising results.
+promising results.}
 
 \section{Analytical solution to the Fermat-Torricelli problem}
 \label{sec:analyt-solut-ferm}
@@ -99,12 +146,13 @@ in \cref{eq:12} are fulfilled, is done as follows
   \label{eq:11}
   F(x_\ast, y_\ast) = \min_{(x,y)} F(x,y) = \sqrt{d}
   \intertext{Here}
-  \label{eq:20}
-  S = | x_1 y_2 + x_2 y_3 + x_3 y_1 - x_1 y_3 -x_3 y_2 - x_2 y_1 | \\
   \sigma = \frac{1}{2} \sqrt{-m_1^4 - m_2^4 - m_3^4
     + 2 m_1^2 m_2^2 + 2 m_1^2 m_3^2 + 2 m_2^2 m_3^2} \\
-  r_{jl} = \sqrt{{(x_j - x_l)}^2 + {(y_j - y_l)}^2} = |P_j P_l| \label{eq:1}
+  \label{eq:1}
+  r_{jl} = \sqrt{{(x_j - x_l)}^2 + {(y_j - y_l)}^2} = |P_j P_l|
   \quad \{j,l\} \in \{ 1, 2, 3 \} \\
+  \label{eq:20}
+  S = | x_1 y_2 + x_2 y_3 + x_3 y_1 - x_1 y_3 -x_3 y_2 - x_2 y_1 | \\
   \label{eq:3}
   \left\{
     \begin{array}{c}
@@ -115,7 +163,7 @@ in \cref{eq:12} are fulfilled, is done as follows
       K_3 = (r_{23}^2 + r_{13}^2 - r_{12}^2) \sigma + (m_1^2 + m_2^2 - m_3^2) S
     \end{array}
   \right. \\
-  d = \frac{1}{2 \sigma} (m_1^2 K_1 + m_2^2 K_2 + m_3^2 + K_3) \\
+  d = \frac{1}{2 \sigma} (m_1^2 K_1 + m_2^2 K_2 + m_3^2 K_3) \\
 \end{gather}
 
 To prove \cref{eq:15} the first step is to prove the two following
@@ -130,22 +178,25 @@ equations\footnote{Note that all the following calculations can also be found
   r_{23}^2 K_1 + r_{13}^2 K_2 + r_{12}^2 K_3 &= 2 S d
 \end{align}
 %
-\NOTE[inline]{Possibly actually do this calculations.}
-Both can relatively easily be proven by simply substituting the
-right hand sides with the definition of each symbol.  Using \cref{eq:16} we can
-rewrite \cref{eq:15} as
+\NOTE[inline]{Possibly actually do this calculations.}  Both can proven by
+simply substituting the right hand sides with the definition of each symbol,
+i.e.\ through direct computation. Using \cref{eq:16} we can rewrite \cref{eq:15}
+as
 %
 \begin{gather}
   \label{eq:17}
+  \left\{
+    \begin{array}{c}
   x_\ast = \frac{1}{\frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3}} \left( \frac{x_1}{K_1} +
-    \frac{x_2}{K_2} + \frac{x_3}{K_3} \right), \quad
+    \frac{x_2}{K_2} + \frac{x_3}{K_3} \right) \\
   y_\ast = \frac{1}{\frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3}} \left( \frac{y_1}{K_1} +
     \frac{y_2}{K_2} + \frac{y_3}{K_3} \right)
+    \end{array}
+  \right.
   \intertext{Which will be useful in later calculations.  The second part is to
     prove that}
-  \label{eq:18}
   \sqrt{{(x_\ast - x_j)}^2 + {(y_\ast - y_j)}^2} = \frac{m_j K_j}{2 \sigma
-    \sqrt{d}}, \quad j \in \{ 1, 2, 3 \}
+    \sqrt{d}}, \quad j \in \{ 1, 2, 3 \}\label{eq:18}
 \end{gather}
 %
 As the calculations are similar for all $j$, only the one for $j = 1$ is shown
@@ -252,20 +303,24 @@ prove \cref{eq:11}
 \label{sec:gener-high-dimens}
 
 Generalizing the solution described above to higher dimensions is in general
-pretty straight forward. The first change is that we no longer try to minimize a
-function of just two parameters, but instead we intend to minimize a function of
-$d$ parameters, where our points are contained in $R^d$, i.e.\ we have $d$
-dimensions.  As we normally represent this using vectors, we would not actually
-have $d$ parameters, but instead one parameter being a $d$-vector. Thus we wish
-to find a point $P_\ast = (x_{\ast,1}, x_{\ast,2}, \ldots, x_{\ast,d}) \in R^d$
+pretty straightforward.  The biggest change is in the representation of $S$, and
+the fact that the proof requires a bit of sum manipulation.  This generalized
+version of the proof is not known to have been presented in any paper before.
+
+The first change is that we no longer try to minimize a function of just two
+parameters, but instead we intend to minimize a function of $d$ parameters,
+where our points are contained in $R^d$, i.e.\ we have $d$ dimensions.  As we
+normally represent this using vectors, we would not actually have $d$
+parameters, but instead one parameter being a $d$-vector. Thus we wish to find a
+point $P_\ast = (x_{(\ast,1)}, x_{(\ast,2)}, \ldots, x_{(\ast,d)}) \in R^d$
 which minimizes the following function for the three points
-$P_1 = (x_{1,1}, x_{1,2}, \ldots, x_{1,d}), P_2 = (x_{2,1}, x_{2,2}, \ldots,
-x_{2,d}), P_3 = (x_{3,1}, x_{3,2}, \ldots, x_{3,d}) \in R^d$.
+$P_1 = (x_{(1,1)}, x_{(1,2)}, \ldots, x_{(1,d)}), P_2 = (x_{(2,1)}, x_{(2,2)},
+\ldots, x_{(2,d)}), P_3 = (x_{(3,1)}, x_{(3,2)}, \ldots, x_{(3,d)}) \in R^d$.
 %
 \begin{gather}
   \min_{(x_1, x_2, \ldots, x_d)} F(x_1, x_2, \ldots, x_d) \quad \text{for} \quad
   F(x_1, x_2, \ldots, x_d) = \sum_{j=1}^3 m_j \sqrt{\sum_{i=1}^d {(x_i -
-    x_{j,i})}^2 }
+    x_{(j,i)})}^2 }
   \\ \Updownarrow \\
   \label{eq:4}
   \min_{(P)} F(P) \quad \text{for} \quad
@@ -281,27 +336,120 @@ equations, as follows
 \label{eq:7}
   \left\{
     \begin{array}{c}
-    \sum_{j=1}^3 \frac{m_j(x_1-x_{j,1})}{| P P_j|} = 0
+    \sum_{j=1}^3 \frac{m_j(x_1-x_{(j,1)})}{| P P_j|} = 0
     \\
-    \sum_{j=1}^3 \frac{m_j(x_2-x_{j,2})}{| P P_j|} = 0
+    \sum_{j=1}^3 \frac{m_j(x_2-x_{(j,2)})}{| P P_j|} = 0
     \\
     \vdots
     \\
-    \sum_{j=1}^3 \frac{m_j(x_d-x_{j,d})}{| P P_j|} = 0
+    \sum_{j=1}^3 \frac{m_j(x_d-x_{(j,d)})}{| P P_j|} = 0
   \end{array}
   \right.
 \end{equation}
 %
-Then under the conditions in  presented in \cref{eq:12} the solution to the
+Then as before, if the conditions in \cref{eq:12} are fulfilled\footnote{If not
+  the point is as before located at the corresponding vertex.} the solution to
 \cref{eq:7} can be found as follows
+%
+\begin{gather}
+  P_\ast = (x_{(\ast,1)}, x_{(\ast,2)}, \ldots, x_{(\ast,d)})\label{eq:8}
+  \intertext{with}
+  x_{(\ast, j)} = \frac{K_1 K_2 K_3}{4 S \sigma d} \left( \frac{x_{(1,j)}}{K_1} +
+  \frac{x_{(2,j)}}{K_2} + \frac{x_{(3,j)}}{K_3} \right), \quad 0 < j \le d\label{eq:5}
+  \intertext{and}
+  F(P_\ast) = \min_{(P)} F(P) = \sqrt{d}\label{eq:21}
+  \intertext{Here}
+  \label{eq:14} r_{jl} = \sqrt{\sum_{k = 1}^d {(x_{(j,k)} - x_{(l,k)})}^2} = |P_j P_l|
+  \quad \{j,l\} \in \{ 1, 2, 3 \} \\
+  S = \frac{1}{2} \sqrt{(r_{12} + r_{23} + r_{13}) (r_{23} + r_{13}) (r_{12} +
+    r_{13}) (r_{12} + r_{23})} \\
+\end{gather}
+%
+And the rest of the expressions the same as in the 2D version.  As can be seen,
+all of the expressions, except for $S$ (and the distance which now of course
+have more than two dimensions), retain the same representation as in the
+two dimensional version. $S$ however looks quite different. \TODO{Explain how
+  these two S are the same, and maybe give Pawel credit for this one?}
 
-
+As before to prove \cref{eq:5} (and thus \cref{eq:8}) the first step once again
+is to prove \cref{eq:16} and \cref{eq:2}.  These can as before be established
+through direct computation, i.e.\ by simply substituting the expressions for
+their definitions, until both sides only contain weights or distances, after
+which the two sides can be seen to be equal. Using \cref{eq:16} we can rewrite
+\cref{eq:5} as
+%
+\begin{gather}
+    x_{(\ast, j)} = \frac{1}{\frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3}} \left( \frac{x_{(1,j)}}{K_1} +
+  \frac{x_{(2,j)}}{K_2} + \frac{x_{(3,j)}}{K_3} \right), \quad 0 < j \le
+d\label{eq:10}
+\intertext{similarly to \cref{eq:17} in the 2D version. Secondly we wish
+  to prove that}
+  \sqrt{\sum_{i = 1}^d {(x_{(\ast,i)} - x_{j,i})}^2} = \frac{m_j K_j}{2 \sigma
+    \sqrt{d}}, \quad j \in \{ 1, 2, 3 \}\label{eq:19}
+\end{gather}
+As the calculations are similar for all $j$, only the one for $j = 1$ is shown
+here. Thus
+%
+\begin{align}
+  \sum_{i=1}^d {(x_{\ast,i} - x_{1,i})}^2
+  &= \sum_{i=1}^d { \left( \frac{K_1 K_2 K_3}{4 S \sigma d}
+    \left( \frac{x_{(1,i)}}{K_1} + \frac{x_{(2,i)}}{K_2} + \frac{x_{(3,i)}}{K_3}
+    \right) - x_{(1,i)} \right) }^2 \\
+  &= { \left( \frac{K_1 K_2 K_3}{4 S \sigma d} \right) }^2 \left[ \sum_{i=1}^d
+    { \left( \frac{x_{(1,i)}}{K_1} + \frac{x_{(2,i)}}{K_2} +
+    \frac{x_{(3,i)}}{K_3} - \frac{x_{(1,i)} 2 S \sigma d}{K_1 K_2 K_3}
+    \right) }^2 \right] \\
+  &\stackrel{\mathclap{(\ref{eq:16})}}{=}
+    {\left( \frac{K_1 K_2 K_3}{4 S \sigma d} \right)}^2 \left[ \sum_{i=1}^d
+    {\left( \frac{x_{(2,i)}}{K_2} + \frac{x_{(3,i)}}{K_3} - \frac{x_{(1,i)}}{K_2} -
+    \frac{x_{(1,i)}}{K_3} \right)}^2 \right] \\
+  &= {\left( \frac{K_1 K_2 K_3}{4 S \sigma d} \right)}^2 \left[ \sum_{i=1}^d
+    \left( \frac{{(x_{(2,i)} - x_{(1,i)})}^2}{K_2^2} +
+    \frac{{(x_{(3,i)} - x_{(1,i)})}^2}{K_3^2} \right. \right. \\
+  &\hspace{7em} \left. \left. + \; 2 \frac{(x_{(2,i)} - x_{(1,i)})(x_{(3,i)} -
+    x_{(1,i)})}{K_2 K_3} \right) \right] \\
+  &= {\left( \frac{K_1 K_2 K_3}{4 S \sigma d} \right)}^2
+    \left[ \frac{\sum_{i=1}^d {(x_{(2,i)} - x_{(1,i)})}^2}{K_2^2} +
+    \frac{\sum_{i=1}^d {(x_{(3,i)} - x_{(1,i)})}^2}{K_3^2} \right. \\
+  &+ \left. \frac{ \sum_{i=1}^d {(x_{(2,i)} - x_{(1,i)})}^2 +
+    \sum_{i=1}^d {(x_{(3,i)} - x_{(1,i)})}^2 -
+    \sum_{i=0}^d {(x_{(2,i)} - x_{(3,i)})}^2}{K_2 K_3} \right] \\
+  &\stackrel{\mathclap{(\ref{eq:14})}}{=}
+    {\left( \frac{K_1 K_2 K_3}{4 S \sigma d} \right)}^2
+    \left[ \frac{r_{12}^2}{K_2^2} + \frac{r_{13}^2}{K_3^2} +
+    \frac{r_{12}^2 + r_{13}^2 - r_{23}^2}{K_2 K_3} \right] \\
+  &= \frac{K_1^2}{{(4 S \sigma d)}^2}
+    \left[ r_{12}^2 K_3^2 + r_{13}^2 K_2^2 +
+    (r_{12}^2 + r_{13}^2 - r_{23}^2) K_2 K_3 \right] \\
+  &= \frac{K_1^2}{{(4 S \sigma d)}^2}
+    \left[ (r_{12}^2 K_3 + r_{13}^2 K_2) (K_2 + K_3) -
+    r_{23}^2 K_2 K_3 \right] \\
+  &\stackrel{\mathclap{(\ref{eq:2})}}{=}
+    \frac{K_1^2}{{(4 S \sigma d)}^2}
+    \left[ (2 S d - r_{23}^2 K_1) (K_2 + K_3) - r_{23}^2 K_2 K_3 \right] \\
+  &= \frac{K_1^2}{{(4 S \sigma d)}^2}
+    \left[ 2 S d (K_2 + K_3) - r_{23}^2 (K_1 K_2 + K_1 K_3 + K_2 K_3) \right] \\
+  &\stackrel{\mathclap{(\ref{eq:16})}}{=}
+    \frac{K_1^2}{{(4 S \sigma d)}^2}
+    \left[ 2 S d (K_2 + K_3) - 4 r_{23}^2 \sigma S d \right] \\
+  &= \frac{2 S d K_1^2}{{(4 S \sigma d)}^2}
+    \left[ K_2 + K_3 - 2 r_{23}^2 \sigma \right] \\
+  &\stackrel{\mathclap{(\ref{eq:3})}}{=}
+    \frac{K_1^2}{8 S d \sigma^2}
+    \left[ 2 m_1^2 S \right] \\
+  &= \frac{m_1^2 K_1^2}{4 \sigma^2 d}
+\end{align}
+%
+From here we can that \cref{eq:5} is a solution to \cref{eq:7} in the exact same way as
+we proved that \cref{eq:15} was a solution to \cref{eq:13}, by substituting
+\cref{eq:5} into \cref{eq:7} and using \cref{eq:10} and \cref{eq:19}. The same
+goes for proving \cref{eq:21}.
 
 \section{Sorting points}
 \label{sec:sorting-points}
 
-longest path in fully connected graph is NP-complete [ref]. Greedy approach
-shows promising results.
+\TODO[inline]{longest path in fully connected graph is NP-complete [ref]. Greedy approach
+shows promising results. See also Smith+ in \cite{Fampa2008}}
 
 \chapterbreak{}
 

@@ -1,0 +1,39 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 14.12.0 ] */
+
+/* [wxMaxima: input   start ] */
+q : (r12+r23+r13)/2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+S : ratsimp(2*sqrt(q*(q-r12)*(q-r23)*(q-r13)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sigma : ratsimp(1/2*sqrt(-m1^4-m2^4-m3^4+2*m1^2*m2^2+2*m1^2*m3^2+2*m2^2*m3^2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+K1 : (r12^2+r13^2-r23^2)*sigma+(m2^2+m3^2-m1^2)*S;
+K2 : (r12^2+r23^2-r13^2)*sigma+(m1^2+m3^2-m2^2)*S;
+K3 : (r23^2+r13^2-r12^2)*sigma+(m1^2+m2^2-m3^2)*S;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+d : 1/(2*sigma) * (m1^2 * K1 + m2^2 * K2 + m3^2 * K3);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(K1*K2 + K2*K3 + K1*K3 - 4*sigma*S*d);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(r23^2*K1 + r13^2*K2 + r12^2*K3 - 2*S*d);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp((x2j/k2+x3j/k3-x1j/k2-x1j/k3)^2);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
