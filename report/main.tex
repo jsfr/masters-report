@@ -37,6 +37,8 @@ obeyFinal,bordercolor=black,linecolor=black]{todonotes}
 \usepackage[linesnumbered,noend,noline,boxed]{algorithm2e}
 \usepackage[font={small,it},margin=.5cm]{caption}
 \usepackage{etoolbox}
+\usepackage{colortbl}
+\usepackage{hhline}
 % Keep here to make sure it loads last (but it is a "Essentials")
 \usepackage[noabbrev,capitalize]{cleveref}
 \usepackage{autonum}
@@ -102,6 +104,8 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
   baselinestretch=0.8%
 }
 
+\usetikzlibrary{tikzmark, arrows.meta}
+
 \makeatletter
 \renewcommand*{\thelisting}{\thechapter.\arabic{listing}}
 \@addtoreset{listing}{chapter}
@@ -134,10 +138,10 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 }
 \listoftodos{}
 \tableofcontents
-\listoftables
-\listoffigures
-\let\clearpage\relax
-\listoflistings
+%\listoftables
+%\listoffigures
+%\let\clearpage\relax
+%\listoflistings
 \let\clearpage\relax
 \printglossary[type=\acronymtype,title=Abbreviations]
 }

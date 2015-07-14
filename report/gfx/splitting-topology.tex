@@ -1,0 +1,46 @@
+\begin{tabular}{|c|ccc|c|ccc|c|}
+  \multicolumn{1}{c}{$1$}
+  & \multicolumn{3}{c}{ }
+  & \multicolumn{1}{c}{$i$}
+  & \multicolumn{3}{c}{ }
+  & \multicolumn{1}{c}{$2k + 1$}
+  \\ \hhline{--~---~--}
+  $(a,b)$
+  & & \ldots
+  & & \cellcolor{SkyBlue} \tikzmark{a} $(c,d)$
+  & & \ldots
+  & & $(e,f)$
+  \\ \hhline{--~---~--}
+\end{tabular}
+
+\vspace{8ex}
+
+\begin{tabular}{|c|ccc|c|ccc|c|c|c|}
+  \multicolumn{1}{c}{$1$}
+  & \multicolumn{3}{c}{ }
+  & \multicolumn{1}{c}{$i$}
+  & \multicolumn{3}{c}{ }
+  & \multicolumn{1}{c}{$2k+1$}
+  & \multicolumn{1}{c}{$2k+2$}
+  & \multicolumn{1}{c}{$2k+3$}
+  \\ \hhline{--~---~----}
+  $(a,b)$
+  & & \ldots
+  & & \cellcolor{SkyBlue} \tikzmark{b} $(c,k+1)$
+  & & \ldots
+  & & $(e,f)$
+  & \cellcolor{SkyBlue} \tikzmark{c} $(d,k+1)$
+    & \cellcolor{SkyBlue} \tikzmark{d} $(g,k+1)$
+  \\ \hhline{--~---~----}
+\end{tabular}
+
+\begin{tikzpicture}[overlay, remember picture, yshift=-1.5ex, xshift=2em]
+  \draw [-{Latex[length=2mm,width=2mm]},semithick] ({pic cs:a}) [bend right] to ([yshift=6.5ex]{pic cs:b});
+  \draw [-{Latex[length=2mm,width=2mm]},semithick] ({pic cs:a}) [out=-70, in=110] to ([yshift=6.5ex]{pic cs:c});
+  \draw [-{Latex[length=2mm,width=2mm]},semithick] ({pic cs:a}) [out=-20, in= 120] to ([yshift=6.5ex]{pic cs:d});
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
