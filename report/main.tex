@@ -137,12 +137,14 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
   linkcolor=MidnightBlue, % color of internal links
 }
 \listoftodos{}
+\newpage
 \tableofcontents
 %\listoftables
 %\listoffigures
 %\let\clearpage\relax
 %\listoflistings
 \let\clearpage\relax
+\newpage
 \printglossary[type=\acronymtype,title=Abbreviations]
 }
 
@@ -158,7 +160,7 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \include{content/mainmatter/preliminaries}
 \include{content/mainmatter/smiths-algorithm}
 \include{content/mainmatter/implementation}
-\include{content/mainmatter/benchmarks-tests}
+\include{content/mainmatter/experiments}
 \include{content/mainmatter/discussion}
 \include{content/mainmatter/conclusion}
 

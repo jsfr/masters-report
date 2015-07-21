@@ -85,3 +85,4 @@ hs_err_pid*
 # remove main pdf
 report/main.pdf
 report/_minted-main/*
+report/sourcecode
