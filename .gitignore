@@ -37,6 +37,8 @@
 *.tdo
 *.fls
 *.glsdefs
+*.lol
+*.mw
 _region_.tex
 
 ### Go ###

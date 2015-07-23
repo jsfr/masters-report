@@ -2,14 +2,13 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %------------------------------------------------------------------------------
 
-\RequirePackage[l2tabu, orthodox, abort]{nag}
+%\RequirePackage[l2tabu, orthodox, abort]{nag}
 \documentclass[11pt, a4paper, openright, twoside]{memoir}
 \chapterstyle{southall}
 \checkandfixthelayout[nearest] % WHAT DOES THIS DO?
 
 % Essentials
-\usepackage[utf8x]{inputenc} % UTF8-support
-\usepackage{ucs} % Extended UTF8-support
+\usepackage[utf8]{inputenc} % UTF8-support
 \usepackage[english]{babel} % Use english conventions in typesetting
 \usepackage{fixltx2e} % Fixes some LaTeX stuff
 \usepackage{graphicx, float} % Allows for graphics with fixed placement
@@ -21,6 +20,9 @@
 \usepackage[T1]{fontenc}
 
 % Customizable
+\usepackage{morewrites}
+\usepackage{csquotes}
+\usepackage[style=numeric-comp]{biblatex}
 \usepackage{subcaption}
 \usepackage[dvipsnames]{xcolor}  % Coloured text etc.
 \usepackage{tikz, tikzscale}
@@ -74,6 +76,7 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \newtheorem{theorem}{Theorem}[chapter]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}{Definition}[chapter]
 
 % Hyperref setup
 \hypersetup{
@@ -111,6 +114,9 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \@addtoreset{listing}{chapter}
 \makeatother
 
+% Bibliographies
+\addbibresource{content/backmatter/bibliography.bib}
+
 %------------------------------------------------------------------------------
 %	BEGIN DOCUMENT
 %------------------------------------------------------------------------------
@@ -136,16 +142,16 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
   colorlinks=true, % colored links
   linkcolor=MidnightBlue, % color of internal links
 }
-\listoftodos{}
-\newpage
+\abnormalparskip{0pt}
+\listoftodos
+\clearpage
 \tableofcontents
-%\listoftables
-%\listoffigures
-%\let\clearpage\relax
-%\listoflistings
-\let\clearpage\relax
-\newpage
+\listoftables
+\listoffigures
+\listoflistings
+% \openany
 \printglossary[type=\acronymtype,title=Abbreviations]
+%\openright
 }
 
 %------------------------------------------------------------------------------
@@ -173,8 +179,8 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \appendix
 
 \label{app:bibliography}
-\bibliographystyle{ieeetr}
-\bibliography{content/backmatter/bibliography,content/backmatter/sites}
+\printbibheading
+\printbibliography
 
 % \include{content/backmatter/sourcecode}
 

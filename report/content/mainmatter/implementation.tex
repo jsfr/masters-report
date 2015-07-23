@@ -8,7 +8,7 @@ This chapter touches on parts of the implementation which are done differently
 from Smiths implementation.
 
 The new implementation is written in Googles, still relatively new, language
-Golang~\cite{GolangHomepage}
+Golang~\cite{golanghomepage}
 
 \section{Overview}
 \label{sec:overview-1}
@@ -20,11 +20,11 @@ Golang~\cite{GolangHomepage}
 \label{sec:building-topologies}
 
 In Smiths implementation of the algorithm when generating topologies every new
-topology is rebuilt completely from the bottom.  E.g.\ say that we have just
-optimized the topology corresponding to the topology vector $A_1 = (1, 2)$.  If we
-now wish to optimize the topology vector $A_2 = (1, 2, 3)$.  In the old
+topology is rebuilt completely from the bottom. E.g.\ say that we have just
+optimized the topology corresponding to the topology vector $A_1 = (1, 2)$. If we
+now wish to optimize the topology vector $A_2 = (1, 2, 3)$. In the old
 implementation $A_2$ would have to be built again from scratch instead of simply
-splitting and building on to $A_1$.  To try and do this is in a slightly more
+splitting and building on to $A_1$. To try and do this is in a slightly more
 clever way the new implementation is instead able to either split or restore a
 topology, thus from $A_1$ we could either split an edge and get $A_2$, or any
 other length three topology vector, or we could restore and go back from $A_1$
@@ -33,33 +33,33 @@ next length two topology vector $A_1' = (1, 3)$ or restore once again.}
 
 The way this is implemented is a follows: All edges of the tree is kept in an
 list, and edge being represented as the tuple $(j, k)$ meaning it starts at
-point $j$ and ends at point $k$.  Say we wish to split edge $i = (c,d)$ and
-connect terminal $g$ into the topology.  At this point we have currently $k$
-Steiner points in the topology already, and thus $2k+1$ edges.  We first change
+point $j$ and ends at point $k$. Say we wish to split edge $i = (c,d)$ and
+connect terminal $g$ into the topology. At this point we have currently $k$
+Steiner points in the topology already, and thus $2k+1$ edges. We first change
 the original edge to go from the first end point $c$ to a new Steiner point
-$k+1$.  Afterwards we append two new edges to the list of edges,$(d, k+1)$ and
-$(g, k+1)$.  This process is straight forward and if the accessing into the list
+$k+1$. Afterwards we append two new edges to the list of edges,$(d, k+1)$ and
+$(g, k+1)$. This process is straight forward and if the accessing into the list
 and appending\footnote{which is both the case if enough space is allocated for
   the list ahead of the appending.} is $\mathcal{O}(1)$ then the entire
 operation will be $\mathcal{O}(1)$. The operation can be seen in
-\cref{fig:splitting-topology}.  In this way we can expand the topology one
+\cref{fig:splitting-topology}. In this way we can expand the topology one
 terminal at a time without rebuilding every time.
 
 \begin{figure}[htbp]
   \centering
   \input{gfx/splitting-topology}
-  \caption{Splitting on edge $i$ with $k$ Steiner points before the
-    split results in two new edges $2k+2$ and $2k+3$ and a change of the existing edge $i$.  Finally we
+  \caption[Implementation of topology splitting]{Splitting on edge $i$ with $k$ Steiner points before the
+    split results in two new edges $2k+2$ and $2k+3$ and a change of the existing edge $i$. Finally we
   also get the new Steiner point $k + 1$.\label{fig:splitting-topology}}
 \end{figure}
 
 The reason for this way of expanding the topology however lies with the wish to
-also restore an edge.  If we keep a list of all the edges we split
+also restore an edge. If we keep a list of all the edges we split
 on\footnote{which we do, as this is the topology vector described in
   \cref{sec:representation}.} we can always restore the last edge split in the
-following way.  Select the last two edges, $(d, k+1), (g, k+1)$ in the list and
-the edge $i = (c, k+1)$.  Now change edge $i$ to $(c, d)$ and remove the last
-two edges in the list.  Thus we have $\mathcal{O}(1)$ methods for splitting and
+following way. Select the last two edges, $(d, k+1), (g, k+1)$ in the list and
+the edge $i = (c, k+1)$. Now change edge $i$ to $(c, d)$ and remove the last
+two edges in the list. Thus we have $\mathcal{O}(1)$ methods for splitting and
 restoring the topology, in a way which is consistent in the numbering with the
 one described in \cref{sec:representation} and shown in
 \cref{fig:algorithm-topologies}.
@@ -72,19 +72,19 @@ promising results.}
 \label{sec:analyt-solut-ferm}
 
 An analytical solution for finding the Fermat-Torricelli point of three
-prespecified points is presented in~\cite{Uteshev2012}, which is the same as
-finding the Steiner point of those three points.  The article presents a
-solution for two dimensions which will be described.  However as we are dealing
+prespecified points is presented in~\cite{uteshev2012}, which is the same as
+finding the Steiner point of those three points. The article presents a
+solution for two dimensions which will be described. However as we are dealing
 with  higher dimensions, a generalization of the solution, not presented
-in~\cite{Uteshev2012}, will also be described.
+in~\cite{uteshev2014}, will also be described.
 
 The reason this is interesting is that Smith mentions a iterative process which
 updates points one at a time would no be as quick to converge as the one he
-presents.  There is however no experiments in the paper to support this.  Thus
+presents. There is however no experiments in the paper to support this. Thus
 this analytical method is interesting, as it is actually not computationally
 heavy to compute the the location of a Steiner point, and as each optimization
 moves a point to the, at that time, exact location it needs to be to minimize
-the length.  One could therefore think that this might converge quite fast.
+the length. One could therefore think that this might converge quite fast.
 
 In the code a optimization method using the analytical method has been
 implemented. One can switch from Smith's method to the analytical one by giving
@@ -95,7 +95,7 @@ the flag \texttt{-iteration=simple} on the command-line\footnote{as opposed to
 \subsection{2D}
 \label{sec:2d}
 
-The solution for two dimensions is presented in~\cite{Uteshev2012}.  The solution
+The solution for two dimensions is presented in~\cite{uteshev2014}. The solution
 presented is for the generalized Fermat-Torricelli problem, which given three
 noncolinear points $P_1 = (x_1, y_1)$, $P_2 = (x_2, y_2)$ and $P_3 = (x_3, y_3)$
 in the plane, finds the point $P_\ast = (x_\ast, y_\ast)$ which gives a solution
@@ -106,11 +106,11 @@ to the optimization problem
   \sqrt{{(x-x_j)}^2 + {(y-y_j)}^2}
 \end{equation}
 %
-Where the weight of point $j$th point, $m_j$, is a real positive number.  The
+Where the weight of point $j$th point, $m_j$, is a real positive number. The
 instance where $m_1 = m_2 = m_3 = 1$ is exactly the classical Fermat-Torricelli
 problem, which has a unique solution either coinciding with one of the points
 $P_1$, $P_2$, $P_3$ or with the Fermat-Torricelli or Steiner point of the
-triangle $P_1 P_2 P_3$.  The instance with unequal weights is known as the
+triangle $P_1 P_2 P_3$. The instance with unequal weights is known as the
 generalized Fermat-Torricelli point.
 
 Existence and uniqueness of the solution is guaranteed by
@@ -133,7 +133,7 @@ Existence and uniqueness of the solution is guaranteed by
   \TODO[inline]{Describe these equations and from where they come.}
   are fulfilled then there exists a unique solution $P_\ast = (x_\ast, y_\ast)
   \in \mathbb{R}^2$ for the generalized Fermat-Torricelli problem lying inside
-  the triangle $P_1 P_2 P_3$.  This point is a stationary point for the function
+  the triangle $P_1 P_2 P_3$. This point is a stationary point for the function
   $F(x,y)$, i.e.\ a real solution of the system
   \begin{equation}
     \label{eq:13}
@@ -179,7 +179,7 @@ in \cref{eq:12} are fulfilled, is done as follows
 
 To prove \cref{eq:15} the first step is to prove the two following
 equations\footnote{Note that all the following calculations can also be found
-  in~\cite{Uteshev2012}, however as these are a bit convoluted they are also
+  in~\cite{uteshev2014}, however as these are a bit convoluted they are also
   presented with a few clarifying intermediate calculations}
 %
 \begin{align}
@@ -204,7 +204,7 @@ as
     \frac{y_2}{K_2} + \frac{y_3}{K_3} \right)
     \end{array}
   \right.
-  \intertext{Which will be useful in later calculations.  The second part is to
+  \intertext{Which will be useful in later calculations. The second part is to
     prove that}
   \sqrt{{(x_\ast - x_j)}^2 + {(y_\ast - y_j)}^2} = \frac{m_j K_j}{2 \sigma
     \sqrt{d}}, \quad j \in \{ 1, 2, 3 \}\label{eq:18}
@@ -262,7 +262,7 @@ here. Thus
 \end{align}
 %
 To finish the proof one would also have to show that $K_1, K_2, K_3$ are
-nonnegative.  The proof of this can be found~\cite[p.~5-6]{Uteshev2012}.
+nonnegative. The proof of this can be found~\cite[p.~5-6]{uteshev2014}.
 
 We can now prove \cref{eq:15}, by substituting it into \cref{eq:13}. As the
 equations are similar for $x$ and $y$, only $x$ is shown here
@@ -298,7 +298,7 @@ equations are similar for $x$ and $y$, only $x$ is shown here
   &= 2 \sigma \sqrt{d} \left[ 1 - 1 \right] = 0
 \end{align}
 %
-As can be seen \cref{eq:15} is a solution to \cref{eq:13}.  Secondly we can also
+As can be seen \cref{eq:15} is a solution to \cref{eq:13}. Secondly we can also
 prove \cref{eq:11}
 %
 \begin{align}
@@ -314,13 +314,13 @@ prove \cref{eq:11}
 \label{sec:gener-high-dimens}
 
 Generalizing the solution described above to higher dimensions is in general
-pretty straightforward.  The biggest change is in the representation of $S$, and
-the fact that the proof requires a bit of sum manipulation.  This generalized
+pretty straightforward. The biggest change is in the representation of $S$, and
+the fact that the proof requires a bit of sum manipulation. This generalized
 version of the proof is not known to have been presented in any paper before.
 
 The first change is that we no longer try to minimize a function of just two
 parameters, but instead we intend to minimize a function of $d$ parameters,
-where our points are contained in $R^d$, i.e.\ we have $d$ dimensions.  As we
+where our points are contained in $R^d$, i.e.\ we have $d$ dimensions. As we
 normally represent this using vectors, we would not actually have $d$
 parameters, but instead one parameter being a $d$-vector. Thus we wish to find a
 point $P_\ast = (x_{(\ast,1)}, x_{(\ast,2)}, \ldots, x_{(\ast,d)}) \in R^d$
@@ -345,7 +345,7 @@ equations, as follows
 %
 \begin{equation}
 \label{eq:7}
-  \left\{
+  \left.
     \begin{array}{c}
     \sum_{j=1}^3 \frac{m_j(x_1-x_{(j,1)})}{| P P_j|} = 0
     \\
@@ -355,7 +355,8 @@ equations, as follows
     \\
     \sum_{j=1}^3 \frac{m_j(x_d-x_{(j,d)})}{| P P_j|} = 0
   \end{array}
-  \right.
+  \right\} =
+  \sum_{j=1}^3 \frac{m_j (P - P_j)}{| P P_j |} = \vec 0
 \end{equation}
 %
 Then as before, if the conditions in \cref{eq:12} are fulfilled\footnote{If not
@@ -376,14 +377,14 @@ Then as before, if the conditions in \cref{eq:12} are fulfilled\footnote{If not
     r_{13}) (r_{12} + r_{23})} \\
 \end{gather}
 %
-And the rest of the expressions the same as in the 2D version.  As can be seen,
+And the rest of the expressions the same as in the 2D version. As can be seen,
 all of the expressions, except for $S$ (and the distance which now of course
 have more than two dimensions), retain the same representation as in the
 two dimensional version. $S$ however looks quite different. \TODO{Explain how
   these two S are the same, and maybe give Pawel credit for this one?}
 
 As before to prove \cref{eq:5} (and thus \cref{eq:8}) the first step once again
-is to prove \cref{eq:16} and \cref{eq:2}.  These can as before be established
+is to prove \cref{eq:16} and \cref{eq:2}. These can as before be established
 through direct computation, i.e.\ by simply substituting the expressions for
 their definitions, until both sides only contain weights or distances, after
 which the two sides can be seen to be equal. Using \cref{eq:16} we can rewrite
@@ -460,24 +461,24 @@ goes for proving \cref{eq:21}.
 \label{sec:sorting-points}
 
 Sorting the terminals in one way or the other before starting to build
-topologies and optimizing them has been proposed in~\cite{Smith1992} and two
+topologies and optimizing them has been proposed in~\cite{smith1992} and two
 different kinds of sorting has been implemented
-in~\cite{Fonseca2015,VanLaarhoven2013}.  Both methods have shown promising
+in~\cite{fonseca2014,vanlaarhoven2013}. Both methods have shown promising
 results regarding the number of trees one needs to optimize actually optimize in
 contrast to not sorting the terminals.\NOTE{Maybe give some reason for
   suggesting another method, like it is simpler?} Here another method is
 proposed which is relatively similar to the one proposed implemented
-in~\cite{Fonseca2015}, but simpler, and requiring fewer steps.
+in~\cite{fonseca2014}, but simpler, and requiring fewer steps.
 
-The method proposed in~\cite{Fonseca2015} corresponds to solving the problem of
+The method proposed in~\cite{fonseca2014} corresponds to solving the problem of
 finding the longest path in a fully connected graph, where the graph consists of
-all the terminals.  This problem however is NP-complete\missingref{} and thus
+all the terminals. This problem however is NP-complete\missingref{} and thus
 it might be an idea instead to approximate this in a greedy manner.
 
-The first terminal remains the same as the unsorted one.  All following terminals
+The first terminal remains the same as the unsorted one. All following terminals
 are selected between the remaining terminals as such that the distance to the
-prior point is maximized.  Thus consider e.g.\ the list of one dimensional points
-$[1, 2, 3, 4, 5, 6]$.  These would be sorted as $[1, 6, 2, 5, 3, 4]$.
+prior point is maximized. Thus consider e.g.\ the list of one dimensional points
+$[1, 2, 3, 4, 5, 6]$. These would be sorted as $[1, 6, 2, 5, 3, 4]$.
 
 Sorting the points using the described method can be done by passing the flag
 \texttt{-sort} on the command-line.
