@@ -40,7 +40,7 @@ is then build all descendants having $4$ terminals (and $2$ Steiner points),
 from each of these it builds the descendants having $5$ terminals (and $3$
 Steiner points), etc.\ until it has built all descendants having $N$ terminals
 (and $N-2$ Steiner points). The idea behind this way of building the
-\glspl{fst} is to allow a \gls{bnb} approach where we wish to prune all
+\glspl{fst} is to allow a branch-and-bound approach where we wish to prune all
 descendants of a topology if we have a better upper bound than the length of the
 current topology. This process will be described more thoroughly in
 \cref{sec:generation}.
@@ -487,7 +487,7 @@ not been minimized.
 \end{figure}
 
 Note however that the topology used in \cref{fig:error-function} is not the
-one which gives the \gls{mst} for the four terminals. The optimal topology
+one which gives the \gls{smt} for the four terminals. The optimal topology
 would have the top pair connected with one Steiner point, the two bottom
 terminals connected with another Steiner point, and those two Steiner points
 connected. This topology when optimized will not face the same problem, as the

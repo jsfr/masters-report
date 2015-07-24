@@ -114,6 +114,12 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \@addtoreset{listing}{chapter}
 \makeatother
 
+\renewcommand{\listoflistings}{%
+  \cleardoublepage
+  \addcontentsline{toc}{chapter}{\listoflistingscaption}%
+  \listof{listing}{\listoflistingscaption}%
+}
+
 % Bibliographies
 \addbibresource{content/backmatter/bibliography.bib}
 
@@ -150,8 +156,8 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \listoffigures
 \listoflistings
 % \openany
-\printglossary[type=\acronymtype,title=Abbreviations]
-%\openright
+% \printglossary[type=\acronymtype,title=Abbreviations]
+% \openright
 }
 
 %------------------------------------------------------------------------------

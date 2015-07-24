@@ -1,17 +1,51 @@
 \begin{tikzpicture}[thick]
-\node [reg](v2) at (0,4) {};
-\node [reg](v4) at (-2,0) {};
-\node [reg](v3) at (2,0) {};
-\node [stein](v1) at (0,1.154) {};
+
+\begin{scope}
+\node [reg](v1) at (2,4) {};
+\node [reg](v2) at (0,0) {};
+\node [reg](v3) at (4,0) {};
+\draw  (v1) edge (v2);
+\draw  (v2) edge (v3);
+\end{scope}
+
+\begin{scope}[shift={(0, -8)}]
+\node [reg](v1) at (2,4) {};
+\node [reg](v2) at (0,0) {};
+\node [reg](v3) at (4,0) {};
+\node [stein](s1) at (2,1.5) {};
+\draw  (s1) edge (v1);
+\draw  (s1) edge (v2);
+\draw  (s1) edge (v3);
+\end{scope}
+
+\begin{scope}[shift={(8,1)}]
+\node [reg](v1) at (4,2) {};
+\node [reg](v2) at (0,0) {};
+\node [reg](v3) at (6,0) {};
+\draw  (v1) edge (v2);
+\draw  (v2) edge (v3);
+\end{scope}
+
+\begin{scope}[shift={(8,-7)}]
+\node [reg](v1) at (4,2) {};
+\node [reg](v2) at (0,0) {};
+\node [reg](v3) at (6,0) {};
 \draw  (v1) edge (v2);
 \draw  (v1) edge (v3);
-\draw  (v1) edge (v4);
+\end{scope}
 
-\node [reg](v5) at (-6,4) {};
-\node [reg](v6) at (-8,0) {};
-\node [reg](v7) at (-4,0) {};
-\draw  (v5) edge (v6);
-\draw  (v6) edge (v7);
+\begin{scope}[shift={(2,-3)}]
+\node (v1) at (0,2) {};
+\node (v2) at (0,0) {};
+\draw [->] (v1) -- (v2);
+\end{scope}
+
+\begin{scope}[shift={(11,-3)}]
+\node (v1) at (0,2) {};
+\node (v2) at (0,0) {};
+\draw [->] (v1) -- (v2);
+\end{scope}
+
 \end{tikzpicture}
 
 %%% Local Variables:
