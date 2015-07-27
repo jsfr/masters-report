@@ -1,0 +1,103 @@
+\begin{tikzpicture}[thick]
+
+\begin{scope}
+  \node [reg](v1) at (0,0) {};
+  \node [reg](v2) at (0,2) {};
+  \node [reg](v3) at (4,2) {};
+  \node [reg](v4) at (4,0) {};
+  \draw (v1) -- (v2);
+  \draw (v2) -- (v3);
+  \draw (v3) -- (v4);
+
+  \node (a) at (5,1) {};
+  \node (b) at (6,1) {};
+  \draw [->] (a) -- (b);
+\end{scope}
+
+\begin{scope}[shift={(7,0)}]
+  \node [reg](v1) at (0,0) {};
+  \node [reg](v2) at (0,2) {};
+  \node [reg](v3) at (4,2) {};
+  \node [reg](v4) at (4,0) {};
+  \node [stein](s1) at (2.5,1.5) {};
+  \draw (v1) -- (v2);
+  \draw (v2) -- (s1);
+  \draw (s1) -- (v3);
+  \draw (s1) -- (v4);
+
+  \node (a) at (2,-1) {};
+  \node (b) at (-5,-2) {};
+  \node (c) at (2, -2) {};
+  \draw [->] (a) [out=200,in=45] to (b);
+  \draw [->] (a) -- (c);
+\end{scope}
+
+\begin{scope}[shift={(0,-5)}]
+  \node [reg](v1) at (0,0) {};
+  \node [reg](v2) at (0,2) {};
+  \node [reg](v3) at (4,2) {};
+  \node [reg](v4) at (4,0) {};
+  \node [stein](s1) at (2.5,1.5) {};
+  \node [stein](s2) at (1.5,0.5) {};
+  \draw (v1) -- (s2);
+  \draw (v2) -- (s1);
+  \draw (s1) -- (v3);
+  \draw (s2) -- (v4);
+  \draw (s2) -- (s1);
+
+  \node (a) at (2,-1) {};
+  \node (b) at (2,-2) {};
+  \draw [->] (a) -- (b);
+\end{scope}
+
+\begin{scope}[shift={(7,-5)}]
+  \node [reg](v1) at (0,0) {};
+  \node [reg](v2) at (0,2) {};
+  \node [reg](v3) at (4,2) {};
+  \node [reg](v4) at (4,0) {};
+  \node [stein](s1) at (2.5,1.5) {};
+  \node [stein](s2) at (1.5,0.5) {};
+  \draw (v1) -- (s2);
+  \draw (v2) -- (s2);
+  \draw (s1) -- (v3);
+  \draw (s1) -- (v4);
+  \draw (s2) -- (s1);
+
+  \node (a) at (2,-1) {};
+  \node (b) at (2,-2) {};
+  \draw [->] (a) -- (b);
+\end{scope}
+
+\begin{scope}[shift={(0,-10)}]
+  \node [reg](v1) at (0,0) {};
+  \node [reg](v2) at (0,2) {};
+  \node [reg](v3) at (4,2) {};
+  \node [reg](v4) at (4,0) {};
+  \node [stein](s1) at (2,1) {};
+  \node [stein](s2) at (2,1) {};
+  \draw (v1) -- (s2);
+  \draw (v2) -- (s1);
+  \draw (s1) -- (v3);
+  \draw (s2) -- (v4);
+  \draw (s2) -- (s1);
+\end{scope}
+
+\begin{scope}[shift={(7,-10)}]
+  \node [reg](v1) at (0,0) {};
+  \node [reg](v2) at (0,2) {};
+  \node [reg](v3) at (4,2) {};
+  \node [reg](v4) at (4,0) {};
+  \node [stein](s1) at (3.423,1) {};
+  \node [stein](s2) at (0.577,1) {};
+  \draw (v1) -- (s2);
+  \draw (v2) -- (s2);
+  \draw (s1) -- (v3);
+  \draw (s1) -- (v4);
+  \draw (s2) -- (s1);
+\end{scope}
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

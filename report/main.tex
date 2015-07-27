@@ -40,6 +40,7 @@ obeyFinal,bordercolor=black,linecolor=black]{todonotes}
 \usepackage[font={small,it},margin=.5cm]{caption}
 \usepackage{etoolbox}
 \usepackage{colortbl}
+\usepackage{afterpage}
 \usepackage{hhline}
 % Keep here to make sure it loads last (but it is a "Essentials")
 \usepackage[noabbrev,capitalize]{cleveref}
@@ -82,8 +83,8 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \hypersetup{
   bookmarks=true,
   colorlinks=true, % colored links
-  linkcolor=red, % color of internal links
-  citecolor=NavyBlue, % color of links to bibliography
+  linkcolor=MidnightBlue, % color of internal links
+  citecolor=MidnightBlue, % color of links to bibliography
   filecolor=cyan, % color of file links
   urlcolor=blue % color of external links
 }
@@ -115,7 +116,7 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \makeatother
 
 \renewcommand{\listoflistings}{%
-  \cleardoublepage
+  \cleardoublepage%
   \addcontentsline{toc}{chapter}{\listoflistingscaption}%
   \listof{listing}{\listoflistingscaption}%
 }
@@ -143,28 +144,21 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 
 \include{content/frontmatter/abstract}
 
-{
-\hypersetup{
-  colorlinks=true, % colored links
-  linkcolor=MidnightBlue, % color of internal links
-}
-\abnormalparskip{0pt}
-\listoftodos
+\listoftodos%
 \clearpage
 \tableofcontents
 \listoftables
 \listoffigures
-\listoflistings
+\listoflistings%
 % \openany
 % \printglossary[type=\acronymtype,title=Abbreviations]
 % \openright
-}
 
 %------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS
 %------------------------------------------------------------------------------
 
-\mainmatter
+\mainmatter%
 
 \pagenumbering{arabic} % Arabic page numbering for thesis content (1, 2, 3, etc)
 
@@ -180,13 +174,11 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 %	POST-CONTENT  - APPENDIX AND BIBLIOGRAPHY
 %------------------------------------------------------------------------------
 
-\backmatter
+\backmatter%
 
 \appendix
 
-\label{app:bibliography}
-\printbibheading
-\printbibliography
+\printbibliography%
 
 % \include{content/backmatter/sourcecode}
 

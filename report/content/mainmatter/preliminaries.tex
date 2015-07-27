@@ -186,11 +186,18 @@ To see that this is true, assume that it is smaller; We then have two cases as
 shown in \cref{fig:preliminaries-steiner-point} and in neither cases is $ab$ and
 $ac$ a shortest interconnection of $\{a, b, c\}$.
 %
+\afterpage{
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.6\textwidth]{gfx/tikz/preliminaries-steiner-points}
-\caption[Here be dragons.]{Here be dragons.\label{fig:preliminaries-steiner-point}}
+\caption[Obtaining shorter trees]{Replacing a pair of edges $ab$ and $ac$ for which
+  $\angle bac < 2 \pi / 3$ with a shortest interconnection provided by a
+  solution to the Fermat-Torricelli problem for $\{a,b,c\}$. The left figure has
+  no angle greater than $120^{\circ}$. The right has a angle
+  $\angle cba \ge 120^{\circ}$. In both cases a shorter tree is
+  constructed\footnotemark.\label{fig:preliminaries-steiner-point}}
 \end{figure}
+\footnotetext{This figure is the same as in \textcite[p.~7]{brazil2015}.}}
 %
 Using that the mutual angles may be no less than $120^{\circ}$ it follows that
 any point in $T$ can have at most degree $3$\footnote{As
@@ -217,7 +224,7 @@ equation as
   0 \le k &\le n - 2
 \end{align}
 %
-Proving the fourth property.
+Thus proving the fourth property.
 
 \section{Topologies}
 \label{sec:topologies-1}
@@ -246,20 +253,84 @@ in \cref{eq:22}.
 \section{Steiner trees}
 \label{sec:steiner-trees}
 
+Before defining Steiner trees we define \glspl{rmt} as in~\cite{gilbert1968}
+as:
+%
+\begin{definition}[\acrlong{rmt}]
+  A tree is called a \acrlong{rmt} if it is the shortest possible tree of its
+  underlying topology.
+\end{definition}
+%
+As can easily be seen a \gls{smt} must also be a \gls{rmt} of its underlying
+topology. Finally we define Steiner trees. Steiner trees currently have two definitions
+which are not exactly identical.
 
+The first is the definition used by \textcite{gilbert1968}, combined with the
+definition for \glspl{fst} in \textcite{smith1992}, is as follows:
+%
+\begin{definition}[Steiner tree, \acrlong{fst}]
+  If a tree can be shortened no further even when splitting is allowed, the tree
+  is called a Steiner tree. If all of the original points\footnote{I.e.\ the
+    points not inserted when splitting. These are what we have so far referred
+    to as the terminals.} of a Steiner tree have degree 1 the tree is called a \acrlong{fst}.\label{def:steiner-tree}
+\end{definition}
+%
+Here the process of splitting referred to is exactly what we do when e.g.\
+inserting an extra point in the Fermat-Torricelli problem. Thus it follows
+pretty straightforward that a Steiner tree must also be a \gls{rmt} of the
+topology which describes it\footnote{Note that here we refer to the topology we
+  end up with after we cannot split any more points, and not the topology we
+  started out with.}. Furthermore any \gls{smt} must also be a Steiner tree, but not
+vice versa as illustrated by \cref{fig:steiner-smts}.
+%
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.6\textwidth]{gfx/tikz/steiner-smts}
+\caption[Here be dragons]{Here be dragons.\label{fig:steiner-smts}}
+\end{figure}
+%
+The other, and newer definition, used by \textcite{brazil2015} is as follows:
+%
+\begin{definition}[Steiner tree, \acrlong{fst}]
+  A non-degenerate (full) \gls{rmt} for a Steiner topology is called a (full)
+  Steiner tree.\label{def:steiner-tree2}
+\end{definition}
+%
+These definitions are not exactly identical as e.g.\ the last tree to the left in
+\cref{fig:steiner-smts} would no be a Steiner tree by
+\cref{def:steiner-tree2}\footnote{As it has a edge of length zero.}
+but would be by \cref{def:steiner-tree}. The similarities of the two definitions
+should however be obvious, and it also holds for both of the definitions that
+any \gls{smt} must be a Steiner tree, and that any Steiner tree must be a
+\gls{rmt} of its underlying topology.
 
-\TODO{}
+\section{Finding Steiner Trees in 2D}
+\label{sec:find-stein-trees-2}
 
-\section{Solving Steiner Trees in 2D}
-\label{sec:solv-stein-trees}
+This section describes some of the existing ways of finding Steiner trees in two
+dimensions, e.g.\ The Hwang-Melzak algorithm\missingref{} and
+GeoSteiner\missingref{}, and why these do not generalize to higher dimensions.
 
 \TODO[inline]{Write about Hwang-Melzak and GeoSteiner, maybe other?}
 
-\section{Other versions of the Steiner tree problem}
+\section{Finding Steiner Trees in $d$-space}
+\label{sec:find-stein-trees-d}
+
+\TODO[inline]{Write about Smith*, Smith+, BranchEnumerate, etc.}
+
+\section{Other Versions of the Steiner Tree Problem}
 \label{sec:other-vers-stein}
+
+This section describes some specialized versions of the Steiner tree problem.
 
 \TODO[inline]{Write about some of the other versions of the problem, e.g.\ fixed
  direction, and rectilinear. Maybe L1 metric.}
+
+\subsection{Rectilinear Steiner Trees}
+\label{sec:rect-stein-trees}
+
+\subsection{Fixed Orientation Steiner Trees}
+\label{sec:fixed-orient-stein}
 
 \chapterbreak{}
 

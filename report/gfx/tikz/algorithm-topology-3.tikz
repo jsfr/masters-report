@@ -5,9 +5,9 @@
 \node [reg={3}{left}](v3) at (0,0) {};
 \node [reg={4}{right}](v4) at (6,6) {};
 \node [reg={5}{left}](v5) at (3,6) {};
-\node [stein={N+1}{left}](vn1) at (2,2) {};
-\node [stein={N+2}{below}](vn2) at (4,2) {};
-\node [stein={N+3}{left}](vn3) at (5,4) {};
+\node [stein={n+1}{left}](vn1) at (2,2) {};
+\node [stein={n+2}{below}](vn2) at (4,2) {};
+\node [stein={n+3}{left}](vn3) at (5,4) {};
 \draw (v1) -- (vn1) node [midway,above] {1};
 \draw (v2) -- (vn2) node [midway,above] {2};
 \draw (v3) -- (vn1) node [midway,below] {3};
