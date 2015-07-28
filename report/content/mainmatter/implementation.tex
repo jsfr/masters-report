@@ -4,14 +4,35 @@
 \label{cha:implementation}
 }
 
-This chapter touches on parts of the implementation which are done differently
-from the implementation of \textcite{smith1992}.
+\TODO[inline]{Intro text}
 
-The new implementation is written in Googles, still relatively new, language
-Golang~\cite{golanghomepage}
+The new implementation has been written in the, still relatively new, language
+Go, which quoting the homepage: ``Go is an open source programming language that
+makes it easy to build simple, reliable, and efficient
+software.''~\cite{golanghomepage}. Go is a general-purpose, strongly typed and
+garbage-collected language. The syntax bears resemblance to to C\footnote{But
+  with a lot less braces, and no pointer arithmetic.}. Furthermore Go has
+explicit support for concurrent programming. The language furthermore sports
+extremely fast compiling of source code and in tries to have performance
+comparable to C.
 
-\TODO[inline]{Overview of the source code. What has been done where. About the
-  language etc. also expand the intro text.}
+The reasoning behind choosing Go for the new implementation were the following:
+Firstly I already had experience with the language making it easy to get to work
+on the new implementation without also having to learn a new programming
+language. Secondly the language has, in my opinion, a very clean syntax which
+makes it easily readable for anyone familiar with any C-syntax styled
+language. Thirdly the
+
+Finally the easy use of concurrency in Go\footnote{Starting a new goroutine
+  is as simple as writing: \texttt{go~SomeFunction~(args\ldots)}.} made it interesting as potential speedup could be achieved by
+making the the branching of the program concurrent.
+
+In general the implementation tries to follow guidelines given in
+\textcite{effectivego}.
+
+The new implementation, fixes for the old implementation and experiments can be
+found at \url{https://github.com/jsfr/SteinerExact}. The source
+code for just the new implementation is also included in \cref{cha:source-code}.
 
 \section{Building topologies}
 \label{sec:building-topologies}
@@ -69,7 +90,7 @@ promising results.}
 \label{sec:analyt-solut-ferm}
 
 An analytical solution for finding the Fermat-Torricelli point of three
-prespecified points is presented in~\cite{uteshev2012}, which is the same as
+prespecified points is presented by \textcite{uteshev2014}, which is the same as
 finding the Steiner point of those three points. The article presents a
 solution for two dimensions which will be described. However as we are dealing
 with  higher dimensions, a generalization of the solution, not presented
@@ -316,13 +337,13 @@ version of the proof is not known to have been presented in any paper before.
 
 The first change is that we no longer try to minimize a function of just two
 parameters, but instead we intend to minimize a function of $d$ parameters,
-where our points are contained in $\Re^d$, i.e.\ we have $d$ dimensions. As we
+where our points are contained in $\mathbb{R}^d$, i.e.\ we have $d$ dimensions. As we
 normally represent this using vectors, we would not actually have $d$
 parameters, but instead one parameter being a $d$-vector. Thus we wish to find a
-point $P_\ast = (x_{(\ast,1)}, x_{(\ast,2)}, \ldots, x_{(\ast,d)}) \in \Re^d$
+point $P_\ast = (x_{(\ast,1)}, x_{(\ast,2)}, \ldots, x_{(\ast,d)}) \in \mathbb{R}^d$
 which minimizes the following function for the three points
 $P_1 = (x_{(1,1)}, x_{(1,2)}, \ldots, x_{(1,d)}), P_2 = (x_{(2,1)}, x_{(2,2)},
-\ldots, x_{(2,d)}), P_3 = (x_{(3,1)}, x_{(3,2)}, \ldots, x_{(3,d)}) \in \Re^d$.
+\ldots, x_{(2,d)}), P_3 = (x_{(3,1)}, x_{(3,2)}, \ldots, x_{(3,d)}) \in \mathbb{R}^d$.
 %
 \begin{gather}
   \min_{(x_1, x_2, \ldots, x_d)} F(x_1, x_2, \ldots, x_d) \quad \text{for} \quad
@@ -331,7 +352,7 @@ $P_1 = (x_{(1,1)}, x_{(1,2)}, \ldots, x_{(1,d)}), P_2 = (x_{(2,1)}, x_{(2,2)},
   \\ \Updownarrow \\
   \label{eq:4}
   \min_{(P)} F(P) \quad \text{for} \quad
-  F(P) = \sum_{j=1}^3 m_j | P P_j |, \quad P \in \Re^d
+  F(P) = \sum_{j=1}^3 m_j | P P_j |, \quad P \in \mathbb{R}^d
 \end{gather}
 %
 Where $|P P_j|$ is the euclidean distance between $P$ and $P_j$. The point

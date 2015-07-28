@@ -12,8 +12,8 @@ used in the thesis, are:
 %
 \begin{itemize}
 \item Topologies and trees
-\item Steiner trees: \acrlongpl{fst}, \acrlongpl{smt}
-\item \acrlongpl{estp}
+\item Steiner trees: \aclp{fst}, \aclp{smt}
+\item \aclp{estp}
 \item Fermat-Torricelli point/problem
 \end{itemize}
 %
@@ -91,29 +91,29 @@ $d$-dimensional, and we then change the optimization problem to the following:
   \\ \Updownarrow \\
   \label{eq:4}
   \min_{(P)} F(P) \quad \text{for} \quad
-  F(P) = \sum_{j=1}^3 m_j | P P_j |, \quad P \in \Re^d
+  F(P) = \sum_{j=1}^3 m_j | P P_j |, \quad P \in \mathbb{R}^d
 \end{gather}
 %
 Solving the Fermat-Torricelli problem with even weights corresponds to solving
-the smallest possible instance of the \acrlong{estp}. The analytical solution
-presented by~\textcite{uteshev2014} and a generalization of it to $\Re^d$ is
+the smallest possible instance of the \acl{estp}. The analytical solution
+presented by~\textcite{uteshev2014} and a generalization of it to $\mathbb{R}^d$ is
 presented in \cref{sec:analyt-solut-ferm}.
 
 \section{The Euclidean Steiner Tree Problem}
 \label{sec:eucl-stein-tree}
 
 We firstly define a graph $G = (V(G), E(G))$ where the vertices $V(G)$ are
-points of the graph, $p \in V(G) \land p \in \Re^d$ and the edges $E(G)$ are
-straight lines connecting the points in $V(G)$. The euclidean length of edge $e \in
-E(G)$ we denote $|e|$.
+points of the graph, $V(G) \subset \mathbb{R}^d$ and the edges
+$E(G) \subset (\mathbb{Z}^{+} \times \mathbb{Z}^{+})$ are straight lines connecting the points in
+$V(G)$. The euclidean length of edge $e \in E(G)$ we denote $|e|$.
 
-The \gls{estp} is then defined as follows:
+The \ac{estp} is then defined as follows:
 %
 \begin{center}
   \begin{tabular}{rp{9cm}}
     \toprule
     \textbf{Given} & A set of points $R = \{ p_1, p_2, \ldots, p_n \}$ in
-                     $\Re^d$. \\
+                     $\mathbb{R}^d$. \\
     \textbf{Find} & A graph $T = (V(T), E(T))$ such that $R \subseteq V(T)$, and
                     $|T| = \sum_{e \in E(T)} |e|$ is minimized. \\
     \bottomrule
@@ -126,22 +126,22 @@ without disconnecting the graph or increasing the length.
 \section{Steiner Minimal Tree}
 \label{sec:steiner-minimal-tree}
 
-A \gls{smt} can be defined either as in~\textcite{brazil2015} or
+A \ac{smt} can be defined either as in~\textcite{brazil2015} or
 in~\textcite{smith1992}. These are equivalent and the the second can be proven
 to follow from the first. Thus we here present the first as the definition, and
 show how the properties which define the second follow. Thus:
 %
-\begin{definition}[\acrlong{smt}, Steiner points, terminals]
+\begin{definition}[\acl{smt}, Steiner points, terminals]
   A tree $T = (V(T), E(T))$ representing a solution to the Steiner tree problem
-  is called a \acrlong{smt}. The given points $R \subseteq V(T)$ are called
+  is called a \acl{smt}. The given points $R \subseteq V(T)$ are called
   terminals and possible extra vertices $S = V(T) \setminus R$ are called
   Steiner points.
 \end{definition}
 %
-It turns out that that a \gls{smt} has the following four properties which can
+It turns out that that a \ac{smt} has the following four properties which can
 also be used a definition:
 %
-\begin{definition}[\acrlong{smt}, Steiner points, terminals]
+\begin{definition}[\acl{smt}, Steiner points, terminals]
 \leavevmode\vspace{-\baselineskip}\par
 \begin{enumerate}
 \item It contains $n$ ``terminals'' $\vec{x}_1 \cdots \vec{x}_n$, and
@@ -238,61 +238,68 @@ underlying topology.
 We call any tree of some topology non-degenerate it all edges of the tree have
 non-zero length---otherwise the tree is called degenerate.
 
-We now define a Steiner topology, and a \gls{fstp} as the following
+We now define a Steiner topology, and a \ac{fstp} as the following
 %
-\begin{definition}[Steiner topology, \acrlong{fstp}]
-The topology of a non-degenerate \gls{smt} is called a Steiner topology. The
-topology of a non-degenerate \gls{smt} in which every terminal has degree 1 is
-called a \acrlong{fstp}.
+\begin{definition}[Steiner topology, \acl{fstp}]
+The topology of a non-degenerate \ac{smt} is called a Steiner topology. The
+topology of a non-degenerate \ac{smt} in which every terminal has degree 1 is
+called a \acl{fstp}.
 \end{definition}
 %
-Notice that a \gls{fstp} must necessarily have the most possible Steiner points
+Notice that a \ac{fstp} must necessarily have the most possible Steiner points
 so $ k = n - 2$. This can be seen by substituting $n_2 = n_3 = 0$ and $n_1 = n$
 in \cref{eq:22}.
 
 \section{Steiner trees}
 \label{sec:steiner-trees}
 
-Before defining Steiner trees we define \glspl{rmt} as in~\cite{gilbert1968}
+Before defining Steiner trees we define \acp{rmt} as in~\cite{gilbert1968}
 as:
 %
-\begin{definition}[\acrlong{rmt}]
-  A tree is called a \acrlong{rmt} if it is the shortest possible tree of its
+\begin{definition}[\acl{rmt}]
+  A tree is called a \acl{rmt} if it is the shortest possible tree of its
   underlying topology.
 \end{definition}
 %
-As can easily be seen a \gls{smt} must also be a \gls{rmt} of its underlying
+As can easily be seen a \ac{smt} must also be a \ac{rmt} of its underlying
 topology. Finally we define Steiner trees. Steiner trees currently have two definitions
 which are not exactly identical.
 
 The first is the definition used by \textcite{gilbert1968}, combined with the
-definition for \glspl{fst} in \textcite{smith1992}, is as follows:
+definition for \acp{fst} in \textcite{smith1992}, is as follows:
 %
-\begin{definition}[Steiner tree, \acrlong{fst}]
+\begin{definition}[Steiner tree, \acl{fst}]
   If a tree can be shortened no further even when splitting is allowed, the tree
   is called a Steiner tree. If all of the original points\footnote{I.e.\ the
     points not inserted when splitting. These are what we have so far referred
-    to as the terminals.} of a Steiner tree have degree 1 the tree is called a \acrlong{fst}.\label{def:steiner-tree}
+    to as the terminals.} of a Steiner tree have degree 1 the tree is called a \acl{fst}.\label{def:steiner-tree}
 \end{definition}
 %
 Here the process of splitting referred to is exactly what we do when e.g.\
 inserting an extra point in the Fermat-Torricelli problem. Thus it follows
-pretty straightforward that a Steiner tree must also be a \gls{rmt} of the
+pretty straightforward that a Steiner tree must also be a \ac{rmt} of the
 topology which describes it\footnote{Note that here we refer to the topology we
   end up with after we cannot split any more points, and not the topology we
-  started out with.}. Furthermore any \gls{smt} must also be a Steiner tree, but not
+  started out with.}. Furthermore any \ac{smt} must also be a Steiner tree, but not
 vice versa as illustrated by \cref{fig:steiner-smts}.
 %
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.6\textwidth]{gfx/tikz/steiner-smts}
-\caption[Here be dragons]{Here be dragons.\label{fig:steiner-smts}}
+\caption[Example of splitting and \acp{rmt}]{Example of how of splitting a
+  point and inserting a new Steiner point. The flow shows two of the paths
+  splitting could take on the shown topology down until no more splitting is
+  possible. Optimizing the two final topologies, both are obviously \acp{rmt}
+  of their underlying topology, but only the right one is a \ac{smt} as the
+  other topology is degenerate (the two Steiner points lie on top of each other
+  in the center). Thus if the original points are the terminals, only the last
+  right tree is a \ac{smt} for the original terminals.\label{fig:steiner-smts}}
 \end{figure}
 %
 The other, and newer definition, used by \textcite{brazil2015} is as follows:
 %
-\begin{definition}[Steiner tree, \acrlong{fst}]
-  A non-degenerate (full) \gls{rmt} for a Steiner topology is called a (full)
+\begin{definition}[Steiner tree, \acl{fst}]
+  A non-degenerate (full) \ac{rmt} for a Steiner topology is called a (full)
   Steiner tree.\label{def:steiner-tree2}
 \end{definition}
 %
@@ -301,8 +308,8 @@ These definitions are not exactly identical as e.g.\ the last tree to the left i
 \cref{def:steiner-tree2}\footnote{As it has a edge of length zero.}
 but would be by \cref{def:steiner-tree}. The similarities of the two definitions
 should however be obvious, and it also holds for both of the definitions that
-any \gls{smt} must be a Steiner tree, and that any Steiner tree must be a
-\gls{rmt} of its underlying topology.
+any \ac{smt} must be a Steiner tree, and that any Steiner tree must be a
+\ac{rmt} of its underlying topology.
 
 \section{Finding Steiner Trees in 2D}
 \label{sec:find-stein-trees-2}

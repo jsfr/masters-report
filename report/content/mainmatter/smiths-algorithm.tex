@@ -4,7 +4,7 @@
 
 % Short introduction to the chapter (max 1/2 page)
 
-The following chapter will introduce the algorithm for finding \glspl{smt} in
+The following chapter will introduce the algorithm for finding \acp{smt} in
 $d$-space, as proposed by \textcite{smith1992}.
 
 The chapter will mainly be concerned with the design of the algorithm, and the
@@ -49,8 +49,8 @@ solution space, and the approach described is simply to ``try all
 possibilities''.
 
 \citeauthor{smith1992} however avoids necessarily having to enumerate and optimize all
-topologies, by doing the following: Firstly he only looks at \glspl{fst} as it
-turns out we can regard any topology which is non-full, as a \gls{fst} where
+topologies, by doing the following: Firstly he only looks at \acp{fst} as it
+turns out we can regard any topology which is non-full, as a \ac{fst} where
 some points overlap.
 
 Secondly the algorithm builds the topologies, by a branching process where it
@@ -59,7 +59,7 @@ is then build all descendants having $4$ terminals (and $2$ Steiner
 points). Then again from each of these it builds the descendants having $5$
 terminals (and $3$ Steiner points) and etc.\ until it has built all descendants
 having $n$ terminals (and $n-2$ Steiner points). The idea behind this way of
-building the \glspl{fst} is to allow a branch-and-bound approach where we wish
+building the \acp{fst} is to allow a branch-and-bound approach where we wish
 to prune all descendants of a topology if we have a better upper bound than the
 length of the current topology. This process will be described more thoroughly
 in \cref{sec:generation}.
@@ -77,15 +77,15 @@ described in \cref{sec:optim-presp-topol}.
 The first step of the algorithm is to generate topologies. It is therefore
 natural that we need some way of representing and generating these topologies.
 
-The algorithm only considers \glspl{fst}, where $k = n - 2$. This simplification
+The algorithm only considers \acp{fst}, where $k = n - 2$. This simplification
 is allowed, as we can simply regard any Steiner tree with $k \le n - 2$ as a
-\gls{fst} where some edges have length zero and thus some points have
+\ac{fst} where some edges have length zero and thus some points have
 ``merged''.
 
-An incentive for only looking at \glspl{fst} can be found in \textcite{gilbert1968}
+An incentive for only looking at \acp{fst} can be found in \textcite{gilbert1968}
 which presents a table, here presented in \cref{tab:number-of-topologies},
 containing the number of possible Steiner topologies for different numbers of
-terminals and Steiner points. As can clearly be seen the number of \glspl{fst}
+terminals and Steiner points. As can clearly be seen the number of \acp{fst}
 (the diagonal) is a lot smaller than the total number of topologies. Thus not
 having to optimize the non-full topologies is clearly desirable.
 
@@ -107,17 +107,17 @@ having to optimize the non-full topologies is clearly desirable.
     terminals and $S$ Steiner points.\label{tab:number-of-topologies}}
 \end{table}
 
-Note however that even with this simplification the number of \glspl{fst} is
+Note however that even with this simplification the number of \acp{fst} is
 still exponential in $N$, which is clear from \cref{cor:number-of-fsts}.
 
 \subsection{Representation}
 \label{sec:representation}
 
-It turns out that every \gls{fst} can be represented using a vector, in
+It turns out that every \ac{fst} can be represented using a vector, in
 particular we utilize the following theorem put forth by \textcite{smith1992}
 
 \begin{theorem}
-  There is an 1--1 correspondence between \glspl{fst} with $n \ge 3$ terminals,
+  There is an 1--1 correspondence between \acp{fst} with $n \ge 3$ terminals,
   and $(n-3)$-vectors $\vec{a}$, whose $i$th entry $a_i$ is an integer between
   $1 \le a_i \le 2 i + 1$.
 \end{theorem}
@@ -126,10 +126,10 @@ Here terminals have indicies $1, 2, \ldots, n$, and Steiner points have indicies
 $n + 1, n + 2, \ldots, 2 n - 2$.
 
 The proof of this theorem is done constructively by induction on $n$. It is
-clear that the smallest \gls{fst}\footnote{This holds not only for \glspl{fst}
+clear that the smallest \ac{fst}\footnote{This holds not only for \acp{fst}
   but for any Steiner topology} we can construct, must have $n = 3$ as the
 number of Steiner points is $n - 2 = 1$. Thus we start with the initial null
-vector $\vec{a} = ()$ corresponding to the unique \gls{fst} for the terminals
+vector $\vec{a} = ()$ corresponding to the unique \ac{fst} for the terminals
 $\{1, 2, 3\}$ connected through the respective edges $\{1, 2, 3\}$ and one
 Steiner point $n+1$ as seen in \cref{fig:algorithm-topology-1}. After this
 first step, each entry of the topology vector is considered, one at a time,
@@ -155,22 +155,22 @@ regular point $i+3$.
     \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-3}
     \caption{Connecting point 5 on edge 4.\label{fig:algorithm-topology-3}}
   \end{subfigure}
-  \caption[Construction of FSTs]{Construction of the \glspl{fst} corresponding
+  \caption[Construction of FSTs]{Construction of the \acp{fst} corresponding
 to the vector $\vec{a} = (2, 4)$.\label{fig:algorithm-topologies}}
 \end{figure}
 
-Furthermore we get a corollary saying that the number of \glspl{fst} is
+Furthermore we get a corollary saying that the number of \acp{fst} is
 exponential in $n$
 
 \begin{corollary}
 \label{cor:number-of-fsts}
-The number of \glspl{fst} on $n$ terminals is
+The number of \acp{fst} on $n$ terminals is
 %
 \[
   1 \cdot 3 \cdot 5 \cdots (2n - 7) \cdot (2n - 5) = \prod_{i=0}^{n-3} 2i+1
 \]
 %
-I.e.\ the number of \glspl{fst} is exponential in $n$.
+I.e.\ the number of \acp{fst} is exponential in $n$.
 \end{corollary}
 
 Which is clear as we must insert $n-2$ Steiner points, where the null vector is
@@ -240,7 +240,7 @@ same. Furthermore upon optimizing the tree with the last point removed, we
 would either get a further shortening, or it would remain the same.
 
 The algorithm utilizes this to prune in the following way. Imagine we have
-found some upper bound for the \gls{smt}. If we then optimize any generated
+found some upper bound for the \ac{smt}. If we then optimize any generated
 topology vector which does not yet include all the terminals, and it turns out
 to have length greater than the upper bound, we can prune any topologies that we
 would have generated from this vector, as the length of the larger topologies
@@ -249,7 +249,7 @@ smaller than the length of the upper bound.
 
 This way of pruning means the algorithm must generate and optimize topologies
 depth-first to get a good upper bound as quickly as possible. If it was instead
-breadth-first, nothing would  be left to prune anything, as all the \glspl{fst}
+breadth-first, nothing would  be left to prune anything, as all the \acp{fst}
 would be the last topologies on which we optimize, and these are the only ones
 that can give a new upper bound.
 
@@ -285,11 +285,11 @@ choices we can make.
 \begin{algorithm}[htbp]
   \KwData{
     \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt,label=-,leftmargin=10pt]
-    \item A \gls{fst} containing the Steiner points $S$, terminals $R$, and edges $E$
+    \item A \ac{fst} containing the Steiner points $S$, terminals $R$, and edges $E$
     \item A small positive number $\epsilon$
     \end{itemize}
   }
-  \KwResult{The optimized \gls{fst}}
+  \KwResult{The optimized \ac{fst}}
   \ForEach{$s \in S$}{
     $\textit{error} \gets \infty$\;
     \While{$\textit{error} > \epsilon$}{
@@ -479,17 +479,17 @@ not been minimized.
   \caption[Possible problem with the error function]{The left part of the figure
     shows how the use of the current error function might result in a suboptimal
     tree. The right part of the figure shows the optimal tree. Notice that
-    this topology does not result in the \gls{smt} for these
+    this topology does not result in the \ac{smt} for these
     terminals.\label{fig:error-function}}
 \end{figure}
 
 Note however that the topology used in \cref{fig:error-function} is not the
-one which gives the \gls{smt} for the four terminals. The optimal topology
+one which gives the \ac{smt} for the four terminals. The optimal topology
 would have the top pair connected with one Steiner point, the two bottom
 terminals connected with another Steiner point, and those two Steiner points
 connected. This topology when optimized will not face the same problem, as the
 two Steiner points will not move towards each other. Thus it is still unclear
-whether this problem can occur with a topology which optimizes to a \gls{smt}.
+whether this problem can occur with a topology which optimizes to a \ac{smt}.
 Should this be the case then the algorithm cannot actually be considered an
 exact algorithm, but only a approximation algorithm.
 
@@ -623,7 +623,7 @@ if (q < STUB*0.99999) {
 }
 \end{c-code}
   \captionof{listing}[Error in \citeauthor{smith1992}'s implementation when outputting trees]{The
-    second conditional in the first code snippet may result in some \gls{smt}
+    second conditional in the first code snippet may result in some \ac{smt}
     being set as upper bound, but outputted. This is fixed by both of the two
     next snippets.\label{fig:if-clause-snippet}}
 \end{figure}
