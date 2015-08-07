@@ -1,9 +1,9 @@
 \begin{tabular}{|c|ccc|c|ccc|c|}
-  \multicolumn{1}{c}{$1$}
+  \multicolumn{1}{c}{$e_1$}
   & \multicolumn{3}{c}{ }
-  & \multicolumn{1}{c}{$i$}
+  & \multicolumn{1}{c}{$e_j$}
   & \multicolumn{3}{c}{ }
-  & \multicolumn{1}{c}{$2s + 1$}
+  & \multicolumn{1}{c}{$e_{2i-3}$}
   \\ \hhline{--~---~--}
   $(a,b)$
   & & \ldots
@@ -16,28 +16,33 @@
 \vspace{8ex}
 
 \begin{tabular}{|c|ccc|c|ccc|c|c|c|}
-  \multicolumn{1}{c}{$1$}
+  \multicolumn{1}{c}{$e_1$}
   & \multicolumn{3}{c}{ }
-  & \multicolumn{1}{c}{$i$}
+  & \multicolumn{1}{c}{$e_j$}
   & \multicolumn{3}{c}{ }
-  & \multicolumn{1}{c}{$2s+1$}
-  & \multicolumn{1}{c}{$2s+2$}
-  & \multicolumn{1}{c}{$2s+3$}
+  & \multicolumn{1}{c}{$e_{2i-3}$}
+  & \multicolumn{1}{c}{$e_{2i-2}$}
+  & \multicolumn{1}{c}{$e_{2i-1}$}
   \\ \hhline{--~---~----}
   $(a,b)$
   & & \ldots
-  & & \cellcolor{SkyBlue} \tikzmark{b} $(c,s+1)$
+  & & \cellcolor{SkyBlue} \tikzmark{b} $(c,n+i)$
   & & \ldots
   & & $(e,f)$
-  & \cellcolor{SkyBlue} \tikzmark{c} $(d,s+1)$
-    & \cellcolor{SkyBlue} \tikzmark{d} $(g,s+1)$
+  & \cellcolor{SkyBlue} \tikzmark{c} $(d,n+i)$
+    & \cellcolor{SkyBlue} \tikzmark{d} $(i+1,n+i)$
   \\ \hhline{--~---~----}
 \end{tabular}
 
-\begin{tikzpicture}[overlay, remember picture, yshift=-1.5ex, xshift=2em]
-  \draw [-{Latex[length=2mm,width=2mm]},semithick] ({pic cs:a}) [bend right] to ([yshift=6.5ex]{pic cs:b});
-  \draw [-{Latex[length=2mm,width=2mm]},semithick] ({pic cs:a}) [out=-70, in=110] to ([yshift=6.5ex]{pic cs:c});
-  \draw [-{Latex[length=2mm,width=2mm]},semithick] ({pic cs:a}) [out=-20, in= 120] to ([yshift=6.5ex]{pic cs:d});
+\begin{tikzpicture}[overlay, remember picture, yshift=-1.5ex, xshift=1em]
+  \draw [-{Latex[length=2mm,width=2mm]},semithick]
+  ({pic cs:a}) [out=-110, in=70] to ([yshift=6.5ex,xshift=1em]{pic cs:b});
+
+  \draw [-{Latex[length=2mm,width=2mm]},semithick]
+  ({pic cs:a}) [out=-70, in=110] to ([yshift=6.5ex,xshift=1em]{pic cs:c});
+
+  \draw [-{Latex[length=2mm,width=2mm]},semithick]
+  ({pic cs:a}) [out=-20, in=120] to ([yshift=6.5ex,xshift=1em]{pic cs:d});
 \end{tikzpicture}
 
 %%% Local Variables:

@@ -6,9 +6,9 @@
 
 \TODO[inline]{Intro text}
 
-The new implementation has been written in the, still relatively new, language
-Go, which quoting the homepage: ``Go is an open source programming language that
-makes it easy to build simple, reliable, and efficient
+The new implementation has been written in the, still relatively new but at this
+point stable, language Go, which quoting the homepage: ``Go is an open source
+programming language that makes it easy to build simple, reliable, and efficient
 software.''~\cite{golanghomepage}. Go is a general-purpose, strongly typed and
 garbage-collected language. The syntax bears resemblance to to C\footnote{But
   with a lot less braces, and no pointer arithmetic.}. Furthermore Go has
@@ -23,9 +23,10 @@ language. Secondly the language has, in my opinion, a very clean syntax which
 makes it easily readable for anyone familiar with any C-syntax styled
 language. Thirdly the
 
-Finally the easy use of concurrency in Go\footnote{Starting a new goroutine
-  is as simple as writing: \texttt{go~SomeFunction~(args\ldots)}.} made it interesting as potential speedup could be achieved by
-making the the branching of the program concurrent.
+Finally the easy use of concurrency in Go\footnote{Starting a new goroutine is
+  as simple as writing: \texttt{go~SomeFunction~(args\ldots)}.} made it
+interesting as potential speedup could be achieved by making the branching
+of the program concurrent.
 
 In general the implementation tries to follow guidelines given in
 \textcite{effectivego}.
@@ -34,53 +35,78 @@ The new implementation, fixes for the old implementation and experiments can be
 found at \url{https://github.com/jsfr/SteinerExact}. The source
 code for just the new implementation is also included in \cref{cha:source-code}.
 
+\section{Overview}
+\label{sec:overview-1}
+
+\subsection{Architecture}
+\label{sec:architecture}
+
 \section{Building topologies}
 \label{sec:building-topologies}
 
-In Smiths implementation of the algorithm when generating topologies every new
-topology is rebuilt completely from the bottom. E.g.\ say that we have just
-optimized the topology corresponding to the topology vector $A_1 = (1, 2)$. If we
-now wish to optimize the topology vector $A_2 = (1, 2, 3)$. In the old
-implementation $A_2$ would have to be built again from scratch instead of simply
-splitting and building on to $A_1$. To try and do this is in a slightly more
-clever way the new implementation is instead able to either split or restore a
-topology, thus from $A_1$ we could either split an edge and get $A_2$, or any
-other length three topology vector, or we could restore and go back from $A_1$
-to $A_0 = (1)$\footnote{From $A_0$ we could then either split again to e.g.\ the
-next length two topology vector $A_1' = (1, 3)$ or restore once again.}
+In \textcite{smith1992} implementation of the algorithm when generating
+topologies every new topology is rebuilt completely from the bottom. E.g.\ say
+that we have just optimized the topology corresponding to the topology vector
+$A_1 = (1, 2)$. If we now wish to optimize the topology vector
+$A_2 = (1, 2, 3)$. In the old implementation $A_2$ would have to be built again
+from scratch instead of simply splitting and building on to $A_1$. To try and do
+this is in a slightly more clever way the new implementation is instead able to
+either split or restore a topology, thus from $A_1$ we could either split an
+edge and get $A_2$, or any other length three topology vector having $A_1$ as a
+prefix, or we could restore and go back from $A_1$ to $A_0 = (1)$\footnote{From
+  $A_0$ we could then either split again to e.g.\ the next length two topology
+  vector $A_1' = (1, 3)$ or restore once again.}
 
 The way this is implemented is a follows: All edges of the tree is kept in an
-list, and edge being represented as the tuple $(j, k)$ meaning it starts at
-point $j$ and ends at point $k$. Say we wish to split edge $i = (c,d)$ and
-connect terminal $g$ into the topology. At this point we have currently $s$
-Steiner points in the topology already, and thus $2s+1$ edges. We first change
-the original edge to go from the first end point $c$ to a new Steiner point
-$s+1$. Afterwards we append two new edges to the list of edges,$(d, s+1)$ and
-$(g, s+1)$. This process is straight forward and if the accessing into the list
-and appending\footnote{which is both the case if enough space is allocated for
-  the list ahead of the appending.} is $\mathcal{O}(1)$ then the entire
-operation will be $\mathcal{O}(1)$. The operation can be seen in
+list, and edge being represented as the tuple $(a, b)$ meaning it starts at
+point $p_a$ and ends at point $p_b$. Say we have $n$ terminals in all, and have
+currently connected the $i$ first terminals. This means we $i-2$ Steiner points
+continuously enumerated from $n+1$ up to $n+i-1$ and $2i-3$ edges enumerated
+continuously from $1$.
+
+Now we wish to split some edge $e_j = (c, d)$ where $1 \le j \le 2i-3$, so any
+of the existing edges, and connect the next terminal $p_{i+1}$ to the existing
+topology. We do this by first changing the original edge to go from the first
+end point $p_c$ to a new Steiner point $p_{n+i}$. Afterwards we append two new
+edges to the list of edges, $e_{2i-2} = (d, n+i)$ and $e_{2i-1} = (i+1, n+i)$
+thus connecting $p_d$ and $p_{i+1}$ to Steiner point $p_{n+i}$ as well. This
+process is straight forward and if the accessing into the list and
+appending\footnote{which is both the case if enough space is allocated for the
+  list ahead of the appending.} is $\mathcal{O}(1)$ then the entire operation
+will be $\mathcal{O}(1)$. The operation can be seen in
 \cref{fig:splitting-topology}. In this way we can expand the topology one
 terminal at a time without rebuilding every time.
 
 \begin{figure}[htbp]
   \centering
   \input{gfx/splitting-topology}
-  \caption[Implementation of topology splitting]{Splitting on edge $i$ with $s$ Steiner points before the
-    split results in two new edges $2s+2$ and $2s+3$ and a change of the existing edge $i$. Finally we
-  also get the new Steiner point $s + 1$.\label{fig:splitting-topology}}
+  \caption[Implementation of topology splitting]{Splitting on edge $e_j$ with
+    $i$ terminals currently connected, results in two new edges $e_{2i-2}$ and
+    $e_{2i-1}$ and a change of the existing edge $e_j$. Finally we also get the new
+    Steiner point $n+i$.\label{fig:splitting-topology}}
 \end{figure}
 
 The reason for this way of expanding the topology however lies with the wish to
 also restore an edge. If we keep a list of all the edges we split
 on\footnote{which we do, as this is the topology vector described in
   \cref{sec:representation}.} we can always restore the last edge split in the
-following way. Select the last two edges, $(d, s+1), (g, s+1)$ in the list and
-the edge $i = (c, s+1)$. Now change edge $i$ to $(c, d)$ and remove the last
+following way. Select the last two edges, $(d, n+i), (i+1, n+i)$ in the list and
+the edge $e_j = (c, n+i)$. Now change edge $e_j$ to $(c, d)$ and remove the last
 two edges in the list. Thus we have $\mathcal{O}(1)$ methods for splitting and
 restoring the topology, in a way which is consistent in the numbering with the
 one described in \cref{sec:representation} and shown in
 \cref{fig:algorithm-topologies}.
+
+\subsection{Order of building and optimizing}
+\label{sec:order-build-optim}
+
+When going over the implementation done by \citeauthor{smith1992} a thing that
+stroke me as odd initially was the way in which \citeauthor{smith1992} keeps
+track of which topology vectors has been tried, and how he choses which to try
+next.
+
+\TODO[inline]{Describe how he does this, with the stack, why it seems like a
+  waste, and why it is actually VERY GOOD!}
 
 \TODO[inline]{Naive approach when building and pruning significantly increases run
 time. Explain Smiths approach with a stack sorted on the best seen/most
@@ -89,35 +115,42 @@ promising results.}
 \section{Analytical solution to the Fermat-Torricelli problem}
 \label{sec:analyt-solut-ferm}
 
+\TODO[inline]{Refactor this section and move the 2D proof to appendix. Then
+  instead describe the unweighted version also presented by uteshev. Afterwards
+  consider either simplifying the d-space proof to unweighted or refactor it as
+  well.}
+
 An analytical solution for finding the Fermat-Torricelli point of three
 prespecified points is presented by \textcite{uteshev2014}, which is the same as
 finding the Steiner point of those three points. The article presents a
-solution for two dimensions which will be described. However as we are dealing
-with  higher dimensions, a generalization of the solution, not presented
-in~\cite{uteshev2014}, will also be described.
+solution for two dimensions which will be described. However as we are working
+in $\mathbb{R}^d$ a generalization of the solution to higher dimensions will
+also be presented. This generalization is as far as I know, not presented
+anywhere else in the literature.
 
-The reason this is interesting is that Smith mentions a iterative process which
-updates points one at a time would no be as quick to converge as the one he
-presents. There is however no experiments in the paper to support this. Thus
-this analytical method is interesting, as it is actually not computationally
-heavy to compute the the location of a Steiner point, and as each optimization
-moves a point to the, at that time, exact location it needs to be to minimize
-the length. One could therefore think that this might converge quite fast.
+The reason this is interesting is that \textcite{smith1992} mentions an
+iterative process which updates points one at a time would no be as quick to
+converge as the one he presents. There is however no experiments in the paper to
+support this. Thus this analytical method is interesting, as it is actually not
+computationally heavy to compute the location of a Steiner point, and as
+each optimization moves a point to the, at that time, exact location it needs to
+be to minimize the length. One could therefore think that this might converge
+quite fast.
 
-In the code a optimization method using the analytical method has been
-implemented. One can switch from Smith's method to the analytical one by giving
-the flag \texttt{-iteration=simple} on the command-line\footnote{as opposed to
-  either having no flag or having \texttt{-iteration=smith} which both uses
-  Smith's iteration}.
+An optimization method using the analytical method has been implemented in the
+new implementation. To use this instead of \citeauthor{smith1992}'s iteration
+give the flag \texttt{-iteration=simple} on the command-line\footnote{as opposed
+  to either having no flag or having \texttt{-iteration=smith} which both uses
+  \citeauthor{smith1992}'s iteration.}.
 
 \subsection{2D}
 \label{sec:2d}
 
-The solution for two dimensions is presented in~\cite{uteshev2014}. The solution
-presented is for the generalized Fermat-Torricelli problem, which given three
-noncolinear points $P_1 = (x_1, y_1)$, $P_2 = (x_2, y_2)$ and $P_3 = (x_3, y_3)$
-in the plane, finds the point $P_\ast = (x_\ast, y_\ast)$ which gives a solution
-to the optimization problem
+The solution for two dimensions is presented by \textcite{uteshev2014} is for
+the generalized Fermat-Torricelli problem, which given three non-colinear points
+$p_1 = (x_1, y_1)$, $p_2 = (x_2, y_2)$ and $p_3 = (x_3, y_3)$ in the plane,
+finds the point $p_\ast = (x_\ast, y_\ast)$ which gives a solution to the
+optimization problem
 %
 \begin{equation}
   \min_{(x,y)} F(x,y) \quad \text{for} \quad F(x,y) = \sum_{j=1}^3 m_j
@@ -127,8 +160,8 @@ to the optimization problem
 Where the weight of point $j$th point, $m_j$, is a real positive number. The
 instance where $m_1 = m_2 = m_3 = 1$ is exactly the classical Fermat-Torricelli
 problem, which has a unique solution either coinciding with one of the points
-$P_1$, $P_2$, $P_3$ or with the Fermat-Torricelli or Steiner point of the
-triangle $P_1 P_2 P_3$. The instance with unequal weights is known as the
+$p_1$, $p_2$, $p_3$ or with the Fermat-Torricelli or Steiner point of the
+triangle $p_1 p_2 p_3$. The instance with unequal weights is known as the
 generalized Fermat-Torricelli point.
 
 Existence and uniqueness of the solution is guaranteed by
@@ -136,8 +169,9 @@ Existence and uniqueness of the solution is guaranteed by
 %
 \begin{theorem}
 \label{thm:fermat-torricelli}
-  Denote the corner angles of the triangle $P_1 P_2 P_3$ by $\alpha_1, \alpha_2,
+  Denote the corner angles of the triangle $p_1 p_2 p_3$ by $\alpha_1, \alpha_2,
   \alpha_3$. Then if the conditions
+  %
   \begin{equation}
     \label{eq:12}
     \left\{
@@ -148,17 +182,21 @@ Existence and uniqueness of the solution is guaranteed by
       \end{array}
     \right.
   \end{equation}
+
   \TODO[inline]{Describe these equations and from where they come.}
-  are fulfilled then there exists a unique solution $P_\ast = (x_\ast, y_\ast)
+
+  are fulfilled then there exists a unique solution $p_\ast = (x_\ast, y_\ast)
   \in \mathbb{R}^2$ for the generalized Fermat-Torricelli problem lying inside
-  the triangle $P_1 P_2 P_3$. This point is a stationary point for the function
+  the triangle $p_1 p_2 p_3$. This point is a stationary point for the function
   $F(x,y)$, i.e.\ a real solution of the system
   \begin{equation}
     \label{eq:13}
     \sum_{j=1}^3 \frac{m_j(x-x_j)}{\sqrt{{(x-x_j)}^2 + {(y - y_j)}^2}} = 0, \quad
     \sum_{j=1}^3 \frac{m_j(y-y_j)}{\sqrt{{(x-x_j)}^2 + {(y - y_j)}^2}} = 0.
   \end{equation}
+
   \TODO[inline]{Describe these equations and from where they come.}
+
   If any of the conditions in \cref{eq:12} is violated then $F(x,y)$ attains its
   minimum value at the corresponding vertex of triangle.
 \end{theorem}
@@ -178,7 +216,7 @@ in \cref{eq:12} are fulfilled, is done as follows
   \sigma = \frac{1}{2} \sqrt{-m_1^4 - m_2^4 - m_3^4
     + 2 m_1^2 m_2^2 + 2 m_1^2 m_3^2 + 2 m_2^2 m_3^2} \\
   \label{eq:1}
-  r_{jl} = \sqrt{{(x_j - x_l)}^2 + {(y_j - y_l)}^2} = |P_j P_l|
+  r_{jl} = \sqrt{{(x_j - x_l)}^2 + {(y_j - y_l)}^2} = |p_j p_l|
   \quad \{j,l\} \in \{ 1, 2, 3 \} \\
   \label{eq:20}
   S = | x_1 y_2 + x_2 y_3 + x_3 y_1 - x_1 y_3 -x_3 y_2 - x_2 y_1 | \\
@@ -195,9 +233,10 @@ in \cref{eq:12} are fulfilled, is done as follows
   d = \frac{1}{2 \sigma} (m_1^2 K_1 + m_2^2 K_2 + m_3^2 K_3) \\
 \end{gather}
 
+\begin{proof}
 To prove \cref{eq:15} the first step is to prove the two following
 equations\footnote{Note that all the following calculations can also be found
-  in~\cite{uteshev2014}, however as these are a bit convoluted they are also
+  in \textcite{uteshev2014}, however as these are a bit convoluted they are also
   presented with a few clarifying intermediate calculations}
 %
 \begin{align}
@@ -326,6 +365,7 @@ prove \cref{eq:11}
   &\stackrel{\mathclap{(\ref{eq:20})}}{=}
     \frac{2 \sigma d}{2 \sigma \sqrt{d}} = \sqrt{d}
 \end{align}
+\end{proof}
 
 \subsection{Generalization to higher dimensions}
 \label{sec:gener-high-dimens}
@@ -340,10 +380,10 @@ parameters, but instead we intend to minimize a function of $d$ parameters,
 where our points are contained in $\mathbb{R}^d$, i.e.\ we have $d$ dimensions. As we
 normally represent this using vectors, we would not actually have $d$
 parameters, but instead one parameter being a $d$-vector. Thus we wish to find a
-point $P_\ast = (x_{(\ast,1)}, x_{(\ast,2)}, \ldots, x_{(\ast,d)}) \in \mathbb{R}^d$
+point $p_\ast = (x_{(\ast,1)}, x_{(\ast,2)}, \ldots, x_{(\ast,d)}) \in \mathbb{R}^d$
 which minimizes the following function for the three points
-$P_1 = (x_{(1,1)}, x_{(1,2)}, \ldots, x_{(1,d)}), P_2 = (x_{(2,1)}, x_{(2,2)},
-\ldots, x_{(2,d)}), P_3 = (x_{(3,1)}, x_{(3,2)}, \ldots, x_{(3,d)}) \in \mathbb{R}^d$.
+$p_1 = (x_{(1,1)}, x_{(1,2)}, \ldots, x_{(1,d)}), p_2 = (x_{(2,1)}, x_{(2,2)},
+\ldots, x_{(2,d)}), p_3 = (x_{(3,1)}, x_{(3,2)}, \ldots, x_{(3,d)}) \in \mathbb{R}^d$.
 %
 \begin{gather}
   \min_{(x_1, x_2, \ldots, x_d)} F(x_1, x_2, \ldots, x_d) \quad \text{for} \quad
@@ -351,28 +391,28 @@ $P_1 = (x_{(1,1)}, x_{(1,2)}, \ldots, x_{(1,d)}), P_2 = (x_{(2,1)}, x_{(2,2)},
     x_{(j,i)})}^2 }
   \\ \Updownarrow \\
   \label{eq:4}
-  \min_{(P)} F(P) \quad \text{for} \quad
-  F(P) = \sum_{j=1}^3 m_j | P P_j |, \quad P \in \mathbb{R}^d
+  \min_{(p)} F(p) \quad \text{for} \quad
+  F(p) = \sum_{j=1}^3 m_j | p p_j |, \quad p \in \mathbb{R}^d
 \end{gather}
 %
-Where $|P P_j|$ is the euclidean distance between $P$ and $P_j$. The point
-$P_\ast$ now no longer has to be a solution to the equation system in
+Where $|p p_j|$ is the euclidean distance between $p$ and $p_j$. The point
+$p_\ast$ now no longer has to be a solution to the equation system in
 \cref{eq:13}, but to a similar system containing $d$ equations, as follows
 %
 \begin{equation}
 \label{eq:7}
   \left.
     \begin{array}{c}
-    \sum_{j=1}^3 \frac{m_j(x_1-x_{(j,1)})}{| P P_j|} = 0
+    \sum_{j=1}^3 \frac{m_j(x_1-x_{(j,1)})}{| p p_j|} = 0
     \\
-    \sum_{j=1}^3 \frac{m_j(x_2-x_{(j,2)})}{| P P_j|} = 0
+    \sum_{j=1}^3 \frac{m_j(x_2-x_{(j,2)})}{| p p_j|} = 0
     \\
     \vdots
     \\
-    \sum_{j=1}^3 \frac{m_j(x_d-x_{(j,d)})}{| P P_j|} = 0
+    \sum_{j=1}^3 \frac{m_j(x_d-x_{(j,d)})}{| p p_j|} = 0
   \end{array}
   \right\} =
-  \sum_{j=1}^3 \frac{m_j (P - P_j)}{| P P_j |} = \vec 0
+  \sum_{j=1}^3 \frac{m_j (p - p_j)}{| p p_j |} = \vec 0
 \end{equation}
 %
 Then as before, if the conditions in \cref{eq:12} are fulfilled\footnote{If not
@@ -380,14 +420,14 @@ Then as before, if the conditions in \cref{eq:12} are fulfilled\footnote{If not
 \cref{eq:7} can be found as follows
 %
 \begin{gather}
-  P_\ast = (x_{(\ast,1)}, x_{(\ast,2)}, \ldots, x_{(\ast,d)})\label{eq:8}
+  p_\ast = (x_{(\ast,1)}, x_{(\ast,2)}, \ldots, x_{(\ast,d)})\label{eq:8}
   \intertext{with}
   x_{(\ast, j)} = \frac{K_1 K_2 K_3}{4 S \sigma d} \left( \frac{x_{(1,j)}}{K_1} +
   \frac{x_{(2,j)}}{K_2} + \frac{x_{(3,j)}}{K_3} \right), \quad 0 < j \le d\label{eq:5}
   \intertext{and}
-  F(P_\ast) = \min_{(P)} F(P) = \sqrt{d}\label{eq:21}
+  F(p_\ast) = \min_{(p)} F(p) = \sqrt{d}\label{eq:21}
   \intertext{Here}
-  \label{eq:14} r_{jl} = \sqrt{\sum_{i = 1}^d {(x_{(j,i)} - x_{(l,i)})}^2} = |P_j P_l|
+  \label{eq:14} r_{jl} = \sqrt{\sum_{i = 1}^d {(x_{(j,i)} - x_{(l,i)})}^2} = |p_j p_l|
   \quad \{j,l\} \in \{ 1, 2, 3 \} \\
   S = \frac{1}{2} \sqrt{(r_{12} + r_{23} + r_{13}) (r_{23} + r_{13}) (r_{12} +
     r_{13}) (r_{12} + r_{23})} \\
@@ -400,6 +440,7 @@ two dimensional version. $S$ however looks quite different.
 
 \TODO[inline]{Explain how these two S are the same, and maybe give Pawel credit for this one?}
 
+\begin{proof}
 As before to prove \cref{eq:5} (and thus \cref{eq:8}) the first step once again
 is to prove \cref{eq:16} and \cref{eq:2}. These can as before be established
 through direct computation, i.e.\ by simply substituting the expressions for
@@ -473,17 +514,21 @@ From here we can that \cref{eq:5} is a solution to \cref{eq:7} in the exact same
 we proved that \cref{eq:15} was a solution to \cref{eq:13}, by substituting
 \cref{eq:5} into \cref{eq:7} and using \cref{eq:10} and \cref{eq:19}. The same
 goes for proving \cref{eq:21}.
+\end{proof}
 
 \section{Sorting points}
 \label{sec:sorting-points}
+
+\TODO[inline]{Describe the existing methods used with sorting points, and give a
+reason/explanation for the one tried here. Possibly also discuss/suggest other
+alternative such as e.g.\ picking the first two that are farthest apart.}
 
 Sorting the terminals in one way or the other before starting to build
 topologies and optimizing them has been proposed by \textcite{smith1992} and at
 least two different kinds of sorting has been implemented by
 \textcite{fonseca2014,vanlaarhoven2013}. Both methods have shown promising
 results regarding the number of trees one needs to optimize actually optimize in
-contrast to not sorting the terminals.\NOTE{Maybe give some reason for
-  suggesting another method, like it is simpler?} Here another method is
+contrast to not sorting the terminals. Here another method is
 proposed which is relatively similar to the one proposed and implemented
 in~\cite{fonseca2014}, but simpler and requiring fewer steps.
 
