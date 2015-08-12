@@ -534,7 +534,7 @@ in~\cite{fonseca2014}, but simpler and requiring fewer steps.
 
 The method proposed in~\cite{fonseca2014} corresponds to solving the problem of
 finding the longest path in a fully connected graph, where the graph consists of
-all the terminals. This problem however is NP-complete\missingref{} and thus
+all the terminals. This problem however is NP-hard\missingref{}~and thus
 it might be an idea instead to approximate this in a greedy manner.
 
 The first terminal remains the same as the unsorted one. All following terminals
@@ -544,8 +544,6 @@ $[1, 2, 3, 4, 5, 6]$. These would be sorted as $[1, 6, 2, 5, 3, 4]$.
 
 Sorting the points using the described method can be done by passing the flag
 \texttt{-sort} on the command-line.
-
-\chapterbreak{}
 
 %%% Local Variables:
 %%% mode: latex

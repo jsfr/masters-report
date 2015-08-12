@@ -106,8 +106,9 @@ presented in \cref{sec:analyt-solut-ferm}.
 
 We firstly define a graph $G = (V(G), E(G))$ where the vertices $V(G)$ are
 points of the graph, $V(G) \subset \mathbb{R}^d$ and the edges
-$E(G) \subset (\mathbb{Z}^{+} \times \mathbb{Z}^{+})$ are straight lines connecting the points in
-$V(G)$. The euclidean length of edge $e \in E(G)$ we denote $|e|$.
+$E(G) \subset (\mathbb{Z}^{+} \times \mathbb{Z}^{+})$ are straight lines
+connecting the points in $V(G)$. The euclidean length of edge $e \in E(G)$ we
+denote $|e|$.
 
 The \ac{estp} is then defined as follows:
 %
@@ -128,10 +129,7 @@ without disconnecting the graph or increasing the length.
 \section{Steiner Minimal Tree}
 \label{sec:steiner-minimal-tree}
 
-A \ac{smt} can be defined either as in~\textcite{brazil2015} or
-in~\textcite{smith1992}. These are equivalent and the second can be proven
-to follow from the first. Thus we here present the first as the definition, and
-show how the properties which define the second follow. Thus:
+We define a \ac{smt} as in \textcite{brazil2015}, which is as follows:
 %
 \begin{definition}[\acl{smt}, Steiner points, terminals]
   A tree $T = (V(T), E(T))$ representing a solution to the Steiner tree problem
@@ -140,35 +138,128 @@ show how the properties which define the second follow. Thus:
   Steiner points.
 \end{definition}
 %
-It turns out that that a \ac{smt} has the following four properties which can
-also be used as a definition:
+The definition used by \textcite{smith1992} is simply that a \ac{smt} on $n$
+points is the shortest tree containing the points. This definition, while being
+a bit more convoluted, is essentially the same as the one given by
+\textcite{brazil2015}. Thus we use that definition as it is more verbose and
+gives a definition of Steiner points and terminals as well.
+
+\section{Topologies}
+\label{sec:topologies-1}
+
+A topology is the combinatorial structure of a tree, or other form of geometric
+network. This means that in a topology only the adjacencies of points
+matter. Thus we could represent the topology of the tree $G = (V(G), E(G))$ as
+just the edges of the tree $E(G)$. Thus any graph (and tree) has an
+underlying topology.
+
+We call any tree of some topology non-degenerate if all edges of the tree have
+non-zero length---otherwise the tree is called degenerate.
+
+We now define a Steiner topology, and a full Steiner topology as the following
 %
-\begin{definition}[\acl{smt}, Steiner points, terminals]
+\begin{definition}[Steiner topology, full Steiner topology]
+The topology of a non-degenerate \ac{smt} is called a Steiner topology. The
+topology of a non-degenerate \ac{smt} in which every terminal has degree 1 is
+called a full Steiner topology.
+\end{definition}
+%
+Notice that a full Steiner topology must necessarily have the most possible
+Steiner points so $ k = n - 2$. This can be seen by substituting $n_2 = n_3 = 0$
+and $n_1 = n$ in \cref{eq:22}.
+
+\section{Steiner trees}
+\label{sec:steiner-trees}
+
+Before defining Steiner trees we define \acp{rmt} as in~\cite{gilbert1968}
+as:
+%
+\begin{definition}[\acl{rmt}]
+  A tree is called a \acl{rmt} if it is the shortest possible tree of its
+  underlying topology.
+\end{definition}
+%
+As can easily be seen a \ac{smt} must also be a \ac{rmt} of its underlying
+topology. Finally we define Steiner trees. Steiner trees currently have two
+definitions which are not exactly identical.
+
+The first is the definition used by \textcite{gilbert1968}, combined with the
+definition for \acp{fst} in \textcite{smith1992}, is as follows:
+%
+\begin{definition}[Steiner tree, \acl{fst}]
+  If a tree can be shortened no further even when splitting is allowed, the tree
+  is called a Steiner tree. If all of the original points\footnote{I.e.\ the
+    points not inserted when splitting. These are what we have so far referred
+    to as the terminals.} of a Steiner tree have degree 1 the tree is called a
+  \acl{fst}.\label{def:steiner-tree}
+\end{definition}
+%
+Here the process of splitting referred to is exactly what we do when e.g.\
+inserting an extra point in the Fermat-Torricelli problem. Thus it follows
+pretty straightforward that a Steiner tree must also be a \ac{rmt} of the
+topology which describes it\footnote{Note that here we refer to the topology we
+  end up with after we cannot split any more points, and not the topology we
+  started out with.}. Furthermore any \ac{smt} must also be a Steiner tree, but
+not vice versa as illustrated by \cref{fig:steiner-smts}.
+%
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.6\textwidth]{gfx/tikz/steiner-smts}
+\caption[Example of splitting and \acp{rmt}]{Example of how of splitting a point
+  and inserting a new Steiner point. The flow shows two of the paths splitting
+  could take on the shown topology down until no more splitting is
+  possible. Optimizing the two final topologies, both are obviously \acp{rmt} of
+  their underlying topology, but only the right one is a \ac{smt} as the other
+  topology is degenerate (the two Steiner points lie on top of each other in the
+  center). Thus if the original points are the terminals, only the last right
+  tree is a \ac{smt} for the original terminals.\label{fig:steiner-smts}}
+\end{figure}
+%
+The other, and newer definition, used by \textcite{brazil2015} is as follows:
+%
+\begin{definition}[Steiner tree, \acl{fst}]
+  A non-degenerate (full) \ac{rmt} for a Steiner topology is called a (full)
+  Steiner tree.\label{def:steiner-tree2}
+\end{definition}
+%
+These definitions are not exactly identical as e.g.\ the last tree to the left
+in \cref{fig:steiner-smts} would not be a Steiner tree by
+\cref{def:steiner-tree2}\footnote{As it has an edge of length zero.}  but would
+be by \cref{def:steiner-tree}. The similarities of the two definitions should
+however be obvious, and it also holds for both of the definitions that any
+\ac{smt} must be a Steiner tree, and that any Steiner tree must be a \ac{rmt} of
+its underlying topology.
+
+Finally there is also the definition used by
+\textcite{smith1992}, which defines a Steiner tree, by some properties which is
+must also have for it to satisfy the above definitions. This is as follows
+%
+\begin{definition}[Steiner tree]
 \leavevmode\vspace{-\baselineskip}\par
 \begin{enumerate}
-\item It contains $n$ ``terminals'' $R = \{ p_1, p_2, \ldots, p_n \} \in \mathbb{R}^d$, and
- possibly $k$ additional ``Steiner points'' $S = \{ p_{n+1}, \ldots, p_{n+k} \} \in \mathbb{R}^d$.
+\item It contains $n$ terminals
+  $R = \{ p_1, p_2, \ldots, p_n \} \in \mathbb{R}^d$, and possibly $k$
+  additional Steiner points
+  $S = \{ p_{n+1}, \ldots, p_{n+k} \} \in \mathbb{R}^d$.
 \item Each Steiner point has degree $3$, the edges emanating from it are
   coplanar and have a mutual angles of $120^{\circ}$.
 \item Each terminal has degree at most $3$.
 \item $0 \le k \le n-2$.
 \end{enumerate}
 \end{definition}
-\TODO[inline]{This definition is for the steiner tree not a smt, thus this
-  should be moved. smith agrees on the definition of a smt as the first definition.}
 %
 \begin{proof}
 The first property is by definition, to name the terminals and the
 Steiner points.
 
-The second and third property can be shown in the following way: First consider that
-any Steiner point must have at least degree $3$. This should be obvious as a
-Steiner point with degree $1$ does not connect any terminals to the rest of the
-tree, and thus the point can simply be removed to either shorten the tree or
+The second and third property can be shown in the following way: First consider
+that any Steiner point must have at least degree $3$. This should be obvious as
+a Steiner point with degree $1$ does not connect any terminals to the rest of
+the tree, and thus the point can simply be removed to either shorten the tree or
 keep it the same\footnote{Which could happen if a Steiner point was lying atop
-  the point is connected to.}. Furthermore every Steiner point with a degree
-of $2$ can be removed, and its edges be replaced with one edge that is of the
-same length or shorter as per the Triangle Inequality
+  the point is connected to.}. Furthermore every Steiner point with a degree of
+$2$ can be removed, and its edges be replaced with one edge that is of the same
+length or shorter as per the Triangle Inequality
 Theorem\cite{triangleinequality}.
 
 We now show that no pair of edges emanating from a Steiner point can have a
@@ -194,8 +285,8 @@ $ac$ a shortest interconnection of $\{a, b, c\}$.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.6\textwidth]{gfx/tikz/preliminaries-steiner-points}
-\caption[Obtaining shorter trees]{Replacing a pair of edges $ab$ and $ac$ for which
-  $\angle bac < 2 \pi / 3$ with a shortest interconnection provided by a
+\caption[Obtaining shorter trees]{Replacing a pair of edges $ab$ and $ac$ for
+  which $\angle bac < 2 \pi / 3$ with a shortest interconnection provided by a
   solution to the Fermat-Torricelli problem for $\{a,b,c\}$. The left figure has
   no angle greater than $120^{\circ}$. The right has a angle
   $\angle cba \ge 120^{\circ}$. In both cases a shorter tree is
@@ -205,21 +296,20 @@ $ac$ a shortest interconnection of $\{a, b, c\}$.
 %
 Using that the mutual angles may be no less than $120^{\circ}$ it follows that
 any point in $T$ can have at most degree $3$\footnote{As
-$3 \cdot 120^{\circ} = 360^{\circ}$ meaning that there is at most room for three
-edges around a point.}. It therefore follows that terminals have a degree of at
-most $3$, which proves the third property, and that Steiner points have a
-degree of exactly $3$ and thus also mutual angles of precisely $120^{\circ}$,
-proving the second property.
+  $3 \cdot 120^{\circ} = 360^{\circ}$ meaning that there is at most room for
+  three edges around a point.}. It therefore follows that terminals have a
+degree of at most $3$, which proves the third property, and that Steiner points
+have a degree of exactly $3$ and thus also mutual angles of precisely
+$120^{\circ}$, proving the second property.
 
-The fourth property follows in the following way from property 3 and 4. Any
-tree $T$ has $|V(T)|-1$ edges. Thus a Steiner tree has $n+k-1$ edges.
-Every edge has two endpoints meaning there are $2 n + 2 k - 2$ edges. As every
-Steiner point has a degree of $3$, they account for $3 k$ of the endpoints. For
-the terminals we must split them in three groups: $n_1$, those that have a
-degree of $1$. $n_2$, those that have a degree of $2$ and, $n_3$, those that
-have a degree of $3$. The terminals thus account for the rest of the
-endpoints, written as $n_1 + 2 n_2 + 3 n_3 \ge n$. We can then write the
-equation as
+The fourth property follows in the following way from property 3 and 4. Any tree
+$T$ has $|V(T)|-1$ edges. Thus a Steiner tree has $n+k-1$ edges.  Every edge has
+two endpoints meaning there are $2 n + 2 k - 2$ edges. As every Steiner point
+has a degree of $3$, they account for $3 k$ of the endpoints. For the terminals
+we must split them in three groups: $n_1$, those that have a degree of
+$1$. $n_2$, those that have a degree of $2$ and, $n_3$, those that have a degree
+of $3$. The terminals thus account for the rest of the endpoints, written as
+$n_1 + 2 n_2 + 3 n_3 \ge n$. We can then write the equation as
 %
 \begin{align}
   \label{eq:22}
@@ -231,97 +321,12 @@ equation as
 Thus proving the fourth property.
 \end{proof}
 
-\section{Topologies}
-\label{sec:topologies-1}
-
-A topology is the combinatorial structure of a tree, or other form of geometric
-network. This means that in a topology only the adjacencies of points
-matter. Thus we could represent the topology of the tree $G = (V(G), E(G))$ as
-just the edges of the tree $E(G)$. Thus any graph (and tree) has an
-underlying topology.
-
-We call any tree of some topology non-degenerate if all edges of the tree have
-non-zero length---otherwise the tree is called degenerate.
-
-We now define a Steiner topology, and a \ac{fstp} as the following
-%
-\begin{definition}[Steiner topology, \acl{fstp}]
-The topology of a non-degenerate \ac{smt} is called a Steiner topology. The
-topology of a non-degenerate \ac{smt} in which every terminal has degree 1 is
-called a \acl{fstp}.
-\end{definition}
-%
-Notice that a \ac{fstp} must necessarily have the most possible Steiner points
-so $ k = n - 2$. This can be seen by substituting $n_2 = n_3 = 0$ and $n_1 = n$
-in \cref{eq:22}.
-
-\section{Steiner trees}
-\label{sec:steiner-trees}
-
-Before defining Steiner trees we define \acp{rmt} as in~\cite{gilbert1968}
-as:
-%
-\begin{definition}[\acl{rmt}]
-  A tree is called a \acl{rmt} if it is the shortest possible tree of its
-  underlying topology.
-\end{definition}
-%
-As can easily be seen a \ac{smt} must also be a \ac{rmt} of its underlying
-topology. Finally we define Steiner trees. Steiner trees currently have two definitions
-which are not exactly identical.
-
-The first is the definition used by \textcite{gilbert1968}, combined with the
-definition for \acp{fst} in \textcite{smith1992}, is as follows:
-%
-\begin{definition}[Steiner tree, \acl{fst}]
-  If a tree can be shortened no further even when splitting is allowed, the tree
-  is called a Steiner tree. If all of the original points\footnote{I.e.\ the
-    points not inserted when splitting. These are what we have so far referred
-    to as the terminals.} of a Steiner tree have degree 1 the tree is called a \acl{fst}.\label{def:steiner-tree}
-\end{definition}
-%
-Here the process of splitting referred to is exactly what we do when e.g.\
-inserting an extra point in the Fermat-Torricelli problem. Thus it follows
-pretty straightforward that a Steiner tree must also be a \ac{rmt} of the
-topology which describes it\footnote{Note that here we refer to the topology we
-  end up with after we cannot split any more points, and not the topology we
-  started out with.}. Furthermore any \ac{smt} must also be a Steiner tree, but not
-vice versa as illustrated by \cref{fig:steiner-smts}.
-%
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.6\textwidth]{gfx/tikz/steiner-smts}
-\caption[Example of splitting and \acp{rmt}]{Example of how of splitting a
-  point and inserting a new Steiner point. The flow shows two of the paths
-  splitting could take on the shown topology down until no more splitting is
-  possible. Optimizing the two final topologies, both are obviously \acp{rmt}
-  of their underlying topology, but only the right one is a \ac{smt} as the
-  other topology is degenerate (the two Steiner points lie on top of each other
-  in the center). Thus if the original points are the terminals, only the last
-  right tree is a \ac{smt} for the original terminals.\label{fig:steiner-smts}}
-\end{figure}
-%
-The other, and newer definition, used by \textcite{brazil2015} is as follows:
-%
-\begin{definition}[Steiner tree, \acl{fst}]
-  A non-degenerate (full) \ac{rmt} for a Steiner topology is called a (full)
-  Steiner tree.\label{def:steiner-tree2}
-\end{definition}
-%
-These definitions are not exactly identical as e.g.\ the last tree to the left in
-\cref{fig:steiner-smts} would not be a Steiner tree by
-\cref{def:steiner-tree2}\footnote{As it has an edge of length zero.}
-but would be by \cref{def:steiner-tree}. The similarities of the two definitions
-should however be obvious, and it also holds for both of the definitions that
-any \ac{smt} must be a Steiner tree, and that any Steiner tree must be a
-\ac{rmt} of its underlying topology.
-
 \section{Finding Steiner Trees in 2D}
 \label{sec:find-stein-trees-2}
 
-In general the problem of finding \acp{smt} is NP-hard. This however is only
-a measure of the worst-case upper bound. Thus in some cases it may indeed
-be possible to find them much faster.
+In general the problem of finding \acp{smt} is NP-hard. This however is only a
+measure of the worst-case upper bound. Thus in some cases it may indeed be
+possible to find them much faster.
 
 In two dimension algorithms exists, which in many cases can the \acp{smt} much
 faster than the worst-case scenario.
@@ -333,14 +338,14 @@ generalize to dimensions higher than two.
 \subsection{The Hwang-Melzak Algorithm}
 \label{sec:hwang-melz-algor}
 
-The Hwang-Melzak algorithm was first presented by \textcite{melzak1961} and later
-improved by \textcite{hwang1986hexagonal}. For a proof of correctness see
+The Hwang-Melzak algorithm was first presented by \textcite{melzak1961} and
+later improved by \textcite{hwang1986hexagonal}. For a proof of correctness see
 \textcite{hwang1986linear, melzak1961}.
 
-The algorithm is used for optimizing the tree $T$ of a pre-specified \ac{fstp}
-$mathcal{T}$ with at least $n \ge 5$ terminals, assuming that $T$ is
-non-degenerate. The algorithm can be implemented to run in $\mathcal{O}(n)$. The
-algorithm is very well-known, and is also presented in
+The algorithm is used for optimizing the tree $T$ of a pre-specified full
+Steiner topology $mathcal{T}$ with at least $n \ge 5$ terminals, assuming that
+$T$ is non-degenerate. The algorithm can be implemented to run in
+$\mathcal{O}(n)$. The algorithm is very well-known, and is also presented in
 \textcite{brazil2015,smith1992}.
 
 The algorithm consists of two steps. The first, the \textit{merging} step, works
@@ -352,14 +357,14 @@ $e_{ab}$\footnote{An equilateral point $c$, of the points $a$ and $b$, is a
   side of the line passing through $a$ and $b$.} of $a$ and $b$. Do this $n-2$
 times until the topology consists of only $2$ points. The second step, the
 \textit{reconstruction} step, works a follows: Let $\mathcal{T}'$ be the
-\ac{fstp} on the $n-1$ new terminals\footnote{I.e.\ the same set of terminals as
-before, but where $a$ and $b$ has been replace with $e_{ab}$}. Then the
+full Steiner topology on the $n-1$ new terminals\footnote{I.e.\ the same set of terminals as
+  before, but where $a$ and $b$ has been replace with $e_{ab}$}. Then the
 coordinates of $u$ can be found by taking the intersection between the Steiner
-arc $\hat{ab}$\footnote{The arc between $a$ and $b$ on the circle
-  circumscribing the triangle $\triangle a b e_{ab}$.} and the edge
-$e_{ab}s$. Do this on the $2$ point tree $n-2$, reinserting the points
-represented by the equilateral points, until we again have a tree of $n$
-terminals with the correct coordinates for the $n-2$ Steiner points.
+arc $\hat{ab}$\footnote{The arc between $a$ and $b$ on the circle circumscribing
+  the triangle $\triangle a b e_{ab}$.} and the edge $e_{ab}s$. Do this on the
+$2$ point tree $n-2$, reinserting the points represented by the equilateral
+points, until we again have a tree of $n$ terminals with the correct coordinates
+for the $n-2$ Steiner points.
 
 The biggest issue of the above algorithm is deciding on which side of the line
 $ab$ we should place the equilateral point $e_{ab}$. However it turns out that
@@ -372,10 +377,10 @@ can be found in \textcite[ch.~1]{brazil2015}.
 The algorithm unfortunately does not generalize from two dimensions to higher
 dimensions. The reason for this is, that while the edges emanating from a
 Steiner point are indeed coplanar, the plane the points lie in is not known in
-advance if there are more than $3$ terminals. This means that we no longer
-have a unique pair of equilateral points for each cherry, but instead a
-continuous range of equilateral points lying on a circle in
-$d$-space, as illustrated by \cref{fig:equi-points}.
+advance if there are more than $3$ terminals. This means that we no longer have
+a unique pair of equilateral points for each cherry, but instead a continuous
+range of equilateral points lying on a circle in $d$-space, as illustrated by
+\cref{fig:equi-points}.
 %
 \begin{figure}[htbp]
   \centering
@@ -408,19 +413,79 @@ The GeoSteiner algorithm was originally proposed by \textcite{winter1985}. Later
 improvements of the implementation have allowed for the computation of \acp{smt}
 for several thousand terminals~\cite{brazil2015}.
 
-The GeoSteiner algorithm is in actually more of a
+The GeoSteiner algorithm is pretty involved, and will thus not be described in
+greater detail here. In general the algorithm has two phases. In the first
+(\textit{generation}) phase, \acp{fst} for all full Steiner topologies of all
+subsets of terminals are generated. This enumeration can be said to be done
+implicitly\footnote{as opposed to explicitly defining each \ac{fst} one at a
+  time.} by simulating the Hwang-Melzak algorithm, and using geometric
+properties to prune parts of the Steiner arcs on which the Steiner points can
+lie. In this way the algorithm can prune \acp{fst} of full Steiner which cannot
+be part of the final \ac{smt}, and if all \acp{fst} of a full Steiner topology
+is pruned, i.e.\ if no feasible part of a Steiner arc is left, the entire full
+Steiner topology can be pruned. The strength of the algorithm lies partly in
+generating \acp{fst} with similar full Steiner topologies in a single pass and
+partly in being able to prune partially constructed full Steiner topologies. In
+the second, (\textit{concatenation}) phase, the algorithm selects a subset of
+not pruned \acp{fst} that span all terminals and has the minimum total
+length. This concatenation can be formulated as the minimum spanning tree
+problem in a hypergraph, which is indeed also NP-hard. However using a
+branch-and-cut algorithm most instances can be solved quite
+effectively\footnote{For an implementation of GeoSteiner see e.g.\
+  \url{http://www.diku.dk/hjemmesider/ansatte/martinz/geosteiner/}.}. For a
+fuller description of the algorithm, see e.g.\ \textcite[sec.~1.4]{brazil2015}.
 
-\TODO[inline]{Describe geosteiner/refer that the algorithm is very involved =
-  gloss over it, then describe why this does not generalize to
-d-space.}
+While the algorithm is the most effective currently known for $d = 2$, it is
+unfortunately not applicable when $d \ge 3$. First of, the generation of
+\acp{fst} for all subsets of terminals in $\mathbb{R}^d, d \ge 3$, is much more
+difficult than in $\mathbb{R}^2$. Optimizing a \ac{fst} with more than $3$
+terminals when $d \ge 3$ requires solving high-degree
+polynomials~\cite{smith1992}. As a consequence of this we can never use a
+algorithm such as Hwang-Melzak, but must use numerical approaches, such as
+\citeauthor{smith1992}'s optimization routine described in
+\cref{cha:algorithm}. Such numerical approaches seem to block the generation of
+\acp{fst} across various subsets of terminals. Finally many of the geometrical
+properties used to prune seems to be much weaker when
+$d \ge 3$~\cite{fonseca2014}.
 
-\section{Finding Steiner Trees in $d$-space}
+Finally, as described by \textcite{smith1992}, it seems that when $d \ge 3$ the
+topology of a \ac{smt} often consists of only a single large \ac{fst}. Thus we
+will not be able to leverage the benefits of the two phases in GeoSteiner, as
+the \acp{fst} we generate in the first phase will span the entire set of
+terminals, making that phase very large and the second phase trivial.
+
+\section{Finding Steiner Trees in d-space}
 \label{sec:find-stein-trees-d}
 
-Even more general about how we cannot calculate exact radicals due to having to
-solve polunomials of degree 8 [276, 351, and smith].
+As described in \cref{sec:geosteiner-algorithm} determining \acp{fst} in
+$\mathbb{R}^d, d \ge 3$ requires solving high-degree polynomials, and thus we
+need to resort to numerical approaches.
 
-\TODO[inline]{Write about Smith*, Smith+, BranchEnumerate, etc.}
+The most well-known of these is \citeauthor{smith1992}'s algorithm, proposed by
+\textcite{smith1992}. This algorithm is described in much greater detail in
+\cref{cha:algorithm}, but in general it works by enumerating all full Steiner
+topologies and then finding then optimizes these using an iteration which
+converges to the \ac{fst} of that full Steiner topology. The algorithm can be
+implemented with a Branch-and-Bound approach, such that the found \acp{fst} can
+be used to prune full Steiner topologies before optimizing them. The algorithm
+however cannot solve problem instances with more than around $15$ to $20$
+terminals within a feasible amount of time.
+
+There have been several attempts at optimizing \citeauthor{smith1992}'s
+algorithm to improve its speed and thus make higher number of terminals feasible
+to solve.
+
+One of these is the one named \citeauthor{smith1992}\texttt{+} presented in
+\textcite{fampa2008}.
+
+Another attempt at improving the algorithm is \citeauthor{smith1992}\texttt{*}
+presented in \textcite{fonseca2014}.
+
+Finally \textcite{fonseca2014} also suggest a new algorithm called the Branch
+Enumeration algorithm. This algorithm draws its inspiration from the GeoSteiner
+algorithm.
+
+\TODO[inline]{Describe these three attempts.}
 
 \section{Other Versions of the Steiner Tree Problem and Applications}
 \label{sec:other-vers-stein}
@@ -428,36 +493,32 @@ solve polunomials of degree 8 [276, 351, and smith].
 Steiner trees can of course be modified in several different ways. One could
 think of changing both the metric, the constraints, the cost function and so
 on. Some of the more well-known, are presented here with reference to where one
-could read more about the type of Steiner tree if so desired. The section also discuss
-some of the real world applications of Steiner trees, i.e.\ their usefulness
-outside the academic world as more than a mathematical curiosity.
+could read more about the type of Steiner tree if so desired. The section also
+discuss some of the real world applications of Steiner trees, i.e.\ their
+usefulness outside the academic world as more than a mathematical curiosity.
 
 \begin{itemize}
 \item \textbf{Rectilinear Steiner Tree} \quad A version of Steiner tree in which
   the Euclidean $\mathcal{L}_2$ norm is exchanged with the rectilinear
   $\mathcal{L}_1$ norm as the used metric. This means that edges consist of
-  vertical and horizontal line segments. See e.g.~\cite[ch.~3]{brazil2015}.
+  vertical and horizontal line segments. See e.g.~\textcite[ch.~3]{brazil2015}.
 \item \textbf{Fixed Orientation Steiner Tree} \quad A version of Steiner tree,
-  which can be seen as a generalization of the rectilinear Steiner tree. In
-  this version the metric used is a fixed orientation metric, meaning that edges
-  are only allowed to have some fixed orientations, the rectilinear version can
-  be seen as a fixed orientation version where we have two perpendicular
-  orientations. See e.g.~\cite[ch.~2]{brazil2015}.
+  which can be seen as a generalization of the rectilinear Steiner tree. In this
+  version the metric used is a fixed orientation metric, meaning that edges are
+  only allowed to have some fixed orientations, the rectilinear version can be
+  seen as a fixed orientation version where we have two perpendicular
+  orientations. See e.g.~\textcite[ch.~2]{brazil2015}.
 \item \textbf{Prize Collecting Steiner Tree} \quad A version of Steiner tree in
   which edges are ascribed some cost\footnote{This could e.g.\ be the Euclidean
     length of the edge} and points are ascribed some prize. The tree seeks to
   interconnect all terminals, while minimizing the edge cost sum \textit{and}
-  maximize the prize of Steiner points. See e.g.~\cite{johnson2000}.
+  maximize the prize of Steiner points. See e.g.~\textcite{johnson2000}.
 \end{itemize}
 
 \subsection{Applications}
 \label{sec:applications-1}
 
-in 2d: vlsi, object detection,
-
-in d-space: phylogenetics
-
-\chapterbreak{}
+\TODO[inline]{in 2d: vlsi, object detection,in d-space: phylogenetics}
 
 %%% Local Variables:
 %%% mode: latex

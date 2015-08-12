@@ -1,12 +1,12 @@
 \begin{tikzpicture}[thick]
 \tikzstyle{every node}=[font=\footnotesize]
-\node [reg={1}{left}](v1) at (0,4) {};
-\node [reg={2}{right}](v2) at (6,2) {};
-\node [reg={3}{left}](v3) at (0,0) {};
-\node [stein={n+1}{left}](vn1) at (2,2) {};
-\draw (v1) -- (vn1) node [midway,above] {1};
-\draw (v2) -- (vn1) node [midway,above] {2};
-\draw (v3) -- (vn1) node [midway,below] {3};
+\node [reg={$p_1$}{left}](v1) at (0,4) {};
+\node [reg={$p_2$}{right}](v2) at (6,2) {};
+\node [reg={$p_3$}{left}](v3) at (0,0) {};
+\node [stein={$p_{n+1}$}{left}](vn1) at (2,2) {};
+\draw (v1) -- (vn1) node [midway,above] {$e_1$};
+\draw (v2) -- (vn1) node [midway,above] {$e_2$};
+\draw (v3) -- (vn1) node [midway,below] {$e_3$};
 \end{tikzpicture}
 
 %%% Local Variables:

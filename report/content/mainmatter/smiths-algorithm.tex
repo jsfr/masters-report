@@ -25,8 +25,8 @@ Apart from the already used $n$ and $k$, for clarity we define the following sym
   topology from $p_i$ to $p_j$ or vice versa.\footnote{Notice that in
     \cref{cha:preliminaries} we mainly represented and edge between the points
     $p_a$ and $p_b$ as $ab$ as this is really simple. However this notation is not
-    very good if e.g.\ one point is labelled $l+1$. Thus we adopt this extra
-    notation as well, and may use these interchangebly.}
+    very good if e.g.\ one point is labeled $p_{l+1}$. Thus we adopt this extra
+    notation as well, and may use these interchangeably.}
 \item $L$, the length of the tree. Defined as the sum of the euclidean lengths
 of all edges in the tree.
 \end{itemize}
@@ -132,19 +132,18 @@ clear that the smallest \ac{fst}\footnote{This holds not only for \acp{fst}
   but for any Steiner topology} we can construct, must have $n = 3$ as the
 number of Steiner points is $n - 2 = 1$. Thus we start with the initial null
 vector $\vec{a} = ()$ corresponding to the unique \ac{fst} for the terminals
-$\{1, 2, 3\}$ connected through the respective edges $\{1, 2, 3\}$ and one
-Steiner point $n+1$ as seen in \cref{fig:algorithm-topology-1}. After this
+$\{p_1, p_2, p_3\}$ connected through the respective edges $\{e_1, e_2, e_3\}$ and one
+Steiner point $p_{n+1}$ as seen in \cref{fig:algorithm-topology-1}. After this
 first step, each entry of the topology vector is considered, one at a time,
 where the $i$th entry of the topology vector describes the insertion of the
-$(n+1+i)$th Steiner point on the edge $a_{i}$ and its connection to the
+$(n+1+i)$th Steiner point on the edge $e_{a_{i}}$ and its connection to the
 $(i+3)$th terminal. Thus for the $i$th insertion we will have
 $2i+1$\footnote{At the first iteration we clearly have $3$ edges to insert on, and
   as each subsequent insertion generates two new edges we have, after $i$
   insertions, $3 + \underbrace{2 + \cdots + 2}_{2 i} = 2 i + 1$.} different
-edges on which we can insert the Steiner point $n + 1 + i$ and connect it to the
-regular point $i+3$.
-\end{proof}
-
+edges on which we can insert Steiner point $p_{n + 1 + i}$ and connect it to the
+regular point $p_{i+3}$.
+%
 \begin{figure}[htbp] \centering
   \begin{subfigure}[t]{0.267\textwidth}
     \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-1}
@@ -152,15 +151,16 @@ regular point $i+3$.
   \end{subfigure}\hspace{1em}%
   \begin{subfigure}[t]{0.267\textwidth}
     \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-2}
-    \caption{Connecting point 4 on edge 2.\label{fig:algorithm-topology-2}}
+    \caption{Connecting point $p_4$ on edge $e_2$.\label{fig:algorithm-topology-2}}
   \end{subfigure}\hspace{1em}%
   \begin{subfigure}[t]{0.267\textwidth}
     \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-3}
-    \caption{Connecting point 5 on edge 4.\label{fig:algorithm-topology-3}}
+    \caption{Connecting point $p_5$ on edge $e_4$.\label{fig:algorithm-topology-3}}
   \end{subfigure}
   \caption[Construction of FSTs]{Construction of the \acp{fst} corresponding
 to the vector $\vec{a} = (2, 4)$.\label{fig:algorithm-topologies}}
 \end{figure}
+\end{proof}
 
 Furthermore we get a corollary saying that the number of \acp{fst} is
 exponential in $n$
@@ -183,11 +183,22 @@ iteration we have $2i+1$ different insertions.
 Something which might not be completely obvious from the above proof is, that we
 not only generate all topologies, but that we generate all topologies exactly
 once. This is important as duplicate topologies could significantly
-increase the run time of the algorithm.
+increase the run time of the algorithm. That we do not at any point construct
+duplicate topologies can be seen as follows.
 
-\FIXME[inline]{Prove the above statement. I.e.\ that we generate every FST and
-  that we cannot generate the same topology twice. This seems to be possible
-  using \textcite[p.~11--13]{brazil2015}.}
+Consider a topology $\mathcal{T}$ on $i$ terminals\footnote{and thus $i-2$ Steiner
+points and $2i-3$ edges}. Now consider splitting some edge $e = (l,j)$ and
+connecting the new terminal $p_t$, through the new Steiner point $p_s$. Upon
+inserting $p_t$, it is clear that we get three sub-topologies all connected
+through the root $p_s$: $\mathcal{T}_l$
+which $p_i$ as its root, $\mathcal{T}_j$ which has $p_j$ as its root and finally
+the sole point $p_t$. It is also clear, that the path from every point in
+$\mathcal{T}_l$, to every point in $\mathcal{T}_j$, calculated as the number of
+intermediary points, has been increased by $1$. No matter which edge of
+$\mathcal{T}$ we split on, we can never perform two splits such that the subsets
+of the two splits are equal.
+
+\PAWEL{Is this the right direction, and how do I finish this proof?}
 
 The way \citeauthor{smith1992} chooses to enumerate the edges is not explained
 outright, but only in the form of a visual
@@ -199,9 +210,9 @@ $p_{n+1+i}$ on the edge $e_{a_i}$\footnote{Here $a_i$ is the $i$-th entry in the
   topology vector.} going from point $p_{a_i}$ to point $p_j$ with
 $n < j < n+i+1$, split it such that we get the following three
 edges\footnote{Remember that an edge is represented as $(i,j)$ meaning that it
-  runs from point $p_i$ to point $p_j$.}: $e_{a_{i}} = (a_{i}, N+1+i)$,
-$ e_{2i + 2} = (i+3,N+1+i)$ and $ e_{2i + 3} = (j, N+1+i)$. This is also the way
-the new implementation enumerates the edge.
+  runs from point $p_i$ to point $p_j$.}: $e_{a_{i}} = (a_{i}, n+1+i)$,
+$ e_{2i + 2} = (i+3,n+1+i)$ and $ e_{2i + 3} = (j,n+1+i)$. This is also the way
+the new implementation enumerates the edges.
 
 \subsection{Generation}
 \label{sec:generation}
@@ -226,32 +237,31 @@ To further speed up the generation of topologies, or rather to avoid generating
 unnecessary topologies, \citeauthor{smith1992} also utilizes the following theorem
 %
 \begin{theorem}
-  For any set of $n$ distinct terminals in any euclidean space, the length of
+  For any set of $n$ distinct terminals in any Euclidean space, the length of
   the shortest tree, interconnecting $n-1$ points, with topology vector
   $a_1 \cdots a_{n-4}$ is no greater than the length of the shortest tree,
   interconnecting $n$ points, with topology vector $a_1 \cdots a_{n-3}$.
 \end{theorem}
 %
-The above theorem is easily seen to be true, simply by considering removing the
-edge $e$ connecting the last terminal $n$ to the rest of the tree. This will
-obviously shorten the tree, or if the edge was length zero it would remain the
-same. Furthermore upon optimizing the tree with the last point removed, we
-would either get a further shortening, or it would remain the same.
+\begin{proof}
+  Consider deleting the edge incident to terminal $p_n$ in the \ac{rmt} on $n$
+  terminals. Replace the Steiner point previously adjacent to $p_n$ and its
+  edges with a straight edge, connecting the other two points adjacent to the
+  Steiner point. This tree is not longer than before $p_n$ was removed, and
+  furthermore it has the topology of the tree on the $n-1$ first terminals. This
+  new tree currently has some length shorter than the previous, and per the
+  definition of \ac{rmt}, the \ac{rmt} of the new tree must either be the length
+  or the new tree or shorter. Thus we have proven that the \ac{rmt} of this
+  topology is cannot be greater than the previous topology.
+\end{proof}
 
-\NOTE[inline]{Consider expanding the above proof with the following type of
-  proof: delete the edge incident with the terminal n. Replace the Steiner point
-  prevoiusly adjacent to n and its two edges by a straight line connecting the
-  other endpoints of these two edges. This tree is not longer than the one
-  before n was remove and it has the topology of the tree with n-1
-  terminals. Hance it cannot be shorter than the RMT with this topology.}
-
-The algorithm utilizes this to prune in the following way. Imagine we have
-found some upper bound for the \ac{smt}. If we then optimize any tree with a generated
+The algorithm utilizes this to prune in the following way. Imagine we have found
+some upper bound for the \ac{smt}. If we then optimize any tree with a generated
 topology vector which does not yet include all the terminals, and it turns out
 to have length greater than the upper bound, we can prune all topologies that
-would be this vector. This is possible as the length of the larger trees
-cannot become any smaller than the length of the current, and thus cannot become
-smaller than the length of the upper bound.
+would be generated from this vector. This is possible as the length of the
+larger trees cannot become any smaller than the length of the current, and thus
+cannot become smaller than the length of the upper bound.
 
 In general we need to generate topologies and optimize their respective trees
 depth-first. The reason for this is two-fold: Firstly going breadth-first would
@@ -411,11 +421,11 @@ that $\mathcal{T} \equiv E(T)$.
 
 \begin{proof}
 The proof of convergence is as follows: After the first iteration all Steiner
-points lie within the convex hull of the terminals\NOTE{Maybe describe how this
-can be seen?}. By the Bolzano-Weierstrass theorem any infinite  sequence of
-points inside a compact region (such as a convex hull) has some infinite
-subsequence approaching a limit point. We therefore wish to show that the only
-limit point which can exist, represents the \ac{rmt} for the underlying topology.
+points lie within the convex hull of the terminals. By the Bolzano-Weierstrass
+theorem any infinite sequence of points inside a compact region (such as a
+convex hull) has some infinite subsequence approaching a limit point. We
+therefore wish to show that the only limit point which can exist, represents
+the \ac{rmt} for the underlying topology.
 
 Firstly after each ($i$th) iteration, according to \textcite{smith1992},
 $S^{(i+1)}$ exactly minimizes the following quadratic form $Q^{(i)}(S)$
@@ -445,7 +455,7 @@ of its original length before each iteration. The $i$th iteration causes all
 springs to relax, minimizing $Q^{(i)}$. It is however still a unclear to me that
 $S^{(i+1)}$ really minimize $Q^{(i)}$.
 
-\NOTE[inline]{Do you know why the above is the case?}
+\PAWEL{Do you know why the above is the case?}
 
 However as the proof of convergence hinges on this fact\footnote{As we need to
   utilize that $Q^{(i)}(S^{(i)}) \ge Q^{(i)}(S^{(i+1)})$} we can only proceed if
@@ -557,10 +567,10 @@ $L$, the iteration function and since the only points where the iteration does
 not decrease $L$ are fixed points. However as all non-optimum fixed points are
 in the 0-measure set, we have ruled those out and thus the only fixed point is
 the optimum.
-\end{proof}
 
-\NOTE[inline]{Possibly discuss the unclear parts which i have just assumed to be
-true to keep the proof going.}
+\PAWEL{Should I discuss more, the parts of the proofs which I have described as
+  unclear, but assumed to be true to keep the proof going?}
+\end{proof}
 
 \subsubsection{Solving the equations}
 \label{sec:solving-equations}
@@ -746,14 +756,8 @@ small positive number in the optimize function makes sense, as it is used to
 avoid divisions with zero (by adding it to the edge lengths, some of which may
 be zero). However the specific choice which is both dependent on the error and
 the number of terminals seems selected somewhat at random. A perhaps more
-obvious choice would be some small \textit{fixed} number, e.g.\ just $0.0001$.
-
-\NOTE[inline]{If time run different trees with this random
-  factor, and with a fixed random factor and see if it makes a
-  difference. Current experimentation shows that a fixed tol can make the
-  iteration move very slowly when small optimizations has to be made. This might
-  be an argument for letting it depend on the error and N. The exact numbers
-  seem to originate from experiments though.}
+obvious choice would be some small \textit{fixed} number, e.g.\ just
+$0.0001$.
 
 \subsubsection{Loop condition when optimizing}
 \label{sec:loop-condition-when-1}
@@ -771,17 +775,6 @@ seems very arbitrary. The loop condition however seems to work in practice.
 
 \subsubsection{If clause when outputting tree}
 \label{sec:if-clause-when}
-
-This is most probably a bug. When a full topology with $n-2$ Steiner points is
-optimized its length is compared to the current upper bound, \texttt{STUB}. If
-it is better than the upper bound, this is updated to the newly found tree
-length. However the tree is only outputted as a record if its length is smaller
-than the previous upper bound times $0.99999$. This means we risk situations
-where the upper bound is updated, but the tree never outputted. Most likely
-this extra check should have been removed. As we are dealing with floating
-point arithmetic doing the multiplication might make sense in the initial check,
-however the double check is faulty and may lead to wrong behavior. The faulty
-snippet and its possible corrections can be found in \cref{fig:if-clause-snippet}.
 
 \begin{figure}[htbp]
 \begin{c-code}
@@ -815,7 +808,18 @@ if (q < STUB*0.99999) {
     next snippets.\label{fig:if-clause-snippet}}
 \end{figure}
 
-\chapterbreak{}
+This is most probably a bug\footnote{As I consider this a bug, it has also been
+  fixed in the version of the original source code I have used for
+  testing.}. When a full topology with $n-2$ Steiner points is optimized its
+length is compared to the current upper bound, \texttt{STUB}. If it is better
+than the upper bound, this is updated to the newly found tree length. However
+the tree is only outputted as a record if its length is smaller than the
+previous upper bound times $0.99999$. This means we risk situations where the
+upper bound is updated, but the tree never outputted. Most likely this extra
+check should have been removed. As we are dealing with floating point arithmetic
+doing the multiplication might make sense in the initial check, however the
+double check is faulty and may lead to wrong behavior. The faulty snippet and
+its possible corrections can be found in \cref{fig:if-clause-snippet}.
 
 %%% Local Variables:
 %%% mode: latex
