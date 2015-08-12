@@ -1,0 +1,25 @@
+\begin{tikzpicture}[tdplot_main_coords,axis/.style={->,gray},thick]
+
+  \draw[axis] (-0.4, 0, 0) -- (0.5, 0, 0) node [right] {$x$};
+  \draw[axis] (0, -0.3, 0) -- (0, 0.3, 0) node [right] {$y$};
+  \draw[axis] (0, 0, -0.3) -- (0, 0, 0.3) node [above] {$z$};
+
+  \node[draw=none,shape=circle,fill=blue, inner sep=1pt, label={below:a}] (v1) at (0,0.15,0){};
+  \node[draw=none,shape=circle,fill=blue, inner sep=1pt, label={below:b}] (v2) at (0,-0.15,0){};
+  \node[draw=none,shape=circle,fill=red, inner sep=1pt, label={right:$e_{ab}$}] (v3) at (-{sqrt(3)/2*0.3}, 0, 0){};
+
+  \draw (v1) -- (v2);
+  \draw[dashed] (v1) -- (v3);
+  \draw[dashed] (v2) -- (v3);
+
+  \begin{scope}[canvas is zx plane at y=0]
+    \draw[dashed,red] (0,0) circle ({sqrt(3)/2*0.3});
+    \draw[->,red] (0,-{sqrt(3)/2*0.3}) arc (270:300:{sqrt(3)/2*0.3});
+  \end{scope}
+
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

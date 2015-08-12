@@ -25,7 +25,7 @@
 \usepackage[style=numeric-comp]{biblatex}
 \usepackage{subcaption}
 \usepackage[dvipsnames]{xcolor}
-\usepackage{tikz, tikzscale}
+\usepackage{tikz, tikzscale, tikz-3dplot}
 \usepackage{xifthen}
 \usepackage{xargs}
 \usepackage[colorinlistoftodos,prependcaption,textsize=footnotesize,%
@@ -61,6 +61,7 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \pgfdeclarelayer{background}
 \pgfdeclarelayer{foreground}
 \pgfsetlayers{background,main,foreground}
+\tdplotsetmaincoords{70}{110}
 
 % todonotes setup
 \newcommandx{\NOTE}[2][1=]{\todo[backgroundcolor=green!50,#1]{Note: #2}}
@@ -108,6 +109,8 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
   \addcontentsline{toc}{chapter}{\listoflistingscaption}%
   \listof{listing}{\listoflistingscaption}%
 }
+
+\allowdisplaybreaks[2]
 
 % Remove indent and use a line-skip instead
 \nonzeroparskip{}

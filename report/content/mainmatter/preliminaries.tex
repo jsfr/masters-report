@@ -68,7 +68,7 @@ The generalized version for two dimensions of the problem can be formulated as i
 \begin{center}
   \begin{tabular}{rp{9cm}}
     \toprule
-    \textbf{Given} & Three noncolinear points $p_1 = (x_1, y_1)$, $p_2 = (x_2,
+    \textbf{Given} & Three non-colinear points $p_1 = (x_1, y_1)$, $p_2 = (x_2,
                      y_2)$ and $p_3 = (x_3, y_3)$ in the plane. \\
     \textbf{Find} & The point $p_\ast = (x_\ast, y_\ast)$ which gives a solution
                     to the optimization problem
@@ -148,12 +148,14 @@ also be used as a definition:
 \begin{enumerate}
 \item It contains $n$ ``terminals'' $R = \{ p_1, p_2, \ldots, p_n \} \in \mathbb{R}^d$, and
  possibly $k$ additional ``Steiner points'' $S = \{ p_{n+1}, \ldots, p_{n+k} \} \in \mathbb{R}^d$.
-\item Each Steiner point has degree $3$, the edges emanating from it lie in
-  the same plane and have a mutual angle of $120^{\circ}$
+\item Each Steiner point has degree $3$, the edges emanating from it are
+  coplanar and have a mutual angles of $120^{\circ}$.
 \item Each terminal has degree at most $3$.
 \item $0 \le k \le n-2$.
 \end{enumerate}
 \end{definition}
+\TODO[inline]{This definition is for the steiner tree not a smt, thus this
+  should be moved. smith agrees on the definition of a smt as the first definition.}
 %
 \begin{proof}
 The first property is by definition, to name the terminals and the
@@ -317,27 +319,143 @@ any \ac{smt} must be a Steiner tree, and that any Steiner tree must be a
 \section{Finding Steiner Trees in 2D}
 \label{sec:find-stein-trees-2}
 
-% This section describes some of the existing ways of finding Steiner trees in two
-% dimensions, e.g.\ The Hwang-Melzak algorithm\missingref{} and
-% GeoSteiner\missingref{}, and why these do not generalize to higher dimensions.
+In general the problem of finding \acp{smt} is NP-hard. This however is only
+a measure of the worst-case upper bound. Thus in some cases it may indeed
+be possible to find them much faster.
 
-\TODO[inline]{Simply do some referring here instead to Hwang-Melzak and
-  GeoSteiner, maybe other?. Then describe the geometrical properties that make
-  these algorithms work, and why this does not work in higher dimensions}
+In two dimension algorithms exists, which in many cases can the \acp{smt} much
+faster than the worst-case scenario.
+
+This section will give a short introduction to the Hwang-Melzak and GeoSteiner
+algorithm. Afterwards the section will discuss why these algorithms do not
+generalize to dimensions higher than two.
+
+\subsection{The Hwang-Melzak Algorithm}
+\label{sec:hwang-melz-algor}
+
+The Hwang-Melzak algorithm was first presented by \textcite{melzak1961} and later
+improved by \textcite{hwang1986hexagonal}. For a proof of correctness see
+\textcite{hwang1986linear, melzak1961}.
+
+The algorithm is used for optimizing the tree $T$ of a pre-specified \ac{fstp}
+$mathcal{T}$ with at least $n \ge 5$ terminals, assuming that $T$ is
+non-degenerate. The algorithm can be implemented to run in $\mathcal{O}(n)$. The
+algorithm is very well-known, and is also presented in
+\textcite{brazil2015,smith1992}.
+
+The algorithm consists of two steps. The first, the \textit{merging} step, works
+as follows: Let $u$ be a Steiner point connected to $a$, $b$ and $s$, where $a$
+and $b$ are terminals. Replace $a$, $b$ and $u$ with a the equilateral point
+$e_{ab}$\footnote{An equilateral point $c$, of the points $a$ and $b$, is a
+  point such that the triangle $\triangle a b c$ is equilateral. It is clear
+  that in two dimensions such a point has two unique placements, one on each
+  side of the line passing through $a$ and $b$.} of $a$ and $b$. Do this $n-2$
+times until the topology consists of only $2$ points. The second step, the
+\textit{reconstruction} step, works a follows: Let $\mathcal{T}'$ be the
+\ac{fstp} on the $n-1$ new terminals\footnote{I.e.\ the same set of terminals as
+before, but where $a$ and $b$ has been replace with $e_{ab}$}. Then the
+coordinates of $u$ can be found by taking the intersection between the Steiner
+arc $\hat{ab}$\footnote{The arc between $a$ and $b$ on the circle
+  circumscribing the triangle $\triangle a b e_{ab}$.} and the edge
+$e_{ab}s$. Do this on the $2$ point tree $n-2$, reinserting the points
+represented by the equilateral points, until we again have a tree of $n$
+terminals with the correct coordinates for the $n-2$ Steiner points.
+
+The biggest issue of the above algorithm is deciding on which side of the line
+$ab$ we should place the equilateral point $e_{ab}$. However it turns out that
+by choosing the order in which we perform the merging steps we are always able
+to find the correct side. Thus this algorithm runs in $\mathcal{O}(n)$.
+
+The proof of the algorithm and how to decide the side for the equilateral point
+can be found in \textcite[ch.~1]{brazil2015}.
+
+The algorithm unfortunately does not generalize from two dimensions to higher
+dimensions. The reason for this is, that while the edges emanating from a
+Steiner point are indeed coplanar, the plane the points lie in is not known in
+advance if there are more than $3$ terminals. This means that we no longer
+have a unique pair of equilateral points for each cherry, but instead a
+continuous range of equilateral points lying on a circle in
+$d$-space, as illustrated by \cref{fig:equi-points}.
+%
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/equi-points-2d}
+    \caption{When $d = 2$ we have exactly two unique possible
+      placements.\label{fig:equi-points-2d}}
+  \end{subfigure}\hspace{1em}%
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/equi-points-3d}
+    \caption{When $d \ge 3$ we have a circle in $d$-space of possible
+      placements. Here the $d = 3$ is shown.\label{fig:equi-points-3d}}
+  \end{subfigure}
+  \caption[Equilateral points in 2D and $d$-space]{The case where $d = 2$ only
+    has the two unique possible placements of the equilateral point $e_{ab}$ for the
+    two points $a$ and $b$, one of which can be eliminated when running the
+    algorithm. However when $d \ge 3$ this is no longer the case, and we are
+    unable to determine a unique placement of the equilateral
+    point.\label{fig:equi-points}}
+\end{figure}
+%
+Thus in contrast to the two dimensional case where we can select one of the two
+unique equilateral points, in higher dimensions we are no longer able to do
+this, and the algorithm breaks down.
+
+\subsection{The GeoSteiner Algorithm}
+\label{sec:geosteiner-algorithm}
+
+The GeoSteiner algorithm was originally proposed by \textcite{winter1985}. Later
+improvements of the implementation have allowed for the computation of \acp{smt}
+for several thousand terminals~\cite{brazil2015}.
+
+The GeoSteiner algorithm is in actually more of a
+
+\TODO[inline]{Describe geosteiner/refer that the algorithm is very involved =
+  gloss over it, then describe why this does not generalize to
+d-space.}
 
 \section{Finding Steiner Trees in $d$-space}
 \label{sec:find-stein-trees-d}
 
+Even more general about how we cannot calculate exact radicals due to having to
+solve polunomials of degree 8 [276, 351, and smith].
+
 \TODO[inline]{Write about Smith*, Smith+, BranchEnumerate, etc.}
 
-\section{Other Versions of the Steiner Tree Problem}
+\section{Other Versions of the Steiner Tree Problem and Applications}
 \label{sec:other-vers-stein}
 
-% This section describes some specialized versions of the Steiner tree problem.
+Steiner trees can of course be modified in several different ways. One could
+think of changing both the metric, the constraints, the cost function and so
+on. Some of the more well-known, are presented here with reference to where one
+could read more about the type of Steiner tree if so desired. The section also discuss
+some of the real world applications of Steiner trees, i.e.\ their usefulness
+outside the academic world as more than a mathematical curiosity.
 
-\TODO[inline]{Simple refer to different type of other trees like rectilinear and
-  fixed orientation and such. This can be done by referring to the book, and
-  possibly an article about prize collecting steiner trees.}
+\begin{itemize}
+\item \textbf{Rectilinear Steiner Tree} \quad A version of Steiner tree in which
+  the Euclidean $\mathcal{L}_2$ norm is exchanged with the rectilinear
+  $\mathcal{L}_1$ norm as the used metric. This means that edges consist of
+  vertical and horizontal line segments. See e.g.~\cite[ch.~3]{brazil2015}.
+\item \textbf{Fixed Orientation Steiner Tree} \quad A version of Steiner tree,
+  which can be seen as a generalization of the rectilinear Steiner tree. In
+  this version the metric used is a fixed orientation metric, meaning that edges
+  are only allowed to have some fixed orientations, the rectilinear version can
+  be seen as a fixed orientation version where we have two perpendicular
+  orientations. See e.g.~\cite[ch.~2]{brazil2015}.
+\item \textbf{Prize Collecting Steiner Tree} \quad A version of Steiner tree in
+  which edges are ascribed some cost\footnote{This could e.g.\ be the Euclidean
+    length of the edge} and points are ascribed some prize. The tree seeks to
+  interconnect all terminals, while minimizing the edge cost sum \textit{and}
+  maximize the prize of Steiner points. See e.g.~\cite{johnson2000}.
+\end{itemize}
+
+\subsection{Applications}
+\label{sec:applications-1}
+
+in 2d: vlsi, object detection,
+
+in d-space: phylogenetics
 
 \chapterbreak{}
 

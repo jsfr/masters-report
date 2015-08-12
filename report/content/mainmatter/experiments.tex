@@ -4,10 +4,61 @@
 \label{cha:experiments}
 }
 
-8 x Intel(R) Xeon(R) CPU E5-2630L @ 2.00GHz
-16GB RAM
+Introduction, max 1/2--1 page
 
-Compare with OldSmith, Smith+, Smith*
+\section{Correctness}
+\label{sec:correctness}
+
+$150$ random cubes with $n = 10 \ldots 12$ and $d = 2$.
+
+\section{Speed}
+\label{sec:speed}
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{ccccc}
+    \toprule
+    Set name & Dimensions       & Terminals             & Set size & Point configuration \\
+    \midrule
+    Carioca  & $d = 3 \ldots 5$ & $n = 11 \ldots 16$    & 90       & Random in cube      \\
+    Cube     & $d = 2 \ldots 4$ & $n = 10 \ldots 15$    & 360      & Random in cube      \\
+    Iowa05   & $d = 3 \ldots 5$ & $n = 10$              & 30       & Random in cube      \\
+    Sausage  & $d = 2 \ldots 5$ & $n = 10 \ldots 15$    & 24       & Simplex sequence    \\
+    Solids   & $d = 3$          & $n = 4, 6, 8, 12, 20$ & 5        & Platonic solids     \\
+    \bottomrule
+  \end{tabular}
+  \caption[Here be dragons]{Here be dragons.\label{tab:test-sets}}
+\end{table}
+
+All sets have been taken from \textcite{fonseca2014}, but the sets Carioca and
+Cube has been pruned.
+
+8 $\times$ Intel\textsuperscript{\textregistered}
+Xeon\textsuperscript{\textregistered} CPU E5-2630L @ 2.00 GHz and 16 GB RAM
+
+Describe why I have pruned Carioca and Cube.
+
+Plot all five against each other on interesting sets
+
+\section{Trees and Iterations}
+\label{sec:trees-iterations}
+
+Introduction
+
+\subsection{Trees}
+\label{sec:trees}
+
+SmithNew vs SmithNewSorted vs SmithOld
+
+Simple vs SimpleSort
+
+\subsection{Iterations}
+\label{sec:iterations}
+
+SmithNew vs Simple
+
+Maybe write that the iterations from SmithOld is unusable as some are negative
+due to overflow.
 
 \chapterbreak{}
 
