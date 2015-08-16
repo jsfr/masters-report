@@ -392,7 +392,7 @@ range of equilateral points lying on a circle in $d$-space, as illustrated by
   \begin{subfigure}[t]{0.4\textwidth}
     \includegraphics[width=\textwidth]{gfx/tikz/equi-points-3d}
     \caption{When $d \ge 3$ we have a circle in $d$-space of possible
-      placements. Here the $d = 3$ is shown.\label{fig:equi-points-3d}}
+      placements. Here $d = 3$ is shown.\label{fig:equi-points-3d}}
   \end{subfigure}
   \caption[Equilateral points in 2D and $d$-space]{The case where $d = 2$ only
     has the two unique possible placements of the equilateral point $e_{ab}$ for the
@@ -478,6 +478,8 @@ to solve.
 One of these is the one named \citeauthor{smith1992}\texttt{+} presented in
 \textcite{fampa2008}.
 
+A second, is the attempt by \textcite{vanlaarhoven2013}.
+
 Another attempt at improving the algorithm is \citeauthor{smith1992}\texttt{*}
 presented in \textcite{fonseca2014}.
 
@@ -497,6 +499,8 @@ could read more about the type of Steiner tree if so desired. The section also
 discuss some of the real world applications of Steiner trees, i.e.\ their
 usefulness outside the academic world as more than a mathematical curiosity.
 
+Some of the types of Steiner trees to mention are:
+
 \begin{itemize}
 \item \textbf{Rectilinear Steiner Tree} \quad A version of Steiner tree in which
   the Euclidean $\mathcal{L}_2$ norm is exchanged with the rectilinear
@@ -515,10 +519,49 @@ usefulness outside the academic world as more than a mathematical curiosity.
   maximize the prize of Steiner points. See e.g.~\textcite{johnson2000}.
 \end{itemize}
 
-\subsection{Applications}
-\label{sec:applications-1}
+Of possible applications, some more mentionable are:
 
-\TODO[inline]{in 2d: vlsi, object detection,in d-space: phylogenetics}
+\begin{itemize}
+\item \textbf{Electronic circuits/VLSI Design} \quad Both rectilinear and fixed
+  orientation Steiner trees have use in VLSI design and the realization of
+  electronic circuits as described by
+  \textcite[sec.~2.7,sec~3.6]{brazil2015}. When designing electronic circuits
+  the wires between components can normally only be drawn in a rectilinear, or
+  lately fixed orientation, matter. Thus Steiner trees can be used to pack the
+  components closer. This also has uses for higher dimensions than $2$. As
+  electronic components normally consists of several layers in which the wires
+  can run between, thus crossing each other without shorting, the problem also
+  has use in $3$ dimensions.
+\item \textbf{Object detection} \quad A method for object detection using
+  Steiner trees has been proposed by \textcite{russakovsky2010}. The method
+  proposed utilizes a directed Steiner tree by showing that one can reduce the
+  parameter selection\footnote{The parameter selection is roughly used to figure
+    out how much of a computation can be shared between object classes. This
+    preferable as the steps of object detection are computationally
+    expensive. For a more detailed description of object detection,
+    see~\cite{russakovsky2010}.} of the object detection to the problem of
+  finding the Steiner tree in a directed graph. The problem of finding a
+  directed Steiner tree as described by \textcite{russakovsky2010}, is a bit
+  different from the way we have defined Steiner trees so far. Here we have a
+  directed graph $G = (E(G), V(G))$, with weights $w(E)$ on the edges, a set of
+  terminals $R \subseteq V(G)$ and a root node $r \in V(G)$. The goal is then to
+  find a tree in $G$, rooted at $r$, that spans all terminals in $R$ while
+  minimizing the sum of weights on the used edges. Thus we are not able to place
+  the Steiner points ``freely'' as we have described so far, but must instead
+  use the points of the graph $G$. The proposed method have shown a promising
+  speedup, with a small drop in accuracy, when compared to other methods within
+  that field.
+\item \textbf{Phylogenetics} \quad A method using $d$-space Euclidean Steiner trees
+  has been proposed to be used in the determination of phylogenetic trees by
+  \textcite{brazil2009}. Phylogenetic trees are used to determine the
+  relationship between different species, these are represented as the leafs of
+  the tree, and the interior nodes are then their ancestors. In this way one can
+  represent the genetic difference of species, as their distance in the
+  phylogenetic tree.
+\end{itemize}
+
+\textcite{brazil2015} cover several more possible variations on Steiner trees,
+and applications of Steiner trees for the interested reader.
 
 %%% Local Variables:
 %%% mode: latex
