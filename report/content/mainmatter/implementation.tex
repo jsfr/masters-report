@@ -11,32 +11,56 @@ software.''~\cite{golanghomepage}. Go is a general-purpose, strongly typed and
 garbage-collected language. The syntax bears resemblance to to C\footnote{But
   with a lot less braces, and no pointer arithmetic.}. Furthermore Go has
 explicit support for concurrent programming. The language furthermore sports
-extremely fast compiling of source code and in tries to have performance
+extremely fast compiling of source code and tries to have performance
 comparable to C.
 
-The reasoning behind choosing Go for the new implementation were the following:
-Firstly I already had experience with the language making it easy to get to work
-on the new implementation without also having to learn a new programming
+The reasoning behind choosing Go for the new implementation were firstly that I
+already had experience with the language making it easy to get to work on the
+new implementation without also having to learn a new programming
 language. Secondly the language has, in my opinion, a very clean syntax which
 makes it easily readable for anyone familiar with any C-syntax styled
-language. Thirdly the
-
-Finally the easy use of concurrency in Go\footnote{Starting a new goroutine is
-  as simple as writing: \texttt{go~SomeFunction~(args\ldots)}.} made it
-interesting as potential speedup could be achieved by making the branching
-of the program concurrent.
+language. Finally the easy use of concurrency in Go\footnote{Starting a new
+  goroutine, which is the languages type of lightweight threads, is as simple as
+  writing: \texttt{go~SomeFunction~(args\ldots)}.} made it interesting as
+continued work with the new implementation could include a potential significant
+speedup could be by making the branching of in the algorithm---and perhaps also
+the Gauss eliminations---concurrent\footnote{Not concurrency has actually been
+  implemented in the new implementation. However the possibilities of this is
+  discussed in \cref{sec:concurrency}.}.
 
 In general the implementation tries to follow guidelines given in
-\textcite{effectivego}.
+\textcite{effectivego}. These are guidelines as to how one codes effective
+Go. Here effective means both in terms of speed, memory usage, stability and
+readability.
 
-The new implementation, fixes for the old implementation and experiments can be
-found at \url{https://github.com/jsfr/SteinerExact}. The source
-code for just the new implementation is also included in \cref{cha:source-code}.
+Source code for the new implementation, fixes for the old implementation and
+experiments can be found at \url{https://github.com/jsfr/SteinerExact}. The
+source code for just the new implementation is also included in
+\cref{cha:source-code}.
 
-\TODO[inline]{Finish the introduction text}
+This chapter will describe the architecture of the new implementation, i.e.\ how
+the new implementation has been structured. Furthermore the chapter will
+describe some more notable elements of the new implementation, namely the way in
+which the new implementation builds topologies, and the new iteration using the
+analytical method for solving the Fermat-Torricelli problem, as described by
+\textcite{uteshev2014}. This also includes a description of said analytical
+method and a generalization to $\mathbb{R}^{d}, d \ge 3$. Finally a will a way
+of sorting the terminals also implemented be described as well.
 
 \section{Architecture}
 \label{sec:architecture-1}
+
+\subsection{Main file}
+\label{sec:main-file}
+
+\subsection{\ac{smt} Package}
+\label{sec:smt-package}
+
+\subsubsection{Data Structures}
+\label{sec:data-structures}
+
+\subsubsection{Methods}
+\label{sec:methods}
 
 \TODO[inline]{Describe the source code architecture}
 
@@ -46,15 +70,15 @@ code for just the new implementation is also included in \cref{cha:source-code}.
 In \textcite{smith1992} implementation of the algorithm when generating
 topologies every new topology is rebuilt completely from the bottom. E.g.\ say
 that we have just optimized the topology corresponding to the topology vector
-$A_1 = (1, 2)$. If we now wish to optimize the topology vector
-$A_2 = (1, 2, 3)$. In the old implementation $A_2$ would have to be built again
+$A_1 = [1, 2]$. If we now wish to optimize the topology vector
+$A_2 = [1, 2, 3]$. In the old implementation $A_2$ would have to be built again
 from scratch instead of simply splitting and building on to $A_1$. To try and do
 this is in a slightly more clever way the new implementation is instead able to
 either split or restore a topology, thus from $A_1$ we could either split an
 edge and get $A_2$, or any other length three topology vector having $A_1$ as a
-prefix, or we could restore and go back from $A_1$ to $A_0 = (1)$\footnote{From
+prefix, or we could restore and go back from $A_1$ to $A_0 = [1]$\footnote{From
   $A_0$ we could then either split again to e.g.\ the next length two topology
-  vector $A_1' = (1, 3)$ or restore once again.}
+  vector $A_1' = [1, 3]$ or restore once again.}
 
 The way this is implemented is a follows: All edges of the tree is kept in an
 list, and edge being represented as the tuple $(a, b)$ meaning it starts at
@@ -105,8 +129,9 @@ track of which topology vectors has been tried, and how he chooses which to try
 next.
 
 In the following description, $\ast$ is used to represent all possible values,
-so e.g.\ $A = [1, \ast]$ would be the same as writing $A = [1, 1], A = [1, 2], A =
-[1,3], A = [1, 4]$. The implementation does as follows:
+so e.g.\ $A = [1, \ast]$ would be the same as writing
+$A = [1, 1], A = [1, 2], A = [1,3], A = [1, 4]$. The implementation does as
+follows:
 %
 \begin{enumerate}
 \item Start with the empty topology vector, meaning we have a topology with $3$
@@ -138,22 +163,41 @@ This approach in which we actually optimize a breadth and then select which
 vector to continue the depth-first search on, may seem a bit elaborate in
 contrast to performing a simple depth-first search in which we e.g.\ always kept
 as far to the left as possible in the tree so we would optimize a topology of
-$5$ terminals as $A = [1], A = [1,1], A = [1,2], A = [1,3], A = [1,4], A = [2],
-A = [2,1], \ldots$.
-
+$6$ terminals as
+%
+\begin{align}
+  A & = [1]     \\
+  A & = [1,1]   \\
+  A & = [1,1,1] \\
+  A & = [1,1,2] \\
+    & \vdots    \\
+  A & = [1,2]   \\
+  A & = [1,2,1] \\
+    & \vdots    \\
+  A & = [2]     \\
+    & \vdots
+\end{align}
+%
 It does however turn out to be a much more efficient way of going through the
-topologies than the more naive approach. The first iteration of the new
-implementation did not use the approach taken by \citeauthor{smith1992}, but
-instead the naive approach. This caused a significant
-slow-down\footnote{No formal tests were made as the original implementation was
-  several magnitudes faster, and thus it was obvious that something needed to be
-changed.} when compared with the original implementation.
+topologies than the more naive approach just described. The first iteration of
+the new implementation did not use the approach taken by \citeauthor{smith1992},
+but instead the naive approach. This caused a significant slow-down\footnote{No
+  formal tests were made as the original implementation was several magnitudes
+  faster, and thus it was obvious that something needed to be changed.} when
+compared with the original implementation. Because of this, the new
+implementation uses this more complex method.
 
-The reason for this, and the reason why the more complex approach is better,
-lies in the number of topologies which on is able to prune with the two
-approaches.
+The reason for the more complex method is better, lies in the number of
+topologies which on is able to prune with the two approaches.
 
-\TODO[inline]{Finish this.}
+When using the more complex method we in general get better upper bounds much
+faster, and thus we become able to prune more topologies and do so
+faster. Imagine e.g.\ that we have $n = 6$. In the naive approach we would
+simply start to plow through the topologies descending from $A = [1]$. However
+it may very well be that $A = [3]$ shows a lot more promise, and if we had
+optimized this we could have pruned both $A = [1]$ and maybe also $A =
+[2]$. This is exactly what the more complex method tries to do by always going
+the route which currently shows the most promise.
 
 \section{Analytical solution to the Fermat-Torricelli problem}
 \label{sec:analyt-solut-ferm}

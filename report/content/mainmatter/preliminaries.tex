@@ -476,7 +476,7 @@ algorithm to improve its speed and thus make higher number of terminals feasible
 to solve. Some of these are
 
 \begin{itemize}
-\item \textcite{fampa2008} has proposed using lower bounds on partial Steiner
+\item \textcite{fampa2008} proposed using lower bounds on partial Steiner
   topologies\footnote{I.e.\ topologies that do not include all $n$ terminals.}
   to prune \acp{fst}. Roughly the method works in the following way: Imagine we
   have a \ac{fst} not connecting all $n$ terminals. To select the next terminal
@@ -489,17 +489,55 @@ to solve. Some of these are
   formulation and the actual lower bound will not be discussed here as they are
   rather extensive. The method to shows some improvement on both the number of
   topologies enumerated and the actual running time. However as pointed out by
-\item \textcite{vanlaarhoven2013} ...
-\item \textcite{fampa2014} ...
-\item \textcite{fonseca2014} ...
+  \textcite{fonseca2014} while a smaller number of \acp{fst} are generated,
+  the time spent on computations increase significantly, and thus the speed
+  gained from computing these lower bounds is minimal when compared to e.g.\
+  distance-based sorting of the terminals.
+\item \textcite{vanlaarhoven2013} proposed both a method for sorting the
+  terminals by their distance to the centroid and a set of geometric criteria
+  based on the lune-properties combined with the bottleneck distances used to
+  prune non-optimal \acp{fst}. The use of geometric criteria is partly what
+  makes the 2D algorithms so successful, and thus it seems natural to explore
+  these for the $d$-space case as well. However again as noted by
+  \textcite{fonseca2014} these computations give very little in when compared to
+  simply sorting the terminals based on distance in terms of speed vs.\ time
+  spent on computations.
+\item \textcite{fonseca2014} a way of sorting the terminals, such that the first
+  three terminals maximized the sum of their pairwise distance, and all terminals
+  afterwards maximize the sum of their distances to the currently sorted
+  terminals.
 \end{itemize}
 
-Finally \textcite{fonseca2014} has also proposed a new algorithm called branch
-enumeration algorithm, instead of \citeauthor{smith1992}'s algorithm. This
-algorithm draws its inspiration from the GeoSteiner algorithm. ...
+\PAWEL{\textcite{fampa2014}
+  (\url{http://www.iasi.cnr.it/aussois/web/uploads/2015/papers/fampam.pdf}) der
+  benytter en MINLP formulering af ESTP kan også være relevant, men så vidt jeg
+  kan se er den ikke publiceret nogen steder endnu. Kan jeg tage den med?}
 
-\section{Other Versions of the Steiner Tree Problem and Applications}
-\label{sec:other-vers-stein}
+Finally \textcite{fonseca2014} has also proposed a new branch enumeration
+algorithm, instead of \citeauthor{smith1992}'s algorithm. This algorithm draws
+its inspiration from the GeoSteiner algorithm. Instead enumerating full Steiner
+topologies and optimizing their respective trees it creates branches of subsets
+of terminals. The algorithm utilizes that upon removed a Steiner point from a
+full Steiner topology, $3$ branches are created, and that one can always find a
+Steiner point, such that the branches have at most $\lfloor \frac{n}{2} \rfloor$
+terminals, which reduces the number of branches that need to be generated. Tee
+algorithm then consists of three phases. First it computes \acp{smt} for subsets
+with up to $8$ terminals. Second it generates branches containing up to
+$\lfloor \frac{n}{2} \rfloor$ terminals, and the \acp{smt} found in the first
+phase are used to prune away branches that cannot be part of the final
+\ac{smt}. Finally it generates full Steiner topologies with $n$ terminals by
+concatenating three disjoint branches. The shortest tree found is then
+outputted. \citeauthor{fonseca2014} noted that the branch enumeration algorithm
+was able to solve many of the tested topologies with $15$ terminals within the
+given time of 12 hours which \citeauthor{smith1992}'s, even with terminal
+sorting, was not.
+
+There has also been some work into heuristics and approximation algorithms. This
+is however somewhat limited, and out of scope for this thesis as we here mainly
+focus on \citeauthor{smith1992}'s algorithm and exact algorithms.
+
+\section{Variations on the Steiner Tree Problem and Applications}
+\label{sec:vari-stein-tree}
 
 Steiner trees can of course be modified in several different ways. One could
 think of changing both the metric, the constraints, the cost function and so
@@ -509,7 +547,7 @@ discuss some of the real world applications of Steiner trees, i.e.\ their
 usefulness outside the academic world as more than a mathematical curiosity.
 
 Some of the types of Steiner trees to mention are:
-
+%
 \begin{itemize}
 \item \textbf{Rectilinear Steiner Tree} \quad A version of Steiner tree in which
   the Euclidean $\mathcal{L}_2$ norm is exchanged with the rectilinear
@@ -527,9 +565,9 @@ Some of the types of Steiner trees to mention are:
   interconnect all terminals, while minimizing the edge cost sum \textit{and}
   maximize the prize of Steiner points. See e.g.~\textcite{johnson2000}.
 \end{itemize}
-
+%
 Of possible applications, some more mentionable are:
-
+%
 \begin{itemize}
 \item \textbf{Electronic circuits/VLSI Design} \quad Both rectilinear and fixed
   orientation Steiner trees have use in VLSI design and the realization of
@@ -568,7 +606,7 @@ Of possible applications, some more mentionable are:
   represent the genetic difference of species, as their distance in the
   phylogenetic tree.
 \end{itemize}
-
+%
 \textcite{brazil2015} cover several more possible variations on Steiner trees,
 and applications of Steiner trees for the interested reader.
 
