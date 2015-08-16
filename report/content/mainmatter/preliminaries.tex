@@ -473,21 +473,30 @@ terminals within a feasible amount of time.
 
 There have been several attempts at optimizing \citeauthor{smith1992}'s
 algorithm to improve its speed and thus make higher number of terminals feasible
-to solve.
+to solve. Some of these are
 
-One of these is the one named \citeauthor{smith1992}\texttt{+} presented in
-\textcite{fampa2008}.
+\begin{itemize}
+\item \textcite{fampa2008} has proposed using lower bounds on partial Steiner
+  topologies\footnote{I.e.\ topologies that do not include all $n$ terminals.}
+  to prune \acp{fst}. Roughly the method works in the following way: Imagine we
+  have a \ac{fst} not connecting all $n$ terminals. To select the next terminal
+  to connect to the topology we compute the lower bounds
+  $z^{\ast}(\bar{D}_l^{+})$ of every terminal not yet connected, and select the
+  terminal for which the largest number of descending topologies can be
+  pruned. In this way the lower bound allow \citeauthor{fampa2008} to both prune
+  some descendants of topologies, and also vary the order in which they connect
+  terminals to reduce the number of topologies they need to optimize. The conic
+  formulation and the actual lower bound will not be discussed here as they are
+  rather extensive. The method to shows some improvement on both the number of
+  topologies enumerated and the actual running time. However as pointed out by
+\item \textcite{vanlaarhoven2013} ...
+\item \textcite{fampa2014} ...
+\item \textcite{fonseca2014} ...
+\end{itemize}
 
-A second, is the attempt by \textcite{vanlaarhoven2013}.
-
-Another attempt at improving the algorithm is \citeauthor{smith1992}\texttt{*}
-presented in \textcite{fonseca2014}.
-
-Finally \textcite{fonseca2014} also suggest a new algorithm called the Branch
-Enumeration algorithm. This algorithm draws its inspiration from the GeoSteiner
-algorithm.
-
-\TODO[inline]{Describe these three attempts.}
+Finally \textcite{fonseca2014} has also proposed a new algorithm called branch
+enumeration algorithm, instead of \citeauthor{smith1992}'s algorithm. This
+algorithm draws its inspiration from the GeoSteiner algorithm. ...
 
 \section{Other Versions of the Steiner Tree Problem and Applications}
 \label{sec:other-vers-stein}
