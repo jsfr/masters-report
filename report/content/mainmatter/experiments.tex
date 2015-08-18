@@ -11,8 +11,31 @@ Introduction, max 1/2--1 page
 
 $150$ random cubes with $n = 10 \ldots 12$ and $d = 2$.
 
+Simple seems faulty in a few instances:
+- cube\_n12\_d2\_s26.txt: Here it has a Steiner point lying atop another which in
+smiths has been moved out from it a bit. Thus it seems the new iteration has
+some situations with the error which it does not catch but is caugth by smiths
+perturbations
+
+- cube\_n10\_d2\_s42
+
+- cube\_n12\_d2\_s49
+
 \section{Speed}
 \label{sec:speed}
+
+Naming of methods:
+\begin{itemize}
+\item \textbf{Simple} \quad New implementation with the analytical method:
+  \texttt{steinertree~-iteration=simple}
+\item \textbf{SimpleSort} \quad New implementation with the analytical method
+  and sorted terminals: \texttt{steinertree~-iteration=simple~-sort}
+\item \textbf{SmithNew} \quad New implementation with \citeauthor{smith1992}'s
+  iteration: \texttt{steinertree~-iteration=smith}
+\item \textbf{SmithNewSort} \quad New implementation with \citeauthor{smith1992}'s iteration and
+  sorted terminals: \texttt{steinertree~-iteration=smith~-sort}
+  \item \textbf{SmithOld} \quad Original implementation by \textcite{smith1992}.
+\end{itemize}
 
 \begin{table}[htbp]
   \centering
@@ -28,6 +51,22 @@ $150$ random cubes with $n = 10 \ldots 12$ and $d = 2$.
     \bottomrule
   \end{tabular}
   \caption[Here be dragons]{Here be dragons.\label{tab:test-sets}}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabularx}{1.0\linewidth}{cccccc}
+    \toprule
+            & Simple & SimpleSort & SmithNew & SmithNewSort & SmithOld \\
+    \midrule
+    Carioca & $81$   & $89$       & $73$     & $87$         & $76$     \\
+    Cube    & $360$  & $360$      & $352$    & $360$        & $356$    \\
+    Iowa05  & $30$   & $30$       & $30$     & $30$         & $30$     \\
+    Sausage & $22$   & $23$       & $18$     & $22$         & $21$     \\
+    Solids  & $4$    & $4$        & $4$      & $4$          & $4$      \\
+    \bottomrule
+  \end{tabularx}
+  \caption[Here be dragons]{Here be dragons.\label{tab:set-success}}
 \end{table}
 
 All sets have been taken from \textcite{fonseca2014}, but the sets Carioca and
