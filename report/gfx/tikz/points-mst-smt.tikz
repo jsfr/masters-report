@@ -1,0 +1,17 @@
+\begin{tikzpicture}[thick]
+  \begin{scope}
+    \node [reg](v1) at (0,0) {};
+    \node [reg](v2) at (0,2) {};
+    \node [reg](v3) at (2,1) {};
+    \draw (v1) -- (v2) -- (v3);
+  \end{scope}
+  \begin{scope}[shift={(4,0)}]
+    \node [reg](v1) at (0,0) {};
+    \node [reg](v2) at (0,2) {};
+    \node [reg](v3) at (2,1) {};
+    \node [stein](s1) at (0.577,1) {};
+    \draw (s1) -- (v1);
+    \draw (s1) -- (v2);
+    \draw (s1) -- (v3);
+  \end{scope}
+\end{tikzpicture}
