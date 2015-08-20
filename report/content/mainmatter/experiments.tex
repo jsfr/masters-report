@@ -33,11 +33,6 @@ $150$ random cubes with $n = 10 \ldots 12$ and $d = 2$.
 
 Simple seems faulty in a few instances:
 
-Here it has a Steiner point lying atop another which in
-smiths has been moved out from it a bit. Thus it seems the new iteration has
-some situations with the error which it does not catch but is caugth by smiths
-perturbations
-
 \begin{table}[htbp]
   \centering
   \begin{tabular}{ccc}
@@ -54,6 +49,12 @@ perturbations
   \end{tabular}
   \caption[Here be dragons]{Here be dragons.\label{tab:correctness-errors}}
 \end{table}
+
+This seems to be because the current error function is incompatible with this
+iteration, as the error gets very low quickly, but may have some of the
+described problems. Thus the line \texttt{q-r < upperBound} will skip some trees
+which can actually become better. The same goes for the lines deciding when we
+stop optimization.
 
 \section{Speed}
 \label{sec:speed}

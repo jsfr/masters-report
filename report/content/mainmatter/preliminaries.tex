@@ -239,7 +239,8 @@ in \cref{fig:steiner-smts} would not be a Steiner tree by
 be by \cref{def:steiner-tree}. The similarities of the two definitions should
 however be obvious, and it also holds for both of the definitions that any
 \ac{smt} must be a Steiner tree, and that any Steiner tree must be a \ac{rmt} of
-its underlying topology.
+its underlying topology. The one we will use in general is
+\cref{def:steiner-tree2}.
 
 Finally there is also the definition used by
 \textcite{smith1992}, which defines a Steiner tree, by some properties which is
@@ -359,28 +360,45 @@ $T$ is non-degenerate. The algorithm can be implemented to run in
 $\mathcal{O}(n)$. The algorithm is very well-known, and is also presented in
 \textcite{brazil2015,smith1992}.
 
+Before describing the algorithm, we define an equilateral point.
+%
+\begin{definition}{Equilateral point}
+  An equilateral point $e_{ab}$, of the points $a$ and $b$, is a point such that the
+  triangle $\triangle a b e_{ab}$ is equilateral. It is clear that in two dimensions
+  such a point has two unique placements, one on each side of the line passing
+  through $a$ and $b$.
+\end{definition}
+%
 The algorithm consists of two steps. The first, the \textit{merging} step, works
 as follows: Let $u$ be a Steiner point connected to $a$, $b$ and $s$, where $a$
-and $b$ are terminals. Replace $a$, $b$ and $u$ with a the equilateral point
-$e_{ab}$\footnote{An equilateral point $c$, of the points $a$ and $b$, is a
-  point such that the triangle $\triangle a b c$ is equilateral. It is clear
-  that in two dimensions such a point has two unique placements, one on each
-  side of the line passing through $a$ and $b$.} of $a$ and $b$. Do this $n-2$
-times until the topology consists of only $2$ points. The second step, the
-\textit{reconstruction} step, works a follows: Let $\mathcal{T}'$ be the
-full Steiner topology on the $n-1$ new terminals\footnote{I.e.\ the same set of terminals as
-  before, but where $a$ and $b$ has been replace with $e_{ab}$}. Then the
-coordinates of $u$ can be found by taking the intersection between the Steiner
-arc $\hat{ab}$\footnote{The arc between $a$ and $b$ on the circle circumscribing
-  the triangle $\triangle a b e_{ab}$.} and the edge $e_{ab}s$. Do this on the
-$2$ point tree $n-2$, reinserting the points represented by the equilateral
-points, until we again have a tree of $n$ terminals with the correct coordinates
-for the $n-2$ Steiner points.
+and $b$ are terminals\footnote{It can be proven, that such a pair can always be
+found. However intuitively it also makes sense, by simply thinking about the
+number of terminals and Steiner points in a full Steiner topology, and realizing
+that no Steiner point can be connected solely to other Steiner points, and thus
+we must be able to find such a point.}. Replace $a$, $b$ and $u$ with a the
+equilateral point $e_{ab}$ of $a$ and $b$. Do this $n-2$ times until the
+topology consists of only $2$ points. The second step, the
+\textit{reconstruction} step, works a follows: Let $\mathcal{T}'$ be the full
+Steiner topology on the $n-1$ new terminals\footnote{I.e.\ the same set of
+  terminals as before, but where $a$ and $b$ has been replace with
+  $e_{ab}$}. Then the coordinates of $u$ can be found by taking the intersection
+between the Steiner arc $\widehat{ab}$\footnote{The arc between $a$ and $b$ on the
+  circle circumscribing the triangle $\triangle a b e_{ab}$.} and the edge
+$e_{ab}s$. Do this on the $2$ point tree $n-2$, reinserting the points
+represented by the equilateral points, until we again have a tree of $n$
+terminals with the correct coordinates for the $n-2$ Steiner points.
+
+It may well be that $\widehat{ab}$ and $e_{ab}s$ do not intersect, if this is
+the case, the algorithm halts, and not solution exists for the given full
+Steiner topology.
 
 The biggest issue of the above algorithm is deciding on which side of the line
 $ab$ we should place the equilateral point $e_{ab}$. However it turns out that
 by choosing the order in which we perform the merging steps we are always able
 to find the correct side. Thus this algorithm runs in $\mathcal{O}(n)$.
+
+\NOTE[inline]{If time add a more detailed description of how we decide side of
+  equilateral point, and add a figure of the two steps of Hwang-Melzak.}
 
 The proof of the algorithm and how to decide the side for the equilateral point
 can be found in \textcite[ch.~1]{brazil2015}.
@@ -389,9 +407,10 @@ The algorithm unfortunately does not generalize from two dimensions to higher
 dimensions. The reason for this is, that while the edges emanating from a
 Steiner point are indeed coplanar, the plane the points lie in is not known in
 advance if there are more than $3$ terminals. This means that we no longer have
-a unique pair of equilateral points for each cherry, but instead a continuous
-range of equilateral points lying on a circle in $d$-space, as illustrated by
-\cref{fig:equi-points}.
+a unique pair of equilateral points for each cherry\footnote{A pair of terminals
+  adjacent to a common Steiner point in a Steiner topology is called a cherry
+  for the topology.}, but instead a continuous range of equilateral points lying
+on a circle in $d$-space, as illustrated by \cref{fig:equi-points}.
 %
 \begin{figure}[htbp]
   \centering
@@ -399,7 +418,7 @@ range of equilateral points lying on a circle in $d$-space, as illustrated by
     \includegraphics[width=\textwidth]{gfx/tikz/equi-points-2d}
     \caption{When $d = 2$ we have exactly two unique possible
       placements.\label{fig:equi-points-2d}}
-  \end{subfigure}\hspace{1em}%
+  \end{subfigure}\\hspace{1em}%
   \begin{subfigure}[t]{0.4\textwidth}
     \includegraphics[width=\textwidth]{gfx/tikz/equi-points-3d}
     \caption{When $d \ge 3$ we have a circle in $d$-space of possible
@@ -419,6 +438,8 @@ this, and the algorithm breaks down.
 
 \subsection{The GeoSteiner Algorithm}
 \label{sec:geosteiner-algorithm}
+
+\NOTE[inline]{if time add figure.}
 
 The GeoSteiner algorithm was originally proposed by \textcite{winter1985}. Later
 improvements of the implementation have allowed for the computation of \acp{smt}
@@ -447,23 +468,27 @@ effectively\footnote{For an implementation of GeoSteiner see e.g.\
 fuller description of the algorithm, see e.g.\ \textcite[sec.~1.4]{brazil2015}.
 
 While the algorithm is the most effective currently known for $d = 2$, it is
-unfortunately not applicable when $d \ge 3$. First of, the generation of
-\acp{fst} for all subsets of terminals in $\mathbb{R}^d, d \ge 3$, is much more
-difficult than in $\mathbb{R}^2$. Optimizing a \ac{fst} with more than $3$
-terminals when $d \ge 3$ requires solving high-degree
-polynomials~\cite{smith1992}. As a consequence of this we can never use a
-algorithm such as Hwang-Melzak, but must use numerical approaches, such as
-\citeauthor{smith1992}'s optimization routine described in
-\cref{cha:algorithm}. Such numerical approaches seem to block the generation of
-\acp{fst} across various subsets of terminals. Finally many of the geometrical
-properties used to prune seems to be much weaker when
+unfortunately not applicable when $d \ge 3$. First, the generation of \acp{fst}
+for all subsets of terminals in $\mathbb{R}^d, d \ge 3$, is much more difficult
+than in $\mathbb{R}^2$. Optimizing a \ac{fst} with more than $3$ terminals when
+$d \ge 3$ requires solving high-degree polynomials~\cite{smith1992}. As a
+consequence of this we can never use a algorithm such as Hwang-Melzak, but must
+use numerical approaches, such as \citeauthor{smith1992}'s optimization routine
+described in \cref{cha:algorithm}. Such numerical approaches seem to block the
+generation of \acp{fst} across various subsets of terminals. Furthermore many of
+the geometrical properties used to prune seems to be much weaker when
 $d \ge 3$~\cite{fonseca2014}.
 
-Finally, as described by \textcite{smith1992}, it seems that when $d \ge 3$ the
-topology of a \ac{smt} often consists of only a single large \ac{fst}. Thus we
-will not be able to leverage the benefits of the two phases in GeoSteiner, as
-the \acp{fst} we generate in the first phase will span the entire set of
-terminals, making that phase very large and the second phase trivial.
+Finally \textcite[p.~142]{smith1992} describes, that it seems when $d \ge 3$,
+that the topology of a \ac{smt} often consists of only a single large \ac{fst}
+involving all $n-2$ Steiner points, instead of many small edge-disjoint
+\acp{fst}. Whether this is true, is not really qualified by
+\textcite{smith1992}, but it does seem likely that the \acp{fst} will tend to
+grow larger when we get to higher dimensions, as we have a more space in which
+the Steiner point can lie. Thus we will not be able to leverage the benefits of
+the two phases in GeoSteiner, as the \acp{fst} we generate in the first phase
+will span the a large portion of the set terminals, or possibly even the entire
+set, making that phase very large and the second phase trivial.
 
 \section{Finding Steiner Trees in d-space}
 \label{sec:find-stein-trees-d}
@@ -477,14 +502,20 @@ The most well-known of these is \citeauthor{smith1992}'s algorithm, proposed by
 \cref{cha:algorithm}, but in general it works by enumerating all full Steiner
 topologies and then finding then optimizes these using an iteration which
 converges to the \ac{fst} of that full Steiner topology. The algorithm can be
-implemented with a Branch-and-Bound approach, such that the found \acp{fst} can
-be used to prune full Steiner topologies before optimizing them. The algorithm
-however cannot solve problem instances with more than around $15$ to $20$
-terminals within a feasible amount of time.
+implemented with a branch-and-bound approach\footnote{The approach is not
+  completely classic branch-and-bound as we are only able to bound, after having
+  generated a complete solution. We do however generate small sub-problems of
+  fewer terminals, and using the found bounds are able to prune these and their
+  entire tree descendants/solutions. Thus in this way the algorithm can indeed
+  be seen as branch-and-bound. The details of this can be found in
+  \cref{cha:algorithm}.}, such that the found \acp{fst} can be used to prune
+full Steiner topologies before optimizing them. The algorithm however cannot
+solve problem instances with more than around $15$ to $20$ terminals within a
+feasible amount of time.
 
 There have been several attempts at optimizing \citeauthor{smith1992}'s
-algorithm to improve its speed and thus make higher number of terminals feasible
-to solve. Some of these are
+algorithm to improve its speed and thus increase the number of terminals
+feasible to solve. Some of these are
 
 \begin{itemize}
 \item \textcite{fampa2008} proposed using lower bounds on partial Steiner
@@ -498,7 +529,7 @@ to solve. Some of these are
   some descendants of topologies, and also vary the order in which they connect
   terminals to reduce the number of topologies they need to optimize. The conic
   formulation and the actual lower bound will not be discussed here as they are
-  rather extensive. The method to shows some improvement on both the number of
+  rather extensive. The method shows some improvement on both the number of
   topologies enumerated and the actual running time. However as pointed out by
   \textcite{fonseca2014} while a smaller number of \acp{fst} are generated,
   the time spent on computations increase significantly, and thus the speed
@@ -506,23 +537,20 @@ to solve. Some of these are
   distance-based sorting of the terminals.
 \item \textcite{vanlaarhoven2013} proposed both a method for sorting the
   terminals by their distance to the centroid and a set of geometric criteria
-  based on the lune-properties combined with the bottleneck distances used to
-  prune non-optimal \acp{fst}. The use of geometric criteria is partly what
-  makes the 2D algorithms so successful, and thus it seems natural to explore
-  these for the $d$-space case as well. However again as noted by
-  \textcite{fonseca2014} these computations give very little in when compared to
+  used to prune non-optimal \acp{fst}. The use of geometric criteria is partly
+  what makes the 2D algorithms so successful, and thus it seems natural to
+  explore these for the $d$-space case as well. However again as noted by
+  \textcite{fonseca2014} these computations give very little when compared to
   simply sorting the terminals based on distance in terms of speed vs.\ time
   spent on computations.
-\item \textcite{fonseca2014} a way of sorting the terminals, such that the first
-  three terminals maximized the sum of their pairwise distance, and all terminals
-  afterwards maximize the sum of their distances to the currently sorted
-  terminals.
+\item \textcite{fonseca2014} proposed a way of sorting the terminals, such that
+  the first three terminals maximized the sum of their pairwise distance, and
+  all terminals afterwards maximize the sum of their distances to the already
+  spanned terminals.
 \end{itemize}
 
-\PAWEL{\textcite{fampa2014}
-  (\url{http://www.iasi.cnr.it/aussois/web/uploads/2015/papers/fampam.pdf}) der
-  benytter en MINLP formulering af ESTP kan også være relevant, men så vidt jeg
-  kan se er den ikke publiceret nogen steder endnu. Kan jeg tage den med?}
+\NOTE[inline]{If time, add
+  \url{http://www.iasi.cnr.it/aussois/web/uploads/2015/papers/fampam.pdf}}
 
 Finally \textcite{fonseca2014} has also proposed a new branch enumeration
 algorithm, instead of \citeauthor{smith1992}'s algorithm. This algorithm draws
@@ -531,9 +559,9 @@ topologies and optimizing their respective trees it creates branches of subsets
 of terminals. The algorithm utilizes that upon removed a Steiner point from a
 full Steiner topology, $3$ branches are created, and that one can always find a
 Steiner point, such that the branches have at most $\lfloor \frac{n}{2} \rfloor$
-terminals, which reduces the number of branches that need to be generated. Tee
-algorithm then consists of three phases. First it computes \acp{smt} for subsets
-with up to $8$ terminals. Second it generates branches containing up to
+terminals, which reduces the number of branches that need to be generated. The
+algorithm then consists of three phases. First, it computes \acp{smt} for subsets
+with up to $8$ terminals. Second, it generates branches containing up to
 $\lfloor \frac{n}{2} \rfloor$ terminals, and the \acp{smt} found in the first
 phase are used to prune away branches that cannot be part of the final
 \ac{smt}. Finally it generates full Steiner topologies with $n$ terminals by
@@ -561,20 +589,21 @@ Some of the types of Steiner trees to mention are:
 %
 \begin{itemize}
 \item \textbf{Rectilinear Steiner Tree} \quad A version of Steiner tree in which
-  the Euclidean $\mathcal{L}_2$ norm is exchanged with the rectilinear
-  $\mathcal{L}_1$ norm as the used metric. This means that edges consist of
-  vertical and horizontal line segments. See e.g.~\textcite[ch.~3]{brazil2015}.
+  edges must consist of vertical and horizontal line segments. It can be proven,
+  that an edge always only needs to consist of at most a single horizontal, and
+  a single vertical line segment, and thus we calculate the edge length using
+  the rectilinear $\mathcal{L}_1$ norm. See e.g.~\textcite[ch.~3]{brazil2015}.
 \item \textbf{Fixed Orientation Steiner Tree} \quad A version of Steiner tree,
   which can be seen as a generalization of the rectilinear Steiner tree. In this
   version the metric used is a fixed orientation metric, meaning that edges are
   only allowed to have some fixed orientations, the rectilinear version can be
   seen as a fixed orientation version where we have two perpendicular
   orientations. See e.g.~\textcite[ch.~2]{brazil2015}.
-\item \textbf{Prize Collecting Steiner Tree} \quad A version of Steiner tree in
-  which edges are ascribed some cost\footnote{This could e.g.\ be the Euclidean
-    length of the edge} and points are ascribed some prize. The tree seeks to
-  interconnect all terminals, while minimizing the edge cost sum \textit{and}
-  maximize the prize of Steiner points. See e.g.~\textcite{johnson2000}.
+% \item \textbf{Prize Collecting Steiner Tree} \quad A version of Steiner tree in
+%   which edges are ascribed some cost\footnote{This could e.g.\ be the Euclidean
+%     length of the edge} and points are ascribed some prize. The tree seeks to
+%   interconnect all terminals, while minimizing the edge cost sum \textit{and}
+%   maximize the prize of Steiner points. See e.g.~\textcite{johnson2000}.
 \end{itemize}
 %
 Of possible applications, some more mentionable are:
@@ -590,25 +619,25 @@ Of possible applications, some more mentionable are:
   electronic components normally consists of several layers in which the wires
   can run between, thus crossing each other without shorting, the problem also
   has use in $3$ dimensions.
-\item \textbf{Object detection} \quad A method for object detection using
-  Steiner trees has been proposed by \textcite{russakovsky2010}. The method
-  proposed utilizes a directed Steiner tree by showing that one can reduce the
-  parameter selection\footnote{The parameter selection is roughly used to figure
-    out how much of a computation can be shared between object classes. This
-    preferable as the steps of object detection are computationally
-    expensive. For a more detailed description of object detection,
-    see~\cite{russakovsky2010}.} of the object detection to the problem of
-  finding the Steiner tree in a directed graph. The problem of finding a
-  directed Steiner tree as described by \textcite{russakovsky2010}, is a bit
-  different from the way we have defined Steiner trees so far. Here we have a
-  directed graph $G = (E(G), V(G))$, with weights $w(E)$ on the edges, a set of
-  terminals $R \subseteq V(G)$ and a root node $r \in V(G)$. The goal is then to
-  find a tree in $G$, rooted at $r$, that spans all terminals in $R$ while
-  minimizing the sum of weights on the used edges. Thus we are not able to place
-  the Steiner points ``freely'' as we have described so far, but must instead
-  use the points of the graph $G$. The proposed method have shown a promising
-  speedup, with a small drop in accuracy, when compared to other methods within
-  that field.
+% \item \textbf{Object detection} \quad A method for object detection using
+%   Steiner trees has been proposed by \textcite{russakovsky2010}. The method
+%   proposed utilizes a directed Steiner tree by showing that one can reduce the
+%   parameter selection\footnote{The parameter selection is roughly used to figure
+%     out how much of a computation can be shared between object classes. This
+%     preferable as the steps of object detection are computationally
+%     expensive. For a more detailed description of object detection,
+%     see~\cite{russakovsky2010}.} of the object detection to the problem of
+%   finding the Steiner tree in a directed graph. The problem of finding a
+%   directed Steiner tree as described by \textcite{russakovsky2010}, is a bit
+%   different from the way we have defined Steiner trees so far. Here we have a
+%   directed graph $G = (E(G), V(G))$, with weights $w(E)$ on the edges, a set of
+%   terminals $R \subseteq V(G)$ and a root node $r \in V(G)$. The goal is then to
+%   find a tree in $G$, rooted at $r$, that spans all terminals in $R$ while
+%   minimizing the sum of weights on the used edges. Thus we are not able to place
+%   the Steiner points ``freely'' as we have described so far, but must instead
+%   use the points of the graph $G$. The proposed method have shown a promising
+%   speedup, with a small drop in accuracy, when compared to other methods within
+%   that field.
 \item \textbf{Phylogenetics} \quad A method using $d$-space Euclidean Steiner trees
   has been proposed to be used in the determination of phylogenetic trees by
   \textcite{brazil2009}. Phylogenetic trees are used to determine the
@@ -620,6 +649,9 @@ Of possible applications, some more mentionable are:
 %
 \textcite{brazil2015} cover several more possible variations on Steiner trees,
 and applications of Steiner trees for the interested reader.
+
+\NOTE[inline]{If time add obstacle-avoiding Steiner trees and possible uses for
+  these in applications.}
 
 %%% Local Variables:
 %%% mode: latex

@@ -8,7 +8,7 @@ The new implementation has been written in the, still relatively new but at this
 point stable, language Go, which quoting the homepage: ``Go is an open source
 programming language that makes it easy to build simple, reliable, and efficient
 software.''~\cite{golanghomepage}. Go is a general-purpose, strongly typed and
-garbage-collected language. The syntax bears resemblance to to C\footnote{But
+garbage-collected language. The syntax bears resemblance to C\footnote{But
   with a lot less braces, and no pointer arithmetic.}. Furthermore Go has
 explicit support for concurrent programming. The language furthermore sports
 extremely fast compiling of source code and tries to have performance
@@ -22,11 +22,11 @@ makes it easily readable for anyone familiar with any C-syntax styled
 language. Finally the easy use of concurrency in Go\footnote{Starting a new
   goroutine, which is the languages type of lightweight threads, is as simple as
   writing: \texttt{go~SomeFunction~(args\ldots)}.} made it interesting as
-continued work with the new implementation could include a potential significant
-speedup could be by making the branching of in the algorithm---and perhaps also
-the Gauss eliminations---concurrent\footnote{Not concurrency has actually been
-  implemented in the new implementation. However the possibilities of this is
-  discussed in \cref{sec:concurrency}.}.
+continued work with the new implementation could include a potential,
+significant, speedup by making the branching of the algorithm concurrent. The
+same could be be true for the Gauss elimination, concurrent\footnote{Not
+  concurrency has actually been implemented in the new implementation. However
+  the possibilities of this is discussed in \cref{sec:concurrency}.}.
 
 In general the implementation tries to follow guidelines given in
 \textcite{effectivego}. These are guidelines as to how one codes effective
@@ -44,8 +44,8 @@ describe some more notable elements of the new implementation, namely the way in
 which the new implementation builds topologies, and the new iteration using the
 analytical method for solving the Fermat-Torricelli problem, as described by
 \textcite{uteshev2014}. This also includes a description of said analytical
-method and a generalization to $\mathbb{R}^{d}, d \ge 3$. Finally a will a way
-of sorting the terminals also implemented be described as well.
+method and a generalization to $\mathbb{R}^{d}, d \ge 3$. Finally, will a way
+of sorting the terminals---also implemented---be described.
 
 \section{Architecture}
 \label{sec:architecture-1}
@@ -80,10 +80,10 @@ prefix, or we could restore and go back from $A_1$ to $A_0 = [1]$\footnote{From
   $A_0$ we could then either split again to e.g.\ the next length two topology
   vector $A_1' = [1, 3]$ or restore once again.}
 
-The way this is implemented is a follows: All edges of the tree is kept in an
+The way this is implemented is a follows: All edges of the tree are kept in an
 list, and edge being represented as the tuple $(a, b)$ meaning it starts at
 point $p_a$ and ends at point $p_b$. Say we have $n$ terminals in all, and have
-currently connected the $i$ first terminals. This means we $i-2$ Steiner points
+currently connected the $i$ first terminals. This means we have $i-2$ Steiner points
 continuously enumerated from $n+1$ up to $n+i-1$ and $2i-3$ edges enumerated
 continuously from $1$.
 
@@ -187,8 +187,8 @@ but instead the naive approach. This caused a significant slow-down\footnote{No
 compared with the original implementation. Because of this, the new
 implementation uses this more complex method.
 
-The reason for the more complex method is better, lies in the number of
-topologies which on is able to prune with the two approaches.
+The reason that the more complex method is better, lies in the number of
+topologies which one is able to prune with the two approaches.
 
 When using the more complex method we in general get better upper bounds much
 faster, and thus we become able to prune more topologies and do so
@@ -203,7 +203,7 @@ the route which currently shows the most promise.
 \label{sec:analyt-solut-ferm}
 
 An analytical solution for finding the Fermat-Torricelli point of three
-prespecified points is presented by \textcite{uteshev2014}, which is the same as
+prespecified points in 2D is presented by \textcite{uteshev2014}, which is the same as
 finding the Steiner point of those three points. The article presents a
 solution for two dimensions which will be described. However as we are working
 in $\mathbb{R}^d$ a generalization of the solution to higher dimensions will
@@ -211,13 +211,13 @@ also be presented. This generalization is as far as I know, not presented
 anywhere else in the literature.
 
 The reason this is interesting is that \textcite{smith1992} mentions an
-iterative process which updates points one at a time would no be as quick to
+iterative process which updates points one at a time would not be as quick to
 converge as the one he presents. There is however no experiments in the paper to
 support this. Thus this analytical method is interesting, as it is actually not
-computationally heavy to compute the location of a Steiner point, and as
-each optimization moves a point to the, at that time, exact location it needs to
-be to minimize the length. One could therefore think that this might converge
-quite fast.
+computationally heavy to compute the location of a Steiner point, and as each
+optimization moves a Steiner point to the exact location at which it minimizes
+the length to its three neighbors at the time. One could therefore think that this might
+actually converge quite fast.
 
 An optimization method using the analytical method has been implemented in the
 new implementation. To use this instead of \citeauthor{smith1992}'s iteration
@@ -336,8 +336,6 @@ equations
   r_{23}^2 K_1 + r_{13}^2 K_2 + r_{12}^2 K_3 &= 2 S d
 \end{align}
 %
-\PAWEL{Should I show the calculations for these as well?}
-
 Both can proven by simply substituting the right hand sides with the definition
 of each symbol, i.e.\ through direct computation. Using \cref{eq:16} we can
 rewrite \cref{eq:15} as
@@ -419,8 +417,6 @@ Thus
 %
 To finish the proof one would also have to show that $K_1, K_2, K_3$ are
 nonnegative. The proof of this can be found in~\cite[p.~5-6]{uteshev2014}.
-
-\PAWEL{Do I need to perform this proof as well myself?}
 
 We can now prove \cref{eq:15}, by substituting it into \cref{eq:13}. As the
 equations are similar for $x$ and $y$, only $x$ is shown here
@@ -609,7 +605,7 @@ The idea of sorting the terminals before one starts to build and optimize
 topologies is not new, and has also been suggested by \textcite{smith1992}. The
 idea behind sorting the terminals, is to find some way of sorting the terminals,
 such that the initial \acp{rmt} have become as large as possible, as fast as
-possible. Doing this allow us to early on see if we need to discard a topology
+possible. Doing this allows us to early on see if we need to discard a topology
 vector as prefix, if its \ac{rmt} is longer than the upper bound, and thus be
 able to prune more topologies, than if we added terminals in an arbitrary order.
 
@@ -627,7 +623,7 @@ thus not pruning much faster.
 
 The second method, presented by \textcite{fonseca2014}, sorts the terminals such
 that the first three terminals $p_1, p_2, p_3$ maximize the sum of their
-pairwise distance, and $p_i, i = 4, 5, \ldots, n$ is the farthest away from
+pairwise distances, and $p_i, i = 4, 5, \ldots, n$ is the farthest away from
 $p_1, p_2, \ldots, p_{i-1}$. This method seems to have a lot of potential as it
 tries to ensure that every terminal added is as far away from the current
 \ac{rmt} as possible. However one could easily think of positions for the
