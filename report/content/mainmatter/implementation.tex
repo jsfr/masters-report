@@ -153,7 +153,7 @@ follows:
   and popping them of the stack until the stack is empty.
 \end{enumerate}
 %
-Another way to look at the approach, is to see the topology as a tree
+Another way to look at the approach is to see the topology as a tree
 structure. What we then do, is that we optimize every child of the node at which
 we are currently at, and select the one with the shortest tree. At this node we
 then again optimize all its children and select the shortest tree. When going
@@ -184,7 +184,8 @@ the new implementation did not use the approach taken by \citeauthor{smith1992},
 but instead the naive approach. This caused a significant slow-down\footnote{No
   formal tests were made as the original implementation was several magnitudes
   faster, and thus it was obvious that something needed to be changed.} when
-compared with the original implementation. Because of this, the new
+compared with the original implementation. This method may more precisely be
+described as a best-first approach.  Because of this, the new
 implementation uses this more complex method.
 
 The reason that the more complex method is better, lies in the number of
