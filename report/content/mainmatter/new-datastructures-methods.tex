@@ -1,0 +1,357 @@
+ {
+\abnormalparskip{0pt}
+\chapter{New Data Structures and Methods}
+\label{cha:new-data-structures}
+}
+
+This chapter will describe some more notable elements of the new implementation,
+with regard to data structures and methods not used by
+\textcite{smith1992}. Specifically it describes the new data structure
+introduced for holding and building topologies. It also describes the new
+iteration based of the simple iteration described in \cref{sec:simple-iteration}
+and using the analytical method for solving the Fermat-Torricelli problem
+presented by \textcite{uteshev2014}. This also includes a description of said
+method, and a generaliztion to $d$-space, as the one presented by
+\textcite{uteshev2014} only is for 2D. Finally the chapter also describes a new
+way of sorting the terminals.
+
+\section{Building Topologies}
+\label{sec:building-topologies}
+
+In \textcite{smith1992} implementation of the algorithm when generating
+topologies every new topology is rebuilt completely from the bottom. E.g.\ say
+that we have just optimized the topology corresponding to the topology vector
+$A = [1, 2]$. If we now wish to optimize the topology vector
+$A' = [1, 2, 3]$. In the old implementation $A'$ would have to be built again
+from scratch instead of simply splitting and building on to $A$.
+
+To avoid this extra work, the new implementation instead uses a different
+approach. The underlying data of a tree is in most aspects more or less
+identical to \citeauthor{smith1992}'s as it is a series of arrays to hold points
+and edges. However these are coupled together in a struct (in Go, the
+programming language of choice, this is essentially a record on which on can add
+methods.). Instead of rebuilding this entire struct every time we split or
+restore the topology, it has methods to do exactly this. Thus, using the earlier
+example, from $A$ we could either split an
+edge and get $A'$, or any other length three topology vector having $A$ as a
+prefix, or we could restore and go back from $A$ to $A'' = [1]$\footnote{From
+  $A''$ we could then either split again to e.g.\ the next topology vector of
+  length two, $[1, 3]$, or restore once again.}
+
+The way this is implemented is a follows: All edges of the tree are kept in an
+list, and edge being represented as the tuple $(a, b)$ meaning it starts at
+point $p_a$ and ends at point $p_b$. Say we have $n$ terminals in all, and have
+currently connected the $i$ first terminals. This means we have $i-2$ Steiner points
+continuously enumerated from $n+1$ up to $n+i-1$ and $2i-3$ edges enumerated
+continuously from $1$.
+
+Now we wish to split some edge $e_j = (c, d)$ where $1 \le j \le 2i-3$, so any
+of the existing edges, and connect the next terminal $p_{i+1}$ to the existing
+topology. We do this by first changing the original edge to go from the first
+end point $p_c$ to a new Steiner point $p_{n+i}$. Afterwards we append two new
+edges to the list of edges, $e_{2i-2} = (d, n+i)$ and $e_{2i-1} = (i+1, n+i)$
+thus connecting $p_d$ and $p_{i+1}$ to Steiner point $p_{n+i}$ as well. This
+process is straight forward and if the accessing into the list and
+appending\footnote{which is both the case if enough space is allocated for the
+  list ahead of the appending.} is $\mathcal{O}(1)$ then the entire operation
+will be $\mathcal{O}(1)$. The operation can be seen in
+\cref{fig:splitting-topology}. In this way we can expand the topology one
+terminal at a time without rebuilding every time.
+
+\begin{figure}[htbp]
+  \centering
+  \input{gfx/splitting-topology}
+  \caption[Implementation of topology splitting]{Splitting on edge $e_j$ with
+    $i$ terminals currently connected, results in two new edges $e_{2i-2}$ and
+    $e_{2i-1}$ and a change of the existing edge $e_j$. Finally we also get the new
+    Steiner point $n+i$.\label{fig:splitting-topology}}
+\end{figure}
+
+The reason for this way of expanding the topology however lies with the wish to
+also restore an edge. If we keep a list of all the edges we split
+on\footnote{which we do, as this is the topology vector described in
+  \cref{sec:representation}.} we can always restore the last edge split in the
+following way. Select the last two edges, $(d, n+i), (i+1, n+i)$ in the list and
+the edge $e_j = (c, n+i)$. Now change edge $e_j$ to $(c, d)$ and remove the last
+two edges in the list. Thus we have $\mathcal{O}(1)$ methods for splitting and
+restoring the topology, in a way which is consistent in the numbering with the
+one described in \cref{sec:representation} and shown in
+\cref{fig:algorithm-topologies}.
+
+\section{Analytical Solution to the Fermat-Torricelli Problem}
+\label{sec:analyt-solut-ferm}
+
+An analytical solution for finding the Fermat-Torricelli point of three
+prespecified points in 2D is presented by \textcite{uteshev2014}---which is the same as
+finding the Steiner point of those three points. The article presents a
+solution for two dimensions which will be described. However as we are working
+in $\mathbb{R}^d$ a generalization of the solution to $d$-space is necessary and
+will also be presented. This generalization is as far as I know, not presented
+anywhere else in the literature.
+
+The reason this is interesting is that \textcite{smith1992} mentions an
+iterative process which updates points one at a time would not be as quick to
+converge as the one he presents. There is however no experiments in the paper to
+support this. Thus this analytical method is interesting, as it is actually not
+computationally heavy to compute the location of a Steiner point, and as each
+optimization moves a Steiner point to the exact location at which it minimizes
+the length to its three neighbors at the time. One could therefore think that this might
+actually converge quite fast.
+
+Using this analytical solution a optimization iteration similar to the one
+described in \cref{sec:simple-iteration} has been implemented. The method does
+not completely follow the one described, but switches out the iteration by
+\citeauthor{smith1992} with an iteration that runs over all Steiner points and
+places them using the analytical method. This is due to the fact that I wished
+to reuse the main loop which iterates through topologies, and that the simple
+iteration in the way it is described in \cref{sec:simple-iteration} was first
+finalized after the implementation of the analytical solution. Thus this method
+may indeed be doing some double work of its own\footnote{E.g.\ when splitting
+  the topology, the new Steiner point gets initial placement at its neighbors
+  centroid slightly pertubed. This could perhaps have been improved to using the
+  analytical solution as well.}, some of which will be discussed in
+\cref{cha:discussion}.
+
+\subsection{2D}
+\label{sec:2d}
+
+The solution for two dimensions is presented by \textcite{uteshev2014} is for
+the generalized Fermat-Torricelli problem, which given three non-colinear points
+$p_1 = (x_1, y_1)$, $p_2 = (x_2, y_2)$ and $p_3 = (x_3, y_3)$ in the plane,
+finds the point $p_\ast = (x_\ast, y_\ast)$ which gives a solution to the
+optimization problem
+%
+\begin{equation}
+  \min_{(x,y)} F(x,y) \quad \text{for} \quad F(x,y) = \sum_{j=1}^3 m_j
+  \sqrt{{(x-x_j)}^2 + {(y-y_j)}^2}
+\end{equation}
+%
+Where the weight of the $j$th point, $m_j$, is a real positive number. The
+instance where $m_1 = m_2 = m_3 = 1$ is exactly the classical Fermat-Torricelli
+problem, which has a unique solution either coinciding with one of the points
+$p_1$, $p_2$, $p_3$ or with the Fermat-Torricelli or Steiner point of the
+triangle $p_1 p_2 p_3$. The instance with unequal weights is known as the
+generalized Fermat-Torricelli point.
+
+As we only need the classical version of the problem, I have decided to rewrite
+the proof done by \textcite{uteshev2014} for the 2D case with the weights set to
+$1$. In a lot of ways, the proof is the same, however it does become a bit
+simpler and cleaner. The original proof for the generalized version can be found
+in \textcite{uteshev2014}. Thus what we wish to minimize is instead the
+following problem:
+%
+\begin{equation}
+  \min_{(x,y)} F(x,y) \quad \text{for} \quad F(x,y) = \sum_{j=1}^3
+  \sqrt{{(x-x_j)}^2 + {(y-y_j)}^2}
+\end{equation}
+%
+Existence and uniqueness of the solution is guaranteed by
+\cref{thm:fermat-torricelli}
+%
+\begin{theorem}
+\label{thm:fermat-torricelli}
+  Denote the corner angles of the triangle $\triangle p_1 p_2 p_3$ by $\alpha_1, \alpha_2,
+  \alpha_3$. Then if the conditions
+  %
+  \begin{equation}
+    \label{eq:12}
+    \left\{
+      \begin{array}{c}
+        1 < 2 + 2 \cos \alpha_1 , \\
+        1 < 2 + 2 \cos \alpha_2 , \\
+        1 < 2 + 2 \cos \alpha_3 , \\
+      \end{array}
+    \right.
+  \end{equation}
+  %
+  are fulfilled, corresponding to all angles being less than $120^{\circ}$, then
+  there exists a unique solution $p_\ast = (x_\ast, y_\ast) \in \mathbb{R}^2$
+  for the classic Fermat-Torricelli problem lying inside the triangle
+  $\triangle p_1 p_2 p_3$. This point is a stationary point for the function
+  $F(x,y)$, i.e.\ a real solution of the system
+  %
+  \begin{equation}
+    \label{eq:13}
+    \left\{
+      \begin{array}{c}
+        \frac{d(F(x,y))}{dx} = \sum_{j=1}^3 \frac{(x-x_j)}{\sqrt{{(x-x_j)}^2 +
+        {(y - y_j)}^2}} = 0, \\
+        \frac{d(F(x,y))}{dy} = \sum_{j=1}^3 \frac{(y-y_j)}{\sqrt{{(x-x_j)}^2 +
+        {(y - y_j)}^2}} = 0
+      \end{array}
+    \right.
+  \end{equation}
+  %
+  If any of the conditions in \cref{eq:12} is violated then $F(x,y)$ attains its
+  minimum value at the corresponding vertex of triangle.
+\end{theorem}
+%
+Calculating the coordinates of the point $(x_\ast, y_\ast)$, if the conditions
+in \cref{eq:12} are fulfilled, is done as follows
+\begin{gather}
+  \label{eq:15}
+  x_\ast = \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \left( \frac{x_1}{K_1} +
+  \frac{x_2}{K_2} + \frac{x_3}{K_3} \right), \quad
+  y_\ast = \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \left( \frac{y_1}{K_1} +
+  \frac{y_2}{K_2} + \frac{y_3}{K_3} \right)
+  \intertext{with}
+  \label{eq:11}
+  F(x_\ast, y_\ast) = \min_{(x,y)} F(x,y) = \sqrt{d}
+  \intertext{Here}
+  \label{eq:1}
+  r_{jl} = \sqrt{{(x_j - x_l)}^2 + {(y_j - y_l)}^2} = |p_j p_l|
+  \quad \{j,l\} \in \{ 1, 2, 3 \} \\
+  \label{eq:20}
+  S = | x_1 y_2 + x_2 y_3 + x_3 y_1 - x_1 y_3 -x_3 y_2 - x_2 y_1 | \\
+  \label{eq:3}
+  \left\{
+    \begin{array}{c}
+      K_1 = \frac{\sqrt{3}}{2} (r_{12}^2 + r_{13}^2 - r_{23}^2) + S
+      \\
+      K_2 = \frac{\sqrt{3}}{2} (r_{12}^2 + r_{23}^2 - r_{13}^2) + S
+      \\
+      K_3 = \frac{\sqrt{3}}{2} (r_{23}^2 + r_{13}^2 - r_{12}^2) + S
+    \end{array}
+  \right. \\
+  d = \frac{1}{\sqrt{3}} (K_1 + K_2 + K_3) \\
+\end{gather}
+
+The proof of \cref{eq:15,eq:11} can be found in a generalized version in
+\textcite{uteshev2014}, or in \cref{sec:2d-1} where it has been
+adapted to the unweighted version of the problem.
+
+\subsection{Generalization to $d$-Space}
+\label{sec:gener-high-dimens}
+
+Generalizing the solution described above to higher dimensions is in general
+pretty straightforward. The biggest change is in the representation of $S$, and
+the fact that the proof requires a bit of sum manipulation. This generalized
+version of the proof is not known to have been presented in any paper before.
+
+The generalization is as for the 2D variant here done for the classic
+Fermat-Torricelli problem. It could however just as easily be done for the
+weighted problem, by following the form of the proof in \textcite{uteshev2014}
+instead of the form in \cref{sec:2d}.
+
+The first change is that we no longer try to minimize a function of just two
+parameters, but instead we intend to minimize a function of $d$ parameters,
+where our points are contained in $\mathbb{R}^d$, i.e.\ we have $d$ dimensions. As we
+normally represent this using vectors, we would not actually have $d$
+parameters, but instead one parameter being a $d$-vector. Thus we wish to find a
+point $p_\ast = (x_{(\ast,1)}, x_{(\ast,2)}, \ldots, x_{(\ast,d)}) \in \mathbb{R}^d$
+which minimizes the following function for the three points
+$p_1 = (x_{(1,1)}, x_{(1,2)}, \ldots, x_{(1,d)}), p_2 = (x_{(2,1)}, x_{(2,2)},
+\ldots, x_{(2,d)}), p_3 = (x_{(3,1)}, x_{(3,2)}, \ldots, x_{(3,d)}) \in \mathbb{R}^d$.
+%
+\begin{gather}
+  \min_{(x_1, x_2, \ldots, x_d)} F(x_1, x_2, \ldots, x_d) \quad \text{for} \quad
+  F(x_1, x_2, \ldots, x_d) = \sum_{j=1}^3 \sqrt{\sum_{i=1}^d {(x_i -
+    x_{(j,i)})}^2 }
+  \\ \Updownarrow \\
+  \label{eq:4}
+  \min_{(p)} F(p) \quad \text{for} \quad
+  F(p) = \sum_{j=1}^3 | p p_j |, \quad p \in \mathbb{R}^d
+\end{gather}
+%
+The point $p_\ast$ now no longer has to be a solution to the equation system in
+\cref{eq:13}, but to a similar system containing $d$ equations, as follows
+%
+\begin{equation}
+\label{eq:7}
+  \left.
+    \begin{array}{c}
+    \sum_{j=1}^3 \frac{(x_1-x_{(j,1)})}{| p p_j|} = 0
+    \\
+    \sum_{j=1}^3 \frac{(x_2-x_{(j,2)})}{| p p_j|} = 0
+    \\
+    \vdots
+    \\
+    \sum_{j=1}^3 \frac{(x_d-x_{(j,d)})}{| p p_j|} = 0
+  \end{array}
+  \right\} =
+  \sum_{j=1}^3 \frac{(p - p_j)}{| p p_j |} = \vec{0}
+\end{equation}
+%
+Then as before, if the conditions in \cref{eq:12} are fulfilled\footnote{If not
+  the point is as before located at the corresponding vertex.} the solution to
+\cref{eq:7} can be found as follows
+%
+\begin{gather}
+  p_\ast = (x_{(\ast,1)}, x_{(\ast,2)}, \ldots, x_{(\ast,d)})\label{eq:8}
+  \intertext{with}
+  x_{(\ast, j)} = \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \left( \frac{x_{(1,j)}}{K_1} +
+  \frac{x_{(2,j)}}{K_2} + \frac{x_{(3,j)}}{K_3} \right), \quad 0 < j \le d\label{eq:5}
+  \intertext{and}
+  F(p_\ast) = \min_{(p)} F(p) = \sqrt{d}\label{eq:21}
+  \intertext{Here}
+  \label{eq:14} r_{jl} = \sqrt{\sum_{i = 1}^d {(x_{(j,i)} - x_{(l,i)})}^2} = |p_j p_l|
+  \quad \{j,l\} \in \{ 1, 2, 3 \} \\
+  S = \frac{1}{2} \sqrt{(r_{12} + r_{23} + r_{13}) (r_{23} + r_{13}) (r_{12} +
+    r_{13}) (r_{12} + r_{23})} \\
+\end{gather}
+%
+And the rest of the expressions the same as in the 2D version. As can be seen,
+all of the expressions, except for $S$ (and the distance which now of course
+have more than two dimensions), retain the same representation as in the two
+dimensional version. $S$ however looks quite different. Exactly how the new $S$
+is related to the old $S$ is still unclear to me. \textcite{uteshev2014}
+describes, that $S$ in 2D rewritten, can be recognized as the doubled area of
+the triangle $\triangle p_1 p_2 p_3$. This geometrical understanding however
+seems to be missing from the higher dimension case. Indeed the idea for the
+representation of $S$ stems from talks with my supervisor Pawel Winter, who
+pointed me to an earlier implementation of the general case, that he has done
+himself. Thus an intuition of the new $S$ is missing, however as can be seen
+from the proof \cref{sec:d-space}, it does indeed work.
+
+\section{Sorting the Terminals}
+\label{sec:sorting-terminals}
+
+The idea of sorting the terminals before one starts to build and optimize
+topologies is not new, and has also been suggested by \textcite{smith1992}. The
+idea behind sorting the terminals, is to find some way of sorting the terminals,
+such that the initial \acp{rmt} have become as large as possible, as fast as
+possible. Doing this allows us to early on see if we need to discard a topology
+vector as prefix, if its \ac{rmt} is longer than the upper bound, and thus be
+able to prune more topologies, than if we added terminals in an arbitrary order.
+
+At least two different kinds of sorting has been implemented by
+\textcite{fonseca2014,vanlaarhoven2013}. Both methods have shown promising
+results regarding the number of trees one needs to optimize in contrast to not
+sorting the terminals.
+
+The first method, presented by \textcite{vanlaarhoven2013}, sorts the terminals
+by their decreasing distance to the centroid of the set of terminals, i.e.\ the
+first terminal is the farthest away, and the last terminal is the closest. A
+potential issue with this way of sorting, is that while the terminals may be far
+from the centroid, they can potentially still be rather close to each other,
+thus not pruning much faster.
+
+The second method, presented by \textcite{fonseca2014}, sorts the terminals such
+that the first three terminals $p_1, p_2, p_3$ maximize the sum of their
+pairwise distances, and $p_i, i = 4, 5, \ldots, n$ is the farthest away from
+$p_1, p_2, \ldots, p_{i-1}$. This method seems to have a lot of potential as it
+tries to ensure that every terminal added is as far away from the current
+\ac{rmt} as possible. However one could easily think of positions for the
+terminals, such that the terminals $p_4, p_5, \ldots, p_n$ all lie close to each
+other, and within the first three terminals. This could mean that the distance
+added every step after the initial \ac{rmt} will be spread out on the next few
+steps, instead of adding as much as possible as quickly as possible.
+
+Here another method is proposed which is relatively similar to the one proposed
+and implemented by \textcite{fonseca2014}, but a lot simpler and requiring fewer
+steps. The initial idea for the method was to find the longest path in a fully
+connected graph, where the nodes in the graph are the terminals. This problem is
+however NP-hard~\cite{longestpathproblem}, and it seems a bit silly to solve a
+NP-hard problem to try and improve on a NP-hard problem. Thus the method
+proposed here sorts the terminals as follows: Select the initial terminal $p_1$
+arbitrarily. From there select the next terminal $p_i, i = 2, 3, \ldots, n$ such
+that the distance to $p_{i-1}$ is maximized.
+
+The idea behind this approach, is that the method is extremely easy to implement
+and hopefully gives better runtimes, comparable to those of e.g.\
+\textcite{fonseca2014}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

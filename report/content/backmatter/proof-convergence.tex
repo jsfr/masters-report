@@ -1,0 +1,173 @@
+{ \abnormalparskip{0pt}
+\chapter{Proof of Convergence}
+\label{cha:proof-convergence} }
+
+Before discussing the convergence we define the length $L$ as is normally the
+case, calculated as the sum of all edge lengths. In this case we use the regular
+Euclidean ($\mathcal{L}_2$) norm. One could however think to possibly use other
+norms, e.g.\ the rectilinear ($\mathcal{L}_1$) norm. Thus
+
+\begin{equation}
+  \label{eq:23}
+  L(S) = \sum_{j,l : (j,l) \in \mathcal{T}} | p_l - p_j |
+\end{equation}
+
+Note that \textcite{smith1992} defines $L$ as a function of the set of
+Steiner points $S$ instead of the tree $T$. Here we follow this
+convention, as we need the function when we argue about the iteration, in which
+only the Steiner points move and the terminals remain fixed. Also remember
+that $\mathcal{T} \equiv E(T)$.
+
+\begin{proof}
+The proof of convergence is as follows: After the first iteration all Steiner
+points lie within the convex hull of the terminals. By the Bolzano-Weierstrass
+theorem any infinite sequence of points inside a compact region (such as a
+convex hull) has some infinite subsequence approaching a limit point. We
+therefore wish to show that the only limit point which can exist, represents
+the \ac{rmt} for the underlying topology.
+
+Firstly after each ($i$th) iteration, according to \textcite{smith1992},
+$S^{(i+1)}$ exactly minimizes the following quadratic form $Q^{(i)}(S)$
+%
+\begin{equation}
+  Q^{(i)}(S) = \sum_{j,l : (j,l) \in \mathcal{T}, l \in S, j < l }
+  \frac{|p_l - p_j|^2}{|p^{(i)}_l - p^{(i)}_j|}
+\end{equation}
+%
+Note that the last two conditions on the sum are redundant and---as far as I can
+tell---are only given by \citeauthor{smith1992} to emphasize the way in which
+trees are split and edges are numbered. It is easily seen that $Q(S)$ is related to
+$L(S)$ in the following way
+%
+\begin{align}
+  Q^{(i)}(S^{(i)})
+  &= \sum_{(j,l) \in \mathcal{T}}
+    \frac{|p^{(i)}_l - p^{(i)}_j|^2}{|p^{(i)}_l - p^{(i)}_j|} \\
+  &= \sum_{(j,l) \in \mathcal{T}} |p^{(i)}_l - p^{(i)}_j| \\
+  &= L(S^{(i)}) \label{eq:24}
+\end{align}
+%
+Smith describes that, using \textcite{gilbert1968}'s mechanical model one can
+think of $Q$ as the potential energy of a system of ideal springs on the tree
+edges, where the force constant of each spring is proportional to the reciprocal
+of its original length before each iteration. The $i$th iteration causes all
+springs to relax, minimizing $Q^{(i)}$. After several talks with my supervisor,
+it is however still a unclear to me that $S^{(i+1)}$ really minimize $Q^{(i)}$.
+
+However as the proof of convergence hinges on this fact\footnote{As we need to
+  utilize that $Q^{(i)}(S^{(i)}) \ge Q^{(i)}(S^{(i+1)})$} we can only proceed if
+this is the case. Thus I here assume that this is correct. We then do as follows
+%
+\begin{align}
+  L(S^{(i)}) \; &\refequal{eq:24} \; Q^{(i)}(S^{(i)}) \\
+                &\ge Q^{(i)}(S^{(i+1)}) \\
+                &= \sum_{j, l : (j,l) \in \mathcal{T}}
+                  \frac{{\lenpljii}^2}
+                  {\lenplji} \\
+  \intertext{using that we can add and subtract the same thing without changing
+  the equation, we do}
+                &= \sum_{j, l : (j,l) \in \mathcal{T}}
+                  \frac{{(\lenpljii + \lenplji - \lenplji)}^2}
+                  {|p_l^{(i)} - p_j^{(i)}|} \label{eq:25}
+\end{align}
+%
+We then write out and reorder the numerator of the fraction in \cref{eq:25},
+here name $\textit{num}$. To further simplify the equation, as it does otherwise
+get quite hairy, we define $a = \lenpljii$ and $b = \lenplji$. Thus
+%
+\begin{align}
+  \label{eq:26}
+  \textit{num}
+  &= {(\lenpljii + \lenplji - \lenplji)}^2 \\
+  &= {(a + b - b)}^2 \\
+  &= (a^2 + ab - ab) + (ba + b^2 - b^2) + (-ba - b^2 + b^2) \\
+  &= (a^2 + b^2 - ab - ab) + (b^2 - b^2 - b^2) + (ab + ba) \\
+  &= 2ab - b^2 + {(a - b)}^2
+    \intertext{then dividing the numerator again with the denominator from
+    \cref{eq:25} $\textit{denom} = \lenplji = b$ we get}
+    \frac{\textit{num}}{\textit{denom}}
+  &= \frac{2ab - b^2 + {(a - b)}^2}{b} = 2a - b + \frac{{(a-b)}^2}{b} \label{eq:27}
+\end{align}
+%
+Finally we can go back to \cref{eq:25} and insert the fraction we have in
+\cref{eq:27}. Thus
+%
+\begin{align}
+  ~(\ref{eq:25})
+  &= \sum_{j, l : (j,l) \in \mathcal{T}}
+    \left[ 2a - b + \frac{{(a-b)}^2}{b} \right] \\
+  &= 2 \sum_{j, l : (j,l) \in \mathcal{T}} \lenpljii -
+    \sum_{j, l : (j,l) \in \mathcal{T}} \lenplji \\
+  &\quad + \sum_{j, l : (j,l) \in \mathcal{T}}
+    \frac{{(\lenpljii - \lenplji)}^2}{\lenplji} \\
+  &\refequal{eq:23} \; 2 L(S^{(i+1)}) - L(S^{(i)}) \\
+  &\quad + \sum_{j, l : (j,l) \in \mathcal{T}}
+    \frac{{(\lenpljii - \lenplji)}^2}{\lenplji} \Leftrightarrow \\
+  2 L(S^{(i)}) &\ge 2 L(S^{(i+1)}) \\
+  &\quad + \sum_{j, l : (j,l) \in \mathcal{T}}
+    \frac{{(\lenpljii - \lenplji)}^2}{\lenplji}
+\end{align}
+%
+As the last sum is obviously non-negative\footnote{The numerator is squared and
+  thus non-negative, and the denominator is a length and thus non-negative.}, we
+can remove it without the validity of the equation changing, and thus
+%
+\begin{equation}
+  L(S^{(i)}) \ge L(S^{(i+1)})
+\end{equation}
+%
+We now know that performing an iteration, will always either decrease the length
+of the tree, or it will remain the same. The only way that it can remain the
+same, i.e.\ that we can have equality $L(S^{(i)}) = L(S^{(i+1)})$ is if we are
+at a fixed point of the iteration. There are only two types of fixed
+points---the optimum\footnote{Which is the \ac{rmt} for this topology.} and
+certain places where one or more edges have length zero. As earlier described
+the iteration as we have written it is not strictly defined, due to a division
+with zero. However according to \citeauthor{smith1992} the singularity is
+removable\footnote{How this is the case, is unclear and unexplained by
+  \citeauthor{smith1992}. But as I understand it, the singularities are
+  removable by his perturbation.}~\cite{removablesingularity} and thus we remove it.
+
+The next part of the proof again hinges on a postulate by \citeauthor{smith1992}
+which is not clearly true to me---that the non-optimum fixed points are unstable
+in any direction.
+
+Firstly \citeauthor{smith1992} claims that the non-optimum fixed points are
+unstable in any $L$-decreasing direction, and thus a small perturbation of the
+Steiner points $S$ in any such direction will cause the iteration to
+continue. This makes sense as we know that $L$ can never \textit{increase} when
+we run the iteration. Thus after decreasing $L$ by a small perturbation, either
+we will be past the fixed point and the iteration will continue to decrease, or
+we hit another fixed point\footnote{at which point we then again will have to
+  use a small perturbation.}. \citeauthor{smith1992} then refers to
+\textcite{gilbert1968} who have pointed out that optimizing a pre-specified
+Steiner topology is a ``strictly convex'' optimization problem, i.e.\ the only
+local optimum is global. This means that there will always be a $L$-decreasing
+direction if we are not yet at the optimum.
+
+This currently means we need to find a $L$-decreasing perturbation for
+the iteration to continue its convergence. \citeauthor{smith1992} however
+further argues that any small step in the opposite direction of a $L$-decreasing
+one would also cause the iteration to resume decreasing $L$. The argument for
+this is based on the physical spring model of Steiner trees, introduced by
+\textcite{gilbert1968}. I have unfortunately not been able to follow the
+argument \textcite{smith1992} gives, and after much discussion with my
+supervisor Pawel Winter it is still unclear to both of us whether this argument
+actually holds.
+
+If we assume that the argument holds, then the iteration, when it is at a
+non-optimum fixed point, is unstable in every direction. Thus we have a
+$0$-measure\footnote{as we can disregard all these points because of their
+  instability.} set of initial iterates which end up at the non-optimal fixed
+points. Finally we can the conclude that any Bolzano-Weierstrass subsequence
+limit tree must be a fixed point of the iteration. This is done by continuity of
+$L$, the iteration function and since the only points where the iteration does
+not decrease $L$ are fixed points. However as all non-optimum fixed points are
+in the 0-measure set, we have ruled those out and thus the only fixed point is
+the optimum.
+\end{proof}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

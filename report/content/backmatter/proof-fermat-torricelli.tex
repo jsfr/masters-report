@@ -1,0 +1,205 @@
+{ \abnormalparskip{0pt}
+\chapter{Proof of the Analytical Method for the Fermat-Torricelli Problem}
+\label{cha:proof-analyt-meth}
+}
+
+\section{2D}
+\label{sec:2d-1}
+
+\begin{proof}
+To prove \cref{eq:15} the first step is to prove the two following
+equations
+%
+\begin{align}
+  \label{eq:16}
+  K_1 K_2 + K_1 K_3 + K_2 K_3 &= 2 \sqrt{3} S d\\
+  \label{eq:2}
+  r_{23}^2 K_1 + r_{13}^2 K_2 + r_{12}^2 K_3 &= 2 S d
+\end{align}
+%
+Both can proven by simply substituting the right hand sides with the definition
+of each symbol, i.e.\ through direct computation. Using \cref{eq:16} we can
+rewrite \cref{eq:15} as
+%
+\begin{gather}
+  \label{eq:17}
+  \left\{
+    \begin{array}{c}
+  x_\ast = \frac{1}{\frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3}} \left( \frac{x_1}{K_1} +
+    \frac{x_2}{K_2} + \frac{x_3}{K_3} \right) \\
+  y_\ast = \frac{1}{\frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3}} \left( \frac{y_1}{K_1} +
+    \frac{y_2}{K_2} + \frac{y_3}{K_3} \right)
+    \end{array}
+  \right.  \intertext{Which will be useful in later calculations. The second
+    part is to prove that}
+  \sqrt{{(x_\ast - x_j)}^2 + {(y_\ast - y_j)}^2} = \frac{K_j}{\sqrt{3 d}},
+\quad j \in \{ 1, 2, 3 \}\label{eq:18}
+\end{gather}
+%
+As the calculations are similar for all $j$, only the one for $j = 1$ is shown
+here. Thus
+%
+\begin{align}
+  (x_\ast &- x_1)^2
+  + {(y_\ast - y_1)}^2 \\
+  &\stackrel{\mathclap{(\ref{eq:15})}}{=}
+    {\left( \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \left( \frac{x_1}{K_1} +
+    \frac{x_2}{K_2} + \frac{x_3}{K_3} \right) - x_1 \right)}^2 +
+    {\left( \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \left( \frac{y_1}{K_1} +
+    \frac{y_2}{K_2} + \frac{y_3}{K_3} \right) - y_1 \right)}^2 \\
+  &= {\left( \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \right)}^2 \left[{\left(
+    \frac{x_1}{K_1} + \frac{x_2}{K_2} + \frac{x_3}{K_3} -
+    \frac{x_1 2 \sqrt{3} S d}{K_1 K_2 K_3} \right)}^2 + {\left(
+    \frac{y_1}{K_1} + \frac{y_2}{K_2} + \frac{y_3}{K_3} -
+    \frac{y_1 2 \sqrt{3} S d}{K_1 K_2 K_3} \right)}^2 \right] \\
+  &\stackrel{\mathclap{(\ref{eq:16})}}{=}
+    {\left( \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \right)}^2
+    \left[ {\left( \frac{x_2}{K_2} + \frac{x_3}{K_3} - \frac{x_1}{K_2} -
+    \frac{x_1}{K_3} \right)}^2 + {\left( \frac{y_2}{K_2} + \frac{y_3}{K_3} -
+    \frac{y_1}{K_2} - \frac{y_1}{K_3} \right)}^2 \right] \\
+  &= {\left( \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \right)}^2
+    \left[ \frac{{(x_2 - x_1)}^2 + {(y_2 - y_1)}^2}{K_2^2} +
+    \frac{{(x_3 - x_1)}^2 + {(y_3 - y_1)}^2}{K_3^2} \right. \\
+  &\hspace{7em} \left. + \; 2 \frac{(x_2 - x_1)(x_3 - x_1) +
+    (y_2 - y_1)(y_3 - y_1)}{K_2 K_3} \right] \\
+  &\stackrel{\mathclap{(\ref{eq:1})}}{=}
+    {\left( \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \right)}^2
+    \left[ \frac{r_{12}^2}{K_2^2} + \frac{r_{13}^2}{K_3^2} +
+    \frac{r_{12}^2 + r_{13}^2 - r_{23}^2}{K_2 K_3} \right] \label{eq:30} \\
+  &= \frac{K_1^2}{{(2 \sqrt{3} S d)}^2}
+    \left[ r_{12}^2 K_3^2 + r_{13}^2 K_2^2 +
+    (r_{12}^2 + r_{13}^2 - r_{23}^2) K_2 K_3 \right] \\
+  &= \frac{K_1^2}{{(2 \sqrt{3} S d)}^2}
+    \left[ (r_{12}^2 K_3 + r_{13}^2 K_2) (K_2 + K_3) -
+    r_{23}^2 K_2 K_3 \right] \\
+  &\stackrel{\mathclap{(\ref{eq:2})}}{=}
+    \frac{K_1^2}{{(2 \sqrt{3} S d)}^2}
+    \left[ (2 S d - r_{23}^2 K_1) (K_2 + K_3) - r_{23}^2 K_2 K_3 \right] \\
+  &= \frac{K_1^2}{{(2 \sqrt{3} S d)}^2}
+    \left[ 2 S d (K_2 + K_3) - r_{23}^2 (K_1 K_2 + K_1 K_3 + K_2 K_3) \right] \\
+  &\stackrel{\mathclap{(\ref{eq:16})}}{=}
+    \frac{K_1^2}{{(2 \sqrt{3} S d)}^2}
+    \left[ 2 S d (K_2 + K_3) - 2 \sqrt{3} r_{23}^2 S d \right] \\
+  &= \frac{2 S d K_1^2}{{(2 \sqrt{3} S d)}^2}
+    \left[ K_2 + K_3 - \sqrt{3} r_{23}^2 \right] \\
+  &\stackrel{\mathclap{(\ref{eq:3})}}{=}
+    \frac{K_1^2}{6 S d}
+    \left[ 2 S \right] \\
+  &= \frac{K_1^2}{3 d}
+\end{align}
+%
+Thus
+%
+\begin{equation}
+  \label{eq:29}
+  \sqrt{{(x_\ast - x_1)}^2 + {(y_\ast - y_1)}^2}
+  = \sqrt{\frac{K_1^2}{3 d}} = \frac{K_1}{\sqrt{3 d}}
+\end{equation}
+%
+To finish the proof one would also have to show that $K_1, K_2, K_3$ are
+nonnegative. The proof of this can be found in~\cite[p.~5-6]{uteshev2014}.
+
+We can now prove \cref{eq:15}, by substituting it into \cref{eq:13}. As the
+equations are similar for $x$ and $y$, only $x$ is shown here
+%
+\begin{align}
+  0
+  &= \frac{(x_\ast - x_1)}{\sqrt{{(x_\ast - x_1)}^2 + {(y_\ast - y_1)}^2}} +
+    \frac{(x_\ast - x_2)}{\sqrt{{(x_\ast - x_2)}^2 + {(y_\ast - y_2)}^2}} +
+    \frac{(x_\ast - x_3)}{\sqrt{{(x_\ast - x_3)}^2 + {(y_\ast - y_3)}^2}} \\
+  &\stackrel{\mathclap{(\ref{eq:18})}}=
+    \frac{(x_\ast - x_1)}{\frac{K_1}{\sqrt{3 d}}} +
+    \frac{(x_\ast - x_2)}{\frac{K_2}{\sqrt{3 d}}} +
+    \frac{(x_\ast - x_3)}{\frac{K_3}{\sqrt{3 d}}} \\
+  &= \sqrt{3 d} \left[
+    \frac{x_\ast - x_1}{K_1} +
+    \frac{x_\ast - x_2}{K_2} +
+    \frac{x_\ast - x_3}{K_3} \right] \\
+  &= \sqrt{3 d} \left[
+    x_\ast \left( \frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3} \right) -
+    \left( \frac{x_1}{K_1} + \frac{x_2}{K_2} + \frac{x_3}{K_3} \right)
+    \right] \\
+  &\stackrel{\mathclap{(\ref{eq:17})}}=
+    \sqrt{3 d} \left[
+    \frac{1}{\frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3}} \left( \frac{x_1}{K_1} +
+    \frac{x_2}{K_2} + \frac{x_3}{K_3} \right)
+    \left( \frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3} \right) -
+    \left( \frac{x_1}{K_1} + \frac{x_2}{K_2} + \frac{x_3}{K_3} \right)
+    \right] \\
+  &= \sqrt{3 d} \left[
+    \frac{1}{\frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3}}
+    \left( \frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3} \right) -
+    1 \right] \\
+  &= \sqrt{3 d} \left[ 1 - 1 \right] = 0
+\end{align}
+%
+As can be seen \cref{eq:15} is a solution to \cref{eq:13}, and thus it minimizes
+$F(x,y)$.
+\end{proof}
+
+\section{$d$-Space}
+\label{sec:d-space}
+
+\begin{proof}
+As before to prove \cref{eq:5} (and thus \cref{eq:8}) the first step once
+again is to prove \cref{eq:16} and \cref{eq:2}. These can as before be
+established through direct computation, i.e.\ by simply substituting the
+expressions for their definitions, until both sides only contain distances,
+after which the two sides can be seen to be equal. Using \cref{eq:16} we can
+rewrite \cref{eq:5} as
+%
+\begin{gather}
+    x_{(\ast, j)} = \frac{1}{\frac{1}{K_1} + \frac{1}{K_2} + \frac{1}{K_3}} \left( \frac{x_{(1,j)}}{K_1} +
+  \frac{x_{(2,j)}}{K_2} + \frac{x_{(3,j)}}{K_3} \right), \quad 0 < j \le
+d\label{eq:10}
+\intertext{similarly to \cref{eq:17} in the 2D version. Secondly we wish
+  to prove that}
+  \sqrt{\sum_{i = 1}^d {(x_{(\ast,i)} - x_{j,i})}^2} = \frac{K_j}{\sqrt{3 d}
+  }, \quad j \in \{ 1, 2, 3 \}\label{eq:19}
+\end{gather}
+As the calculations are similar for all $j$, only the one for $j = 1$ is shown
+here. Thus
+%
+\begin{align}
+  \sum_{i=1}^d (x_{(\ast,i)} &- x_{(1,i)})^2 \\
+  &= \sum_{i=1}^d { \left( \frac{K_1 K_2 K_3}{2 \sqrt{3} S d}
+    \left( \frac{x_{(1,i)}}{K_1} + \frac{x_{(2,i)}}{K_2} + \frac{x_{(3,i)}}{K_3}
+    \right) - x_{(1,i)} \right) }^2 \\
+  &= { \left( \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \right) }^2 \left[ \sum_{i=1}^d
+    { \left( \frac{x_{(1,i)}}{K_1} + \frac{x_{(2,i)}}{K_2} +
+    \frac{x_{(3,i)}}{K_3} - \frac{x_{(1,i)} 2 \sqrt{3} S d}{K_1 K_2 K_3}
+    \right) }^2 \right] \\
+  &\stackrel{\mathclap{(\ref{eq:16})}}{=}
+    {\left( \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \right)}^2 \left[ \sum_{i=1}^d
+    {\left( \frac{x_{(2,i)}}{K_2} + \frac{x_{(3,i)}}{K_3} - \frac{x_{(1,i)}}{K_2} -
+    \frac{x_{(1,i)}}{K_3} \right)}^2 \right] \\
+  &= {\left( \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \right)}^2 \left[ \sum_{i=1}^d
+    \left( \frac{{(x_{(2,i)} - x_{(1,i)})}^2}{K_2^2} +
+    \frac{{(x_{(3,i)} - x_{(1,i)})}^2}{K_3^2} \right. \right. \\
+  &\hspace{7em} \left. \left. + \; 2 \frac{(x_{(2,i)} - x_{(1,i)})(x_{(3,i)} -
+    x_{(1,i)})}{K_2 K_3} \right) \right] \\
+  &= {\left( \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \right)}^2
+    \left[ \frac{\sum_{i=1}^d {(x_{(2,i)} - x_{(1,i)})}^2}{K_2^2} +
+    \frac{\sum_{i=1}^d {(x_{(3,i)} - x_{(1,i)})}^2}{K_3^2} \right. \\
+  &+ \left. \frac{ \sum_{i=1}^d {(x_{(2,i)} - x_{(1,i)})}^2 +
+    \sum_{i=1}^d {(x_{(3,i)} - x_{(1,i)})}^2 -
+    \sum_{i=0}^d {(x_{(2,i)} - x_{(3,i)})}^2}{K_2 K_3} \right] \\
+  &\stackrel{\mathclap{(\ref{eq:14})}}{=}
+    {\left( \frac{K_1 K_2 K_3}{2 \sqrt{3} S d} \right)}^2
+    \left[ \frac{r_{12}^2}{K_2^2} + \frac{r_{13}^2}{K_3^2} +
+    \frac{r_{12}^2 + r_{13}^2 - r_{23}^2}{K_2 K_3} \right] \\
+  \intertext{As this point we have exactly the same as in \cref{eq:30} and thus
+  we can conclude}
+  &= \frac{K_1^2}{3 d}
+\end{align}
+%
+From here we can show that \cref{eq:5} is a solution to \cref{eq:7} in the
+exactly the same way as
+we proved that \cref{eq:15} was a solution to \cref{eq:13}, by substituting
+\cref{eq:5} into \cref{eq:7} and using \cref{eq:10} and \cref{eq:19}.
+\end{proof}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

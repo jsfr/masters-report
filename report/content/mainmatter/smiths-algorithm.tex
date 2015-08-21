@@ -1,5 +1,5 @@
 { \abnormalparskip{0pt}
-\chapter{\citeauthor{smith1992}'s algorithm}
+\chapter{\citeauthor{smith1992}'s Algorithm}
 \label{cha:algorithm} }
 
 % Short introduction to the chapter (max 1/2 page)
@@ -160,7 +160,7 @@ regular point $p_{i+3}$.
     \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-3}
     \caption{Connecting point $p_5$ on edge $e_4$.\label{fig:algorithm-topology-3}}
   \end{subfigure}
-  \caption[Construction of FSTs]{Construction of the \acp{fst} corresponding
+  \caption[Construction of FSTs]{Construction of the \acsp{fst} corresponding
 to the vector $\vec{a} = (2, 4)$.\label{fig:algorithm-topologies}}
 \end{figure}
 \end{proof}
@@ -303,7 +303,7 @@ In actuality the way in which we optimize the trees is a mix between the depth-
 and breadth-first search, which could be considered a best-first approach. This
 is described more thoroughly in \cref{sec:order-build-optim}.
 
-\section{Optimization of a prespecified topology}
+\section{Optimization of a Prespecified Topology}
 \label{sec:optim-presp-topol}
 
 When a topology has been generated, we need some way of optimizing the positions of the
@@ -315,7 +315,7 @@ using Gauss elimination. The section will be concerned with describing the
 iteration, the proof of correctness and convergence, the speed of convergence
 and the error function for deciding convergence.
 
-\subsection{Simple iteration}
+\subsection{Simple Iteration}
 \label{sec:simple-iteration}
 
 To get a sense of how we might go about optimizing the tree in a simple
@@ -372,7 +372,7 @@ As an iteration, using an analytical solution to the Fermat-Torricelli problem
 described by \textcite{uteshev2014}, has actually been implemented the above
 statement will be further discussed in \cref{cha:experiments} and \cref{cha:discussion}.
 
-\subsection{\citeauthor{smith1992}'s iteration}
+\subsection{\citeauthor{smith1992}'s Iteration}
 \label{sec:smiths-iteration}
 
 Now that we have looked at a simple way of optimizing the topology, by finding
@@ -420,175 +420,17 @@ $L$. This convergence happens in such a way that the sequence of tree lengths
 $L(S^{(i)})$ is monotonically decreasing.
 \end{theorem}
 
-Before discussing the convergence we define the length $L$ as is normally the
-case, calculated as the sum of all edge lengths. In this case we use the regular
-Euclidean ($\mathcal{L}_2$) norm. One could however think to possibly use other
-norms, e.g.\ the rectilinear ($\mathcal{L}_1$) norm. Thus
-
+Here $L$ is defined as
+%
 \begin{equation}
-  \label{eq:23}
   L(S) = \sum_{j,l : (j,l) \in \mathcal{T}} | p_l - p_j |
 \end{equation}
+%
+Which is simply the Euclidean norm. \textcite{smith1992} also presents a proof
+of the convergence of the iteration. A presentation and discussion of this can
+be found in \cref{cha:proof-convergence}.
 
-Note that \textcite{smith1992} defines $L$ as a function of the set of
-Steiner points $S$ instead of the tree $T$. Here we follow this
-convention, as we need the function when we argue about the iteration, in which
-only the Steiner points move and the terminals remain fixed. Also remember
-that $\mathcal{T} \equiv E(T)$.
-
-\begin{proof}
-The proof of convergence is as follows: After the first iteration all Steiner
-points lie within the convex hull of the terminals. By the Bolzano-Weierstrass
-theorem any infinite sequence of points inside a compact region (such as a
-convex hull) has some infinite subsequence approaching a limit point. We
-therefore wish to show that the only limit point which can exist, represents
-the \ac{rmt} for the underlying topology.
-
-Firstly after each ($i$th) iteration, according to \textcite{smith1992},
-$S^{(i+1)}$ exactly minimizes the following quadratic form $Q^{(i)}(S)$
-%
-\begin{equation}
-  Q^{(i)}(S) = \sum_{j,l : (j,l) \in \mathcal{T}, l \in S, j < l }
-  \frac{|p_l - p_j|^2}{|p^{(i)}_l - p^{(i)}_j|}
-\end{equation}
-%
-Note that the last two conditions on the sum are redundant and---as far as I can
-tell---are only given by \citeauthor{smith1992} to emphasize the way in which
-trees are split and edges are numbered. It is easily seen that $Q(S)$ is related to
-$L(S)$ in the following way
-%
-\begin{align}
-  Q^{(i)}(S^{(i)})
-  &= \sum_{(j,l) \in \mathcal{T}}
-    \frac{|p^{(i)}_l - p^{(i)}_j|^2}{|p^{(i)}_l - p^{(i)}_j|} \\
-  &= \sum_{(j,l) \in \mathcal{T}} |p^{(i)}_l - p^{(i)}_j| \\
-  &= L(S^{(i)}) \label{eq:24}
-\end{align}
-%
-Smith describes that, using \textcite{gilbert1968}'s mechanical model one can
-think of $Q$ as the potential energy of a system of ideal springs on the tree
-edges, where the force constant of each spring is proportional to the reciprocal
-of its original length before each iteration. The $i$th iteration causes all
-springs to relax, minimizing $Q^{(i)}$. After several talks with my supervisor,
-it is however still a unclear to me that $S^{(i+1)}$ really minimize $Q^{(i)}$.
-
-However as the proof of convergence hinges on this fact\footnote{As we need to
-  utilize that $Q^{(i)}(S^{(i)}) \ge Q^{(i)}(S^{(i+1)})$} we can only proceed if
-this is the case. Thus I here assume that this is correct. We then do as follows
-%
-\begin{align}
-  L(S^{(i)}) \; &\refequal{eq:24} \; Q^{(i)}(S^{(i)}) \\
-                &\ge Q^{(i)}(S^{(i+1)}) \\
-                &= \sum_{j, l : (j,l) \in \mathcal{T}}
-                  \frac{{\lenpljii}^2}
-                  {\lenplji} \\
-  \intertext{using that we can add and subtract the same thing without changing
-  the equation, we do}
-                &= \sum_{j, l : (j,l) \in \mathcal{T}}
-                  \frac{{(\lenpljii + \lenplji - \lenplji)}^2}
-                  {|p_l^{(i)} - p_j^{(i)}|} \label{eq:25}
-\end{align}
-%
-We then write out and reorder the numerator of the fraction in \cref{eq:25},
-here name $\textit{num}$. To further simplify the equation, as it does otherwise
-get quite hairy, we define $a = \lenpljii$ and $b = \lenplji$. Thus
-%
-\begin{align}
-  \label{eq:26}
-  \textit{num}
-  &= {(\lenpljii + \lenplji - \lenplji)}^2 \\
-  &= {(a + b - b)}^2 \\
-  &= (a^2 + ab - ab) + (ba + b^2 - b^2) + (-ba - b^2 + b^2) \\
-  &= (a^2 + b^2 - ab - ab) + (b^2 - b^2 - b^2) + (ab + ba) \\
-  &= 2ab - b^2 + {(a - b)}^2
-    \intertext{then dividing the numerator again with the denominator from
-    \cref{eq:25} $\textit{denom} = \lenplji = b$ we get}
-    \frac{\textit{num}}{\textit{denom}}
-  &= \frac{2ab - b^2 + {(a - b)}^2}{b} = 2a - b + \frac{{(a-b)}^2}{b} \label{eq:27}
-\end{align}
-%
-Finally we can go back to \cref{eq:25} and insert the fraction we have in
-\cref{eq:27}. Thus
-%
-\begin{align}
-  ~(\ref{eq:25})
-  &= \sum_{j, l : (j,l) \in \mathcal{T}}
-    \left[ 2a - b + \frac{{(a-b)}^2}{b} \right] \\
-  &= 2 \sum_{j, l : (j,l) \in \mathcal{T}} \lenpljii -
-    \sum_{j, l : (j,l) \in \mathcal{T}} \lenplji \\
-  &\quad + \sum_{j, l : (j,l) \in \mathcal{T}}
-    \frac{{(\lenpljii - \lenplji)}^2}{\lenplji} \\
-  &\refequal{eq:23} \; 2 L(S^{(i+1)}) - L(S^{(i)}) \\
-  &\quad + \sum_{j, l : (j,l) \in \mathcal{T}}
-    \frac{{(\lenpljii - \lenplji)}^2}{\lenplji} \Leftrightarrow \\
-  2 L(S^{(i)}) &\ge 2 L(S^{(i+1)}) \\
-  &\quad + \sum_{j, l : (j,l) \in \mathcal{T}}
-    \frac{{(\lenpljii - \lenplji)}^2}{\lenplji}
-\end{align}
-%
-As the last sum is obviously non-negative\footnote{The numerator is squared and
-  thus non-negative, and the denominator is a length and thus non-negative.}, we
-can remove it without the validity of the equation changing, and thus
-%
-\begin{equation}
-  L(S^{(i)}) \ge L(S^{(i+1)})
-\end{equation}
-%
-We now know that performing an iteration, will always either decrease the length
-of the tree, or it will remain the same. The only way that it can remain the
-same, i.e.\ that we can have equality $L(S^{(i)}) = L(S^{(i+1)})$ is if we are
-at a fixed point of the iteration. There are only two types of fixed
-points---the optimum\footnote{Which is the \ac{rmt} for this topology.} and
-certain places where one or more edges have length zero. As earlier described
-the iteration as we have written it is not strictly defined, due to a division
-with zero. However according to \citeauthor{smith1992} the singularity is
-removable\footnote{How this is the case, is unclear and unexplained by
-  \citeauthor{smith1992}. But as I understand it, the singularities are
-  removable by his perturbation.}~\cite{removablesingularity} and thus we remove it.
-
-The next part of the proof again hinges on a postulate by \citeauthor{smith1992}
-which is not clearly true to me---that the non-optimum fixed points are unstable
-in any direction.
-
-Firstly \citeauthor{smith1992} claims that the non-optimum fixed points are
-unstable in any $L$-decreasing direction, and thus a small perturbation of the
-Steiner points $S$ in any such direction will cause the iteration to
-continue. This makes sense as we know that $L$ can never \textit{increase} when
-we run the iteration. Thus after decreasing $L$ by a small perturbation, either
-we will be past the fixed point and the iteration will continue to decrease, or
-we hit another fixed point\footnote{at which point we then again will have to
-  use a small perturbation.}. \citeauthor{smith1992} then refers to
-\textcite{gilbert1968} who have pointed out that optimizing a pre-specified
-Steiner topology is a ``strictly convex'' optimization problem, i.e.\ the only
-local optimum is global. This means that there will always be a $L$-decreasing
-direction if we are not yet at the optimum.
-
-This currently means we need to find a $L$-decreasing perturbation for
-the iteration to continue its convergence. \citeauthor{smith1992} however
-further argues that any small step in the opposite direction of a $L$-decreasing
-one would also cause the iteration to resume decreasing $L$. The argument for
-this is based on the physical spring model of Steiner trees, introduced by
-\textcite{gilbert1968}. I have unfortunately not been able to follow the
-argument \textcite{smith1992} gives, and after much discussion with my
-supervisor Pawel Winter it is still unclear to both of us whether this argument
-actually holds.
-
-If we assume that the argument holds, then the iteration, when it is at a
-non-optimum fixed point, is unstable in every direction. Thus we have a
-$0$-measure\footnote{as we can disregard all these points because of their
-  instability.} set of initial iterates which end up at the non-optimal fixed
-points. Finally we can the conclude that any Bolzano-Weierstrass subsequence
-limit tree must be a fixed point of the iteration. This is done by continuity of
-$L$, the iteration function and since the only points where the iteration does
-not decrease $L$ are fixed points. However as all non-optimum fixed points are
-in the 0-measure set, we have ruled those out and thus the only fixed point is
-the optimum.
-
-\PAWEL{Should I discuss more, the parts of the proofs which I have described as
-  unclear, but assumed to be true to keep the proof going?}
-\end{proof}
-
-\subsubsection{Solving the equations}
+\subsubsection{Solving the Equations}
 \label{sec:solving-equations}
 
 The equation system of each iteration can be solved using Gaussian elimination
@@ -605,21 +447,21 @@ point means that we can a perform all elimination in $\mathcal O(N)$. Since we
 $d$ linear systems we can then solve them all in $\mathcal{O}(n d)$. The details
 can be found in~\cite[p.~148--149]{smith1992}.
 
-\subsubsection{Speed of convergence}
+\subsubsection{Speed of Convergence}
 \label{sec:speed-convergence}
 
 According to \textcite[p.~150]{smith1992} the iteration has a good speed of
 convergence. In most cases geometric convergence will occur. However some
 degenerate configurations of terminals can cause sublinear convergence.
 
-\section{Questionable elements of \citeauthor{smith1992}'s article}
+\section{Questionable Elements of \citeauthor{smith1992}'s Article}
 \label{sec:quest-elem-smiths}
 
 There are a number of elements in the article and the given
 implementation~\cite{smith1992} which are somewhat questionable. These I will
 try to discuss here.
 
-\subsection{Choice of error function}
+\subsection{Choice of Error Function}
 \label{sec:choice-error-funct}
 
 To detect when convergence has happened \citeauthor{smith1992} proposes using a special
@@ -664,7 +506,7 @@ optimized.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{gfx/tikz/errorfunction}
-  \caption[Possible problem with the error function]{The left part of the figure
+  \caption[Possible problem with the error function, part 1]{The left part of the figure
     shows how the use of the current error function might result in a suboptimal
     tree. The right part of the figure shows the optimal tree. Notice that
     this topology does not result in the \ac{smt} for these
@@ -703,7 +545,7 @@ described uncertainty about the convergence of the iteration function.}.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{gfx/tikz/errorfunction2}
-  \caption[Possible problem with the error function]{The left part of the figure
+  \caption[Possible problem with the error function, part 2]{The left part of the figure
     shows the connecting and optimizing of the optimal topology for the given
     terminals (the first Steiner point is just placed arbitrarily). Notice how
     the Steiner points do not pull together, but instead apart, leading to the
@@ -711,7 +553,7 @@ described uncertainty about the convergence of the iteration function.}.
     function described in \cref{fig:error-function}.\label{fig:error-function2}}
 \end{figure}
 
-\subsection{The implementation}
+\subsection{The Implementation}
 \label{sec:implementation}
 
 The implementation by \citeauthor{smith1992} contains several unexplained variables and conditionals not
@@ -775,7 +617,7 @@ the number of terminals seems selected somewhat at random. A perhaps more
 obvious choice would be some small \textit{fixed} number, e.g.\ just
 $0.0001$.
 
-\subsubsection{Loop condition when optimizing}
+\subsubsection{Loop Condition When Optimizing}
 \label{sec:loop-condition-when-1}
 
 In the main function when performing the optimization of a topology, the loop
@@ -789,7 +631,7 @@ $q$ the tree length. The problem here is that there seems to be no direct relati
 between the error and the length of the tree, and as such this loop condition
 seems very arbitrary. The loop condition however seems to work in practice.
 
-\subsubsection{If clause when outputting tree}
+\subsubsection{If-Clause When Outputting Trees}
 \label{sec:if-clause-when}
 
 \begin{figure}[htbp]
@@ -836,6 +678,83 @@ check should have been removed. As we are dealing with floating point arithmetic
 doing the multiplication might make sense in the initial check, however the
 double check is faulty and may lead to wrong behavior. The faulty snippet and
 its possible corrections can be found in \cref{fig:if-clause-snippet}.
+
+\subsubsection{Order of Building and Optimizing}
+\label{sec:order-build-optim}
+
+When going over the implementation done by \citeauthor{smith1992} a thing that
+stroke me as odd initially was the way in which \citeauthor{smith1992} keeps
+track of which topology vectors has been tried, and how he chooses which to try
+next.
+
+In the following description, $\ast$ is used to represent all possible values,
+so e.g.\ $A = [1, \ast]$ would be the same as writing
+$A = [1, 1], A = [1, 2], A = [1,3], A = [1, 4]$. The implementation does as
+follows:
+%
+\begin{enumerate}
+\item Start with the empty topology vector, meaning we have a topology with $3$
+  terminals, $1$ Steiner point and $3$ edges.
+\item Build and optimize all topology vectors of length $1$, i.e.\ $A = [\ast]$.
+\item When finished with optimizing a topology store its length in a stack
+  ordered such that the topology vector with the shortest tree length is on top.
+\item Now select the top topology vector on the stack, and using this a prefix,
+  build and optimize all topology vectors of length $2$. So say we have chosen $A = [1]$,
+  then build $A = [1, \ast]$. Again put the
+  topology vectors on a stack in order of their increasing tree length.
+\item Continue building the topology vector in this way, until we have a
+  topology vector which connects all terminals.
+\item At this point go back a level, and choose the next topology vector on top
+  of the stack, i.e.\ the second best. So say e.g.\ we have $5$ terminals in all
+  and have just optimized $A = [1, \ast]$. Then if $A = [2]$ was the shortest tree
+  after $A = [1]$ we would build and optimize $A = [2, \ast]$ next.
+\item Continue building and optimizing the vectors in this way, putting them on,
+  and popping them of the stack until the stack is empty.
+\end{enumerate}
+%
+Another way to look at the approach is to see the topology as a tree
+structure. What we then do, is that we optimize every child of the node at which
+we are currently at, and select the one with the shortest tree. At this node we
+then again optimize all its children and select the shortest tree. When going
+backwards we then just select the second best, third best and so on.
+
+This approach in which we actually optimize a breadth and then select which
+vector to continue the depth-first search on can be described as a best-first
+search. It may seem a bit elaborate in contrast to performing a simple
+depth-first search in which we e.g.\ always kept as far to the left as possible
+in the tree so we would optimize a topology of $6$ terminals as
+%
+\begin{align}
+  A & = [1]     \\
+  A & = [1,1]   \\
+  A & = [1,1,1] \\
+  A & = [1,1,2] \\
+    & \vdots    \\
+  A & = [1,2]   \\
+  A & = [1,2,1] \\
+    & \vdots    \\
+  A & = [2]     \\
+    & \vdots
+\end{align}
+%
+Best-first search however turns out to be much more efficient than simple
+depth-first. The new implementation did not use best-first initially, but
+instead just depth-first. This caused a significant slow-down when compared with
+the original implementation\footnote{No formal tests were made as the original
+  implementation was several magnitudes faster, and thus it was obvious that
+  something needed to be changed.}. Because of this, the new implementation now
+uses the best-first approach.
+
+The reason that the best-first search is more effective, lies in the fact that
+we often will be able to prune more topologies than with the depth-first
+search. When using the best-first we in general get better upper bounds much
+faster, and thus we become able to prune more topologies and do so
+faster. Imagine e.g.\ that we have $n = 6$. In simple depth-first we would
+simply start to plow through the topologies descending from $A = [1]$. However
+it may very well be that $A = [3]$ shows a lot more promise, and if we had
+optimized this we could have pruned both $A = [1]$ and maybe also $A = [2]$.
+This is exactly what best-first tries to do by always going the route which
+currently shows the most promise.
 
 %%% Local Variables:
 %%% mode: latex

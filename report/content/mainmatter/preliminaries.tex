@@ -127,10 +127,10 @@ between the \ac{mst} and \ac{smt} can be seen in \cref{fig:points-mst-smt}.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.5\textwidth]{gfx/tikz/points-mst-smt}
-  \caption[\ac{mst} vs. \ac{smt}]{Example of the difference between the \ac{mst} (left)
-    and \ac{smt} (right) for the three points $p_1 = (0,0), p_2 = (0, 2), p_3 = (2,
-    1)$. The \ac{mst} simply interconnects the existing points with the shortest
-    possible tree. The \ac{smt} however adds an extra point $s_4 = (0.577, 1)$
+  \caption[\acs{mst} vs. \acs{smt}]{Example of the difference between the \acs{mst} (left)
+    and \acs{smt} (right) for the three points $p_1 = (0,0), p_2 = (0, 2), p_3 = (2,
+    1)$. The \acs{mst} simply interconnects the existing points with the shortest
+    possible tree. The \acs{smt} however adds an extra point $s_4 = (0.577, 1)$
     and interconnect these four points with the shortest possible tree. The is
     not way to interconnect the three original points with a shorter tree, no
     matter the number of extra points we add than in the left
@@ -179,7 +179,7 @@ Notice that a full Steiner topology must necessarily have the most possible
 Steiner points so $ k = n - 2$. This can be seen by substituting $n_2 = n_3 = 0$
 and $n_1 = n$ in \cref{eq:22}.
 
-\section{Steiner trees}
+\section{Steiner Trees}
 \label{sec:steiner-trees}
 
 Before defining Steiner trees we define \acp{rmt} as in~\cite{gilbert1968}
@@ -216,14 +216,14 @@ not vice versa as illustrated by \cref{fig:steiner-smts}.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.6\textwidth]{gfx/tikz/steiner-smts}
-\caption[Example of splitting and \acp{rmt}]{Example of how of splitting a point
+\caption[Example of splitting and \acsp{rmt}]{Example of how of splitting a point
   and inserting a new Steiner point. The flow shows two of the paths splitting
   could take on the shown topology down until no more splitting is
-  possible. Optimizing the two final topologies, both are obviously \acp{rmt} of
-  their underlying topology, but only the right one is a \ac{smt} as the other
+  possible. Optimizing the two final topologies, both are obviously \acsp{rmt} of
+  their underlying topology, but only the right one is a \acs{smt} as the other
   topology is degenerate (the two Steiner points lie on top of each other in the
   center). Thus if the original points are the terminals, only the last right
-  tree is a \ac{smt} for the original terminals.\label{fig:steiner-smts}}
+  tree is a \acs{smt} for the original terminals.\label{fig:steiner-smts}}
 \end{figure}
 %
 The other, and newer definition, used by \textcite{brazil2015} is as follows:
@@ -490,7 +490,7 @@ the two phases in GeoSteiner, as the \acp{fst} we generate in the first phase
 will span the a large portion of the set terminals, or possibly even the entire
 set, making that phase very large and the second phase trivial.
 
-\section{Finding Steiner Trees in d-space}
+\section{Finding Steiner Trees in $d$-Space}
 \label{sec:find-stein-trees-d}
 
 As described in \cref{sec:geosteiner-algorithm} determining \acp{fst} in
