@@ -4,6 +4,9 @@
 \label{cha:implementation}
 }
 
+This chapter will describe the architecture of the new implementation, i.e.\ how
+the new implementation has been structured.
+
 The new implementation has been written in the, still relatively new but at this
 point stable, language Go, which quoting the homepage: ``Go is an open source
 programming language that makes it easy to build simple, reliable, and efficient
@@ -38,23 +41,132 @@ experiments can be found at \url{https://github.com/jsfr/SteinerExact}. The
 source code for just the new implementation is also included in
 \cref{cha:source-code}.
 
-This chapter will describe the architecture of the new implementation, i.e.\ how
-the new implementation has been structured.
+\section{Overview}
+\label{sec:overview-1}
 
-\TODO[inline]{Describe the source code architecture, and rewrite introduction so
-it makes sense with new structure.}
+In general the code is structured into a package (or library) called
+\texttt{smt} and a main file (which is actually split into a main and
+configuration file). This is done to allow for easy reuse of the main amount of
+work, as it is a library.
 
-\section{Main and Config File}
-\label{sec:main-file}
+The \texttt{smt} package consists of all the data structures and and their
+functions related to calculating \acp{smt}. The main file consists mainly of the
+main function which mainly reads the flags from the command-line and then starts
+the main loop---Which iterates through generated topologies, similarly to
+\citeauthor{smith1992}'s main loop---with the correct flags, i.e.\ whether we
+should use sorting, which iteration we should use, etc. Finally the
+configuration file consists of a data structure and function for reading the
+command-line flags---this is what is used by the main function for this.
 
 \section{\acs{smt} Package}
 \label{sec:smt-package}
 
-\subsection{Data Structures}
-\label{sec:data-structures}
+As Go is an imperative language we do not have classes, objects, instances and
+so on as in e.g.\ Java. We do however have structs similar to $C$, on which we
+can also define functions. Thus the \texttt{smt} package is structured such that
+most of the files of it is named similar to the struct and functions on it it
+holds. E.g.\ the file \texttt{smt/edge.go} this files contains the struct
+defining an edge, and the methods on this, such as calculating the length of the
+edge.
 
-\subsection{Methods}
-\label{sec:methods}
+\subsection{Structs}
+\label{sec:structs}
+
+The most important structs for the new implementation are:
+%
+\begin{itemize}
+\item \textbf{Point} \quad A struct which just represent a $d$ dimensional
+  point. Implemented as a simple array of floats. For convenience points has a
+  number of functions for subtracting points, calculating dot products, and
+  finally the function for sorting terminals, which is simply implemented as a
+  function that takes a list of points and sorts them as described in \cref{sec:sorting-terminals}.
+\item \textbf{Edge} \quad A struct representing an edge of a tree. The edge
+  consists of a pointer to the tree and two integers which are the indicies of
+  the end points of the edge in the point-array of the tree. The pointer is
+  needed of for the indicies to make sense, and to easily calculate the length
+  of the edge.
+\item \textbf{Tree} \quad A struct represent a complete tree. The struct
+  contains a list of all edges, a list of points, the dimension of the the
+  points and the number of points which are terminals. Finally the struct also
+  contains a list of adjacencies to the Steiner points, as this was considered
+  the easiest way to hold these, instead of having to find them every time they
+  are needed in the edges. The most important functions (besides the iterations)
+  on at tree are those for splitting and restoring and edge and the function for
+  calculating the error of the tree.
+\item \textbf{Stack} \quad The implementation of \citeauthor{smith1992}'s
+  iteration utilizes quite a few stacks. These were in the original
+  implementation just arrays on which \citeauthor{smith1992} made sure to always
+  index as if it was a stack. To ensure that the stacks are always used
+  correctly, the new implementation instead implements a simple stack struct,
+  which just consists of an array as the underlying structure, and then
+  functions for pushing and popping elements of the stack.
+\end{itemize}
+
+\subsection{Helpers}
+\label{sec:helpers}
+
+The \texttt{smt} package also contains a number of helpers. These are function
+for calculating the pertubed centroid of three points, calculating the
+Fermat-Torricelli point of three points, printing a trees representation to the
+console. Only the function for printing a tree to console can be accessed
+outside the package. The others are for internal use only.
+
+\subsection{Iterations}
+\label{sec:iterations-1}
+
+Finally the package also contains a file with an implementation of the two
+different iterations. The first one is the iteration described by
+\textcite{smith1992} (named \texttt{SmithsIteration}) and the second is a
+iteration based of the simple iteration described in \cref{sec:simple-iteration}
+using the analytical solution for the Fermat-Torricelli problem presented by
+\textcite{uteshev2014} to place the Steiner points (named \texttt{SimpleIteration}).
+
+The second iteration is relatively simple in its iteration. It simple iterates
+through all Steiner points, calculating their placement at with regards to the
+other points current placement.
+
+The first iteration in general follows the same outline as done in the original
+implementation. In the same way it also utilizes a number of arrays and stacks
+which are global to the package (but inaccessible from the outside to avoid
+someone using the library from tampering with the data mid-iteration
+unintentionally). In general these global arrays is unwanted as it clutters the
+space of the other functions in the package. However initial runs of the
+iteration, showed that the new implementation used a significant amount of time
+in the iteration on creating new local arrays every time it was being run. This
+was of course undesirable, as it both wasted time, and made comparison to the
+original code harder. Thus after some consideration, and for lack of a better
+solution, I decided to continue using global variables for the arrays and stacks
+of \texttt{SmithsIteration}.
+
+\section{Main and Configuration File}
+\label{sec:main-file}
+
+Finally the new implementation contains a main file, and a configuration file.
+
+The main file contains the main function being run when the program is executed
+on the command-line, and the main loop for enumerating and optimizing
+topologies. This is done using the structs and functions of the \texttt{smt}
+package, i.e.\ its public API. The main loop in general follow the same outline
+as the main loop of \citeauthor{smith1992}'s original implementation.
+
+The main file furthermore uses the functions and structs of the configuration
+file for reading and handling the arguments given on the command-line. The
+implementation unlike \citeauthor{smith1992}'s implementation does not read a
+list of terminals on STDIN, but instead takes as argument a file-path to what it
+expects to be a JSON-file containing a key ``points'' which should be a list of
+equal length lists, corresponding to the terminals. The syntax of the file is
+the standard JSON syntax
+
+\section{Other Source Code and Files}
+\label{sec:other-source-code}
+
+code not related to the new implementation
+
+experiments an their helper scripts
+
+the fixed version of smiths original code
+
+the geosteiner package
 
 %%% Local Variables:
 %%% mode: latex
