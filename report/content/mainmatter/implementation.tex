@@ -153,20 +153,26 @@ The main file furthermore uses the functions and structs of the configuration
 file for reading and handling the arguments given on the command-line. The
 implementation unlike \citeauthor{smith1992}'s implementation does not read a
 list of terminals on STDIN, but instead takes as argument a file-path to what it
-expects to be a JSON-file containing a key ``points'' which should be a list of
+expects to be a JSON file containing a key ``points'' which should be a list of
 equal length lists, corresponding to the terminals. The syntax of the file is
-the standard JSON syntax
+the standard JSON syntax~\cite{ecma404}.
 
 \section{Other Source Code and Files}
 \label{sec:other-source-code}
 
-code not related to the new implementation
+Finally at the repository for the implementation,
+\url{https://github.com/jsfr/SteinerExact}, one can also find code not directly
+related to the implementation, but instead related to the thesis as a
+whole. The repository apart from the implementation also contains all tree
+instances that has been run during the experiments, and all scripts for running
+and aggregating the experimental data. It also contains the runs on which
+\cref{cha:experiments} is based.
 
-experiments an their helper scripts
-
-the fixed version of smiths original code
-
-the geosteiner package
+Furthermore the repository also contains version 3.1 of the GeoSteiner package,
+which can also be found at \url{http://www.geosteiner.com}, also used by the
+experiments and the implementation by \textcite{smith1992} with the bugfix for
+the if-condition described in \cref{sec:if-clause-when} and added counting of
+trees and iterations.
 
 %%% Local Variables:
 %%% mode: latex
