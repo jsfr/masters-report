@@ -4,86 +4,220 @@
 \label{cha:experiments}
 }
 
-Introduction, max 1/2--1 page
+This chapter describes and discuss the experiments that has been performed in
+relation to the new implementation.
 
-golang 1.4.1/2
-
-Naming of methods:
+All experiments has been executed on computer with $8 \times$ Intel\textsuperscript{\textregistered}
+Xeon\textsuperscript{\textregistered} CPU E5-2630L at $2.00$ GHz and with $16$ GB
+RAM. Furthermore all tests was executed using version $1.4.2$ of Go\footnote{A newer 1.5
+which ups the performance of the language due to more efficient garbage
+collection was released after the experiments had been conducted.}.
+%
 \begin{table}[htbp]
   \centering
   \begin{tabular}{cp{9cm}}
     \toprule
     Method       & Description                                      \\
     \midrule
-    Simple       & New implementation with the analytical method.   \\
-    SimpleSort   & New implementation with the analytical method and sorted
+    \texttt{Simple}       & New implementation with the analytical method.   \\
+    \texttt{SimpleSort}   & New implementation with the analytical method and sorted
                    terminals.                                       \\
-    SmithNew     & New implementation with \citeauthor{smith1992}'s
+    \texttt{SmithNew}     & New implementation with \citeauthor{smith1992}'s
                    iteration.                                       \\
-    SmithNewSort & New implementation with \citeauthor{smith1992}'s iteration
+    \texttt{SmithNewSort} & New implementation with \citeauthor{smith1992}'s iteration
                    and sorted terminals.                            \\
-    SmithOld     & Original implementation by \textcite{smith1992}. \\
+    \texttt{SmithOld}     & Original implementation by \textcite{smith1992}. \\
     \bottomrule
   \end{tabular}
-  \caption[Here be dragons]{Here be dragons.\label{tab:method-names}}
+  \caption[Naming of methods]{The naming of methods has been done in the
+    experiments as shown here.\label{tab:method-names}}
 \end{table}
+%
+In the experiments the used methods are named as seen in
+\cref{tab:method-names}.
+
+In general the type of experiments which has been performed, relates to either
+correctness or performance of the implementation. The correctness has been
+measured by comparing a set of instances with the results found by the
+GeoSteiner program. The performance experiments is divided into experiments
+regarding the speed of the methods, the number of trees which are optimized, and
+the number of iterations being run. 
 
 \section{Correctness}
 \label{sec:correctness}
 
-$150$ random cubes with $n = 10 \ldots 12$ and $d = 2$.
+To test the correctness of the new implementation $150$ random cube instances
+with $n = 10 \ldots 12$ and $d = 2$ has been run. The cube instances are the
+same used by \textcite{fonseca2014}, which can also be found in
+\url{https://github.com/DIKU-Steiner/MPC15/tree/master/experiments/Correctness/Instances}. The
+experiments was run for the two methods of the new implementation, both with and
+without sorting of terminals. To compare with, the instances was also run using
+the official GeoSteiner implementation, which can be found at
+\url{http://geosteiner.com}.
 
-Simple seems faulty in a few instances:
-
+After all instances was run, the results of the new implementation was compared
+with the results of the GeoSteiner program. This showed, that simple method,
+both with and without sorting, in a few instances gave sub-optimal
+\acp{mst}. These and the difference to the optimal \ac{mst} found by GeoSteiner
+can be found in \cref{tab:correctness-errors}.
+%
 \begin{table}[htbp]
   \centering
   \begin{tabular}{ccc}
     \toprule
-    Instance           & Method     & Diff        \\
+    Instance           & Method              & Diff       \\
     \midrule
-    cube\_n12\_d2\_s27 & Simple     & $0.0032114$ \\
-    cube\_n12\_d2\_s49 & Simple     & $0.0062502$ \\
-    cube\_n10\_d2\_s42 & SimpleSort & $0.0002782$ \\
-    cube\_n12\_d2\_s26 & SimpleSort & $0.0040131$ \\
-    cube\_n12\_d2\_s43 & SimpleSort & $0.0065104$ \\
-    cube\_n12\_d2\_s49 & SimpleSort & $0.0062502$ \\
+    cube\_n12\_d2\_s27 & \texttt{Simple}     & $+0.170\%$ \\
+    cube\_n12\_d2\_s49 & \texttt{Simple}     & $+0.295\%$ \\
+    cube\_n10\_d2\_s42 & \texttt{SimpleSort} & $+0.015\%$ \\
+    cube\_n12\_d2\_s26 & \texttt{SimpleSort} & $+0.228\%$ \\
+    cube\_n12\_d2\_s43 & \texttt{SimpleSort} & $+0.292\%$ \\
+    cube\_n12\_d2\_s49 & \texttt{SimpleSort} & $+0.295\%$ \\
     \bottomrule
   \end{tabular}
-  \caption[Here be dragons]{Here be dragons.\label{tab:correctness-errors}}
+  \caption[Suboptimal \acsp{mst} in correctness test]{The table shows the
+    instances in which some method gave sub-optimal results, and the difference
+    in percent to the optimal \acp{mst} found by the GeoSteiner
+    program.\label{tab:correctness-errors}}
 \end{table}
+%
+As can be seen \texttt{Simple} gave sub-optimal results in $2$ instances, and
+\texttt{SimpleSort} in in $4$ instances, meaning that $6$ of $300$ ($2\%$) instances
+gave sub-optimal results, or.
 
-This seems to be because the current error function is incompatible with this
-iteration, as the error gets very low quickly, but may have some of the
-described problems. Thus the line \texttt{q-r < upperBound} will skip some trees
-which can actually become better. The same goes for the lines deciding when we
-stop optimization.
+When inspecting the \acp{mst} generated by the simple method in the sub-optimal
+instances, it was clear, that the method in these case indeed gave \acp{mst}
+which were slightly different from the \ac{smt} found by either GeoSteiner or
+with \citeauthor{smith1992}'s iteration. 
 
-\section{Speed}
-\label{sec:speed}
+The reason for this seems to lie with to things, one the condition of the main
+loop which decides is we skip a topology, and two the error function.
 
+Firstly, in the original implementation in the main loop, \textit{before} any
+optimization has taken place, the length and error of the tree is calculated. A
+check is then performed to see whether the length minus the error is greater
+than the upper bound, and if so the topology vector and all its descendants are
+skipped. If this is not the case, the tree is optimized once if its error is
+greater than the length times $0.005$. It then loops back and once again
+calculates the length and error. There are two ways out of this loop. Either the
+first if-clause fails, and we discard the topology vector and its descendants,
+or the tree is optimized enough that the code second if-clause is false and we
+continue on with the code (as there is only that first single \texttt{goto}).
+The relevant code snippet can be found in~\cref{fig:loop-condition-pruning}. 
+%
+\begin{figure}[htbp]
+\begin{c-code}
+  ITER: /* .. and optimize it until either obviously bad
+              or small error figure happens */
+    q = length();
+    r = error();
+    if ( q - r < STUB) {
+      if (r > 0.005*q) { optimize(0.0001*r/NUMSITES); goto ITER; }
+      // ... Truncated code
+    }
+\end{c-code}
+  \captionof{listing}[Loop condition for pruning topologies]{The outer if-clause
+    decides whether we prune a topology or not. This is applied before the
+    topology is optimized to its \acs{rmt}, which significantly speeds up the
+    program. But whether this is allowed is unclear.\label{fig:loop-condition-pruning}}
+\end{figure}
+%
+The new implementation has retained this structure in the main loop, as it
+significantly speeds up the program. However, as described earlier, there is no
+clear link between the error and the length of the tree. Thus the outer
+if-clause is indeed a bit sketchy as \texttt{STUB} is the length of a fully
+optimized tree, whereas $q - r$ is the length of a possibly still yet to be optimized
+tree minus its error. Thus this assumes that one can subtract the error, and
+always get a length which is the same or smaller than the length of the fully
+optimized tree. If this is not the case, we may actually discard a topology
+vector which could lead to the \ac{mst}.
+
+However this does indeed seem to go right when using the iteration proposed by
+\textcite{smith1992} and therefore one may ask the question why it sometimes
+fails for the method using the analytical solution.
+
+The reason for this, I believe, is two-fold: Firstly when optimizing using the
+analytical solution one in general gets an error which is much smaller than the
+one found when using \citeauthor{smith1992}'s iteration. This is due to the fact
+that we place the Steiner points at their exact position when optimizing them.
+Because the error becomes so much smaller, we could imagine a situation in which
+we have optimized a tree with e.g.\ $4$ terminals. When we then insert the $5$th
+terminal because the error of the rest of the tree is so small we will not
+optimize the tree when we reach the second if-clause---even if the $5$th point
+is at a sub-optimal placement. Secondly, if the first if-clause is faulty, then
+it may go well with \citeauthor{smith1992}'s iteration because the error of all
+Steiner points tend to follow each other, and also in general only goes slightly
+below the optimization stop-criteria. However when using the analytical solution
+the error becomes so much smaller, that we may risk discarding a topology vector
+for which we could have a optimized, e.g.\ the Steiner point from when we
+inserted the before described $5$th terminal, to get the length below the upper
+bound. These two factors together, I believe to be the source of the bug.
+
+I believe this bug could be fixed firstly by not using the error of the entire
+tree, but instead look at the error of each Steiner point (similar to
+the way the simple method is presented in \cref{sec:simple-iteration}). Thus we
+only stop optimizing (the inner if-clause) when the error of all Steiner points,
+considered independently, falls below some threshold. Secondly, it is possible
+that one has to wait with the check as to whether we can prune a topology vector
+until we have optimized it to its respective \ac{rmt}. Both of these
+modifications, especially the second, are at the risk of increasing the number
+of iterations, trees and thus run-time of the program.
+
+The bug as it is described here has not been fixed at this point, due to the
+lack of time, and all of the below tests has been performed using this
+implementation. As such this is something we have to keep in mind when comparing
+the performance of the implementations and methods. However I do not believe it
+invalidates the data, as the number of sub-optimal trees in the correctness test,
+was still very low, and the sub-optimality of these trees also was relatively
+low.
+
+\section{Performance}
+\label{sec:performance}
+
+To test the performance of the implementation the test sets in
+\cref{tab:test-sets} has been run for all of the methods described in
+\cref{tab:method-names}. All sets have been taken from \textcite{fonseca2014},
+but the sets Carioca and Cube has been pruned. This has been done due to the
+sheer size of these sets. Even with these sets pruned, running all of the sets
+for all of the methods took a little more than a week in which a quad-core
+computer ran 24/7. To further prune, all runs was set up such that they would
+halt if more than $12$ hours passed, as it is then concluded infeasible to solve
+that specific instance using the given method. How many instances completed
+before the time limit can be seen in~\cref{tab:set-success}.
+%
 \begin{table}[htbp]
   \centering
   \begin{tabular}{ccccc}
     \toprule
     Set     & Dimensions       & Terminals             & Set size & Point configuration \\
     \midrule
-    Carioca & $d = 3 \ldots 5$ & $n = 11 \ldots 16$    & $90$       & Random in cube      \\
-    Cube    & $d = 2 \ldots 4$ & $n = 10 \ldots 15$    & $360$      & Random in cube      \\
-    Iowa05  & $d = 3 \ldots 5$ & $n = 10$              & $30$       & Random in cube      \\
-    Sausage & $d = 2 \ldots 5$ & $n = 10 \ldots 15$    & $24$       & Simplex sequence    \\
-    Solids  & $d = 3$          & $n = 4, 6, 8, 12, 20$ & $5$        & Platonic solids     \\
+    Carioca & $d = 3 \ldots 5$ & $n = 11 \ldots 16$    & $90$     & Random in cube      \\
+    Cube    & $d = 2 \ldots 4$ & $n = 10 \ldots 15$    & $360$    & Random in cube      \\
+    Iowa05  & $d = 3 \ldots 5$ & $n = 10$              & $30$     & Random in cube      \\
+    Sausage & $d = 2 \ldots 5$ & $n = 10 \ldots 15$    & $24$     & Simplex sequence    \\
+    Solids  & $d = 3$          & $n = 4, 6, 8, 12, 20$ & $5$      & Platonic solids     \\
     \bottomrule
   \end{tabular}
-  \caption[Here be dragons]{Here be dragons.\label{tab:test-sets}}
+  \caption[Test sets used to test performance]{The table shows the tests sets,
+    their dimensions, number of terminals, number of instances and type of instances,
+    which has been used to test the performance of the implementation.\label{tab:test-sets}}
 \end{table}
-
+%
+The data collected from the runs has been used to compare the speed (i.e.\
+run-time), the number of iterations, and the number of trees optimized. The
+results are presented and described in the two sections below.
+%
 \begin{table}[htbp]
   \centering
   \begin{tabular}{cccccc}
     \toprule
             & \multicolumn{5}{c}{Method}                               \\
     \cmidrule(l){2-6}
-    Set     & Simple & SimpleSort & SmithNew & SmithNewSort & SmithOld \\
+    Set     & \texttt{Simple} 
+            & \texttt{SimpleSort}
+            & \texttt{SmithNew} 
+            & \texttt{SmithNewSort}
+            & \texttt{SmithOld}                                        \\
     \cmidrule(r){1-1}\cmidrule(l){2-6}
     Carioca & $81$   & $89$       & $73$     & $87$         & $76$     \\
     Cube    & $360$  & $360$      & $352$    & $360$        & $356$    \\
@@ -92,18 +226,14 @@ stop optimization.
     Solids  & $4$    & $4$        & $4$      & $4$          & $4$      \\
     \bottomrule
   \end{tabular}
-  \caption[Here be dragons]{Here be dragons.\label{tab:set-success}}
+  \caption[Successfull test runs]{The table shows the number of successfull
+    instances, i.e.\ instances which finished within $12$ hours, of the test
+    sets which has been run. The number of instances for each test set can be
+    seen in~\cref{tab:test-sets}.\label{tab:set-success}}
 \end{table}
 
-All sets have been taken from \textcite{fonseca2014}, but the sets Carioca and
-Cube has been pruned.
-
-8 $\times$ Intel\textsuperscript{\textregistered}
-Xeon\textsuperscript{\textregistered} CPU E5-2630L @ 2.00 GHz and 16 GB RAM
-
-Describe why I have pruned Carioca and Cube.
-
-Plot all five against each other on interesting sets
+\subsection{Speed}
+\label{sec:speed}
 
 \begin{figure}[htbp]
   \centering
@@ -157,13 +287,8 @@ Plot all five against each other on interesting sets
   \caption[Here be dragons]{Here be dragons\label{fig:boxplot-cube-3}}
 \end{figure}
 
-\section{Trees and Iterations}
+\subsection{Trees and Iterations}
 \label{sec:trees-iterations}
-
-Introduction
-
-\subsection{Trees}
-\label{sec:trees}
 
 \begin{table}[htbp]
   \centering
@@ -171,7 +296,7 @@ Introduction
     \toprule
          &     & \multicolumn{5}{c}{Method}                               \\
     \cmidrule(l){3-7}
-    $n$  & $d$ & Simple & SimpleSort & SmithNew & SmithNewSort & SmithOld \\
+    $n$  & $d$ & \texttt{Simple} & \texttt{SimpleSort} & \texttt{SmithNew} & \texttt{SmithNewSort} & \texttt{SmithOld} \\
     \cmidrule(r){1-2}\cmidrule(l){3-7}
     $10$ & $2$ & $1.04$ & $0.13$     & $1.42$   & $0.17$       & $1.00$   \\
          & $3$ & $1.21$ & $0.25$     & $1.70$   & $0.37$       & $1.00$   \\
@@ -207,9 +332,6 @@ Introduction
   \caption[Here be dragons]{Here be dragons.\label{tab:trees-sausage}}
 \end{table}
 
-\subsection{Iterations}
-\label{sec:iterations}
-
 \begin{table}[htbp]
   \centering
   \small
@@ -217,7 +339,7 @@ Introduction
     \toprule
          & \multicolumn{5}{c}{Method}                               \\
     \cmidrule(l){2-6}
-    $n$  & Simple & SimpleSort & SmithNew & SmithNewSort & SmithOld \\
+    $n$  & \texttt{Simple} & \texttt{SimpleSort} & \texttt{SmithNew} & \texttt{SmithNewSort} & \texttt{SmithOld} \\
     \cmidrule(r){1-1}\cmidrule(l){2-6}
     $4$  & $0.24$ & $0.25$     & $0.99$   & $0.99$       & $1.00$   \\
     $6$  & $0.34$ & $0.33$     & $0.98$   & $1.01$       & $1.00$   \\
