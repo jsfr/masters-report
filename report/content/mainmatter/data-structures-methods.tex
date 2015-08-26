@@ -11,14 +11,14 @@ introduced for holding and building topologies. It also describes the new
 iteration based of the simple iteration described in \cref{sec:simple-iteration}
 and using the analytical method for solving the Fermat-Torricelli problem
 presented by \textcite{uteshev2014}. This also includes a description of said
-method, and a generaliztion to $d$-space, as the one presented by
+method, and a generalization to $d$-space, as the one presented by
 \textcite{uteshev2014} only is for 2D. Finally the chapter also describes a new
 way of sorting the terminals.
 
 \section{Building Topologies}
 \label{sec:building-topologies}
 
-In \textcite{smith1992} implementation of the algorithm when generating
+In \citeauthor{smith1992}'s implementation of the algorithm when generating
 topologies every new topology is rebuilt completely from the bottom. E.g.\ say
 that we have just optimized the topology corresponding to the topology vector
 $A = [1, 2]$. If we now wish to optimize the topology vector
@@ -29,7 +29,7 @@ To avoid this extra work, the new implementation instead uses a different
 approach. The underlying data of a tree is in most aspects more or less
 identical to \citeauthor{smith1992}'s as it is a series of arrays to hold points
 and edges. However these are coupled together in a struct (in Go, the
-programming language of choice, this is essentially a record on which on can add
+programming language of choice, this is essentially a record on which one can add
 methods.). Instead of rebuilding this entire struct every time we split or
 restore the topology, it has methods to do exactly this. Thus, using the earlier
 example, from $A$ we could either split an
@@ -89,7 +89,7 @@ in $\mathbb{R}^d$ a generalization of the solution to $d$-space is necessary and
 will also be presented. This generalization is as far as I know, not presented
 anywhere else in the literature.
 
-The reason this is interesting is that \textcite{smith1992} mentions an
+The reason this why is interesting is that \textcite{smith1992} mentions that an
 iterative process which updates points one at a time would not be as quick to
 converge as the one he presents. There is however no experiments in the paper to
 support this. Thus this analytical method is interesting, as it is actually not
@@ -98,7 +98,7 @@ optimization moves a Steiner point to the exact location at which it minimizes
 the length to its three neighbors at the time. One could therefore think that this might
 actually converge quite fast.
 
-Using this analytical solution a optimization iteration similar to the one
+Using this analytical solution an optimization iteration similar to the one
 described in \cref{sec:simple-iteration} has been implemented. The method does
 not completely follow the one described, but switches out the iteration by
 \citeauthor{smith1992} with an iteration that runs over all Steiner points and
@@ -290,7 +290,7 @@ Then as before, if the conditions in \cref{eq:12} are fulfilled\footnote{If not
     r_{13}) (r_{12} + r_{23})} \\
 \end{gather}
 %
-And the rest of the expressions the same as in the 2D version. As can be seen,
+And the rest of the expressions are the same as in the 2D version. As can be seen,
 all of the expressions, except for $S$ (and the distance which now of course
 have more than two dimensions), retain the same representation as in the two
 dimensional version. $S$ however looks quite different. Exactly how the new $S$

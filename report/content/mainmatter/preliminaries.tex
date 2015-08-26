@@ -36,7 +36,7 @@ solved when solving the Steiner tree problem.
 
 The Fermat-Torricelli problem\footnote{The problem is so named as it was first
   proposed by \textcite{fermat1891} and the earliest known solution was put
-  forth by \textcite{torricelli1919}.} in it classical two dimensonal form, is
+  forth by \textcite{torricelli1919}.} in its classical two dimensonal form, is
 defined as follows:
 %
 \begin{center}
@@ -60,7 +60,7 @@ e.g.\ using the rotation-proof~\cite[p.~3--5]{brazil2015}.
 
 This formulation of the problem can be seen as a specialized instance of the
 more general problem, where the edges are weighted. In the classical version the
-edge weights are all equal to each other.
+weight of the edges are all equal to each other.
 
 The generalized version for two dimensions of the problem can be formulated as in
 \textcite{uteshev2014}:
@@ -83,7 +83,7 @@ The generalized version for two dimensions of the problem can be formulated as i
 The generalized Fermat-Torricelli problem can be even further generalized from
 two dimensions to $d$ dimensions, with $d \ge 2$
 \cite{fermattorricelliproblem}. This simply requires the points to be
-$d$-dimensional, and we then change the optimization problem to the following:
+$d$-dimensional and the optimization problem to be changed to the following:
 %
 \begin{gather}
   \min_{(x_1, x_2, \ldots, x_d)} \sum_{j=1}^3 m_j
@@ -161,13 +161,13 @@ gives a definition of Steiner points and terminals as well.
 A topology is the combinatorial structure of a tree, or other form of geometric
 network. This means that in a topology only the adjacencies of points
 matter. Thus we could represent the topology of the tree $G = (V(G), E(G))$ as
-just the edges of the tree $E(G)$. Thus any graph (and tree) has an
+just the edges of the tree $E(G)$ and any graph (and tree) has an
 underlying topology.
 
 We call any tree of some topology non-degenerate if all edges of the tree have
 non-zero length---otherwise the tree is called degenerate.
 
-We now define a Steiner topology, and a full Steiner topology as the following
+We now define a Steiner topology and a full Steiner topology as the following:
 %
 \begin{definition}[Steiner topology, full Steiner topology]
 The topology of a non-degenerate \ac{smt} is called a Steiner topology. The
@@ -243,7 +243,7 @@ its underlying topology. The one we will use in general is
 \cref{def:steiner-tree2}.
 
 Finally there is also the definition used by
-\textcite{smith1992}, which defines a Steiner tree, by some properties which is
+\textcite{smith1992}, which defines a Steiner tree, by some properties which it
 must also have for it to satisfy the above definitions. This is as follows
 %
 \begin{definition}[Steiner tree]
@@ -275,7 +275,7 @@ length or shorter as per the Triangle Inequality
 Theorem\cite{triangleinequality}.
 
 We now show that no pair of edges emanating from a Steiner point can have a
-mutual angle less than $120^{\circ}$. This can proved in a few different
+mutual angle less than $120^{\circ}$. This can be proven in a few different
 ways. The one used by \textcite{gilbert1968} is based on the mechanical model
 presented described in the same article. A simpler approach in my own opinion
 however is the one used by \textcite{brazil2015}. The proof is follows: Consider
@@ -340,7 +340,7 @@ In general the problem of finding \acp{smt} is NP-hard. This however is only a
 measure of the worst-case upper bound. Thus in some cases it may indeed be
 possible to find them much faster.
 
-In two dimension algorithms exists, which in many cases can find the \acp{smt} much
+In two dimensions algorithms exists, which in many cases can find the \acp{smt} much
 faster than the worst-case scenario.
 
 This section will give a short introduction to the Hwang-Melzak and GeoSteiner
@@ -389,7 +389,7 @@ represented by the equilateral points, until we again have a tree of $n$
 terminals with the correct coordinates for the $n-2$ Steiner points.
 
 It may well be that $\widehat{ab}$ and $e_{ab}s$ do not intersect, if this is
-the case, the algorithm halts, and not solution exists for the given full
+the case, the algorithm halts, and no solution exists for the given full
 Steiner topology.
 
 The biggest issue of the above algorithm is deciding on which side of the line
@@ -484,10 +484,10 @@ that the topology of a \ac{smt} often consists of only a single large \ac{fst}
 involving all $n-2$ Steiner points, instead of many small edge-disjoint
 \acp{fst}. Whether this is true, is not really qualified by
 \textcite{smith1992}, but it does seem likely that the \acp{fst} will tend to
-grow larger when we get to higher dimensions, as we have a more space in which
+grow larger when we get to higher dimensions, as we have more space in which
 the Steiner point can lie. Thus we will not be able to leverage the benefits of
 the two phases in GeoSteiner, as the \acp{fst} we generate in the first phase
-will span the a large portion of the set terminals, or possibly even the entire
+will span a large portion of the set terminals, or possibly even the entire
 set, making that phase very large and the second phase trivial.
 
 \section{Finding Steiner Trees in $d$-Space}
@@ -500,7 +500,7 @@ need to resort to numerical approaches.
 The most well-known of these is \citeauthor{smith1992}'s algorithm, proposed by
 \textcite{smith1992}. This algorithm is described in much greater detail in
 \cref{cha:algorithm}, but in general it works by enumerating all full Steiner
-topologies and then finding then optimizes these using an iteration which
+topologies and then optimize these using an iteration which
 converges to the \ac{fst} of that full Steiner topology. The algorithm can be
 implemented with a branch-and-bound approach\footnote{The approach is not
   completely classic branch-and-bound as we are only able to bound, after having
@@ -554,7 +554,7 @@ feasible to solve. Some of these are
 
 Finally \textcite{fonseca2014} has also proposed a new branch enumeration
 algorithm, instead of \citeauthor{smith1992}'s algorithm. This algorithm draws
-its inspiration from the GeoSteiner algorithm. Instead enumerating full Steiner
+its inspiration from the GeoSteiner algorithm. Instead of enumerating full Steiner
 topologies and optimizing their respective trees it creates branches of subsets
 of terminals. The algorithm utilizes that upon removed a Steiner point from a
 full Steiner topology, $3$ branches are created, and that one can always find a
@@ -588,22 +588,17 @@ usefulness outside the academic world as more than a mathematical curiosity.
 Some of the types of Steiner trees to mention are:
 %
 \begin{itemize}
-\item \textbf{Rectilinear Steiner Tree} \quad A version of Steiner tree in which
+\item \textbf{Rectilinear Steiner Tree} \quad A version of the Steiner tree in which
   edges must consist of vertical and horizontal line segments. It can be proven,
   that an edge always only needs to consist of at most a single horizontal, and
   a single vertical line segment, and thus we calculate the edge length using
   the rectilinear $\mathcal{L}_1$ norm. See e.g.~\textcite[ch.~3]{brazil2015}.
-\item \textbf{Fixed Orientation Steiner Tree} \quad A version of Steiner tree,
+\item \textbf{Fixed Orientation Steiner Tree} \quad A version the of Steiner tree,
   which can be seen as a generalization of the rectilinear Steiner tree. In this
   version the metric used is a fixed orientation metric, meaning that edges are
   only allowed to have some fixed orientations, the rectilinear version can be
   seen as a fixed orientation version where we have two perpendicular
   orientations. See e.g.~\textcite[ch.~2]{brazil2015}.
-% \item \textbf{Prize Collecting Steiner Tree} \quad A version of Steiner tree in
-%   which edges are ascribed some cost\footnote{This could e.g.\ be the Euclidean
-%     length of the edge} and points are ascribed some prize. The tree seeks to
-%   interconnect all terminals, while minimizing the edge cost sum \textit{and}
-%   maximize the prize of Steiner points. See e.g.~\textcite{johnson2000}.
 \end{itemize}
 %
 Of possible applications, some more mentionable are:
@@ -619,25 +614,6 @@ Of possible applications, some more mentionable are:
   electronic components normally consists of several layers in which the wires
   can run between, thus crossing each other without shorting, the problem also
   has use in $3$ dimensions.
-% \item \textbf{Object detection} \quad A method for object detection using
-%   Steiner trees has been proposed by \textcite{russakovsky2010}. The method
-%   proposed utilizes a directed Steiner tree by showing that one can reduce the
-%   parameter selection\footnote{The parameter selection is roughly used to figure
-%     out how much of a computation can be shared between object classes. This
-%     preferable as the steps of object detection are computationally
-%     expensive. For a more detailed description of object detection,
-%     see~\cite{russakovsky2010}.} of the object detection to the problem of
-%   finding the Steiner tree in a directed graph. The problem of finding a
-%   directed Steiner tree as described by \textcite{russakovsky2010}, is a bit
-%   different from the way we have defined Steiner trees so far. Here we have a
-%   directed graph $G = (E(G), V(G))$, with weights $w(E)$ on the edges, a set of
-%   terminals $R \subseteq V(G)$ and a root node $r \in V(G)$. The goal is then to
-%   find a tree in $G$, rooted at $r$, that spans all terminals in $R$ while
-%   minimizing the sum of weights on the used edges. Thus we are not able to place
-%   the Steiner points ``freely'' as we have described so far, but must instead
-%   use the points of the graph $G$. The proposed method have shown a promising
-%   speedup, with a small drop in accuracy, when compared to other methods within
-%   that field.
 \item \textbf{Phylogenetics} \quad A method using $d$-space Euclidean Steiner trees
   has been proposed to be used in the determination of phylogenetic trees by
   \textcite{brazil2009}. Phylogenetic trees are used to determine the
