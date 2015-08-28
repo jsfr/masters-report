@@ -17,15 +17,15 @@ collection was released after the experiments had been conducted.}.
   \centering
   \begin{tabular}{cp{9cm}}
     \toprule
-    Method       & Description                                      \\
+    Method                & Description                                      \\
     \midrule
     \texttt{Simple}       & New implementation with the analytical method.   \\
     \texttt{SimpleSort}   & New implementation with the analytical method and sorted
-                   terminals.                                       \\
+                   terminals.                                                \\
     \texttt{SmithNew}     & New implementation with \citeauthor{smith1992}'s
-                   iteration.                                       \\
+                   iteration.                                                \\
     \texttt{SmithNewSort} & New implementation with \citeauthor{smith1992}'s iteration
-                   and sorted terminals.                            \\
+                   and sorted terminals.                                     \\
     \texttt{SmithOld}     & Original implementation by \textcite{smith1992}. \\
     \bottomrule
   \end{tabular}
@@ -191,7 +191,7 @@ $n=16$, and a few for $n=17$ within the $12$ time limit. Time-wise it was
 however still infeasible to perform a proper test with these instance sizes.
 Thus the new implementation solves instances about the same size as
 \textcite{fonseca2014}.
-%
+
 \begin{table}[htbp]
   \centering
   \begin{tabular}{ccccc}
@@ -209,14 +209,14 @@ Thus the new implementation solves instances about the same size as
     their dimensions, number of terminals, number of instances and type of instances,
     which has been used to test the performance of the implementation.\label{tab:test-sets}}
 \end{table}
-%
+
 \NOTE[inline]{Currently it appears that I do not use Iowa05 and Solids for anything.
   Possibly I should also use this?}
-%
+
 The data collected from the runs have been used to compare the speed (i.e.\
 run-time), the number of iterations, and the number of trees optimized. The
 results are presented and described in the two sections below.
-%
+
 \begin{table}[htbp]
   \centering
   \begin{tabular}{cccccc}
@@ -269,7 +269,7 @@ results are presented and described in the two sections below.
     number of instances which completed (and thus has been used to calculate the
     box-plot) before the stop time of $12$ hours.\label{fig:boxplots-1}}
 \end{figure}
-%
+
 To compare the speed of the new implementation with the implementation by
 \textcite{smith1992} a box-plot of the run times for the Carioca set and Cube
 set, where $d = 3$ and $d = 4$, has been plotted in \cref{fig:boxplots-1}. As
@@ -290,7 +290,7 @@ speed-wise. Of course we still need to keep in mind the fact that
 \texttt{Simple} have showed some sub-optimal trees. It however seems unlikely,
 when looking at the percent of sub-optimal results that this should skew the
 results so much that this would be changed.
-% 
+
 \begin{figure}[htbp]
   \centering
   \begin{subfigure}[t]{0.5\textwidth}
@@ -310,7 +310,7 @@ results so much that this would be changed.
     unsorted terminals. For a description of the plots legend and appearance see
     the description in~\cref{fig:boxplots-1}.\label{fig:boxplots-2}}
 \end{figure}
-%
+
 To further compare the effect of sorting the terminals as described
 in~\cref{sec:sorting-terminals}, box-plots for the Cube set with $d = 3$ and $d
 = 4$ has been plotted for \texttt{SmithNew} vs.\ \texttt{SmithNewSort} and
@@ -336,45 +336,45 @@ Apart from the actual run-time of the implementation, another metric worth
 measuring is the number of optimization iterations one runs when solving an
 instance, and the number of trees optimized. By the last what is the number of
 topology vectors on which we optimize their corresponding tree at least once.
-%
+
 \begin{table}[htbp]
   \centering
   \scalebox{0.7}{
   \begin{tabular}{ccccccc}
     \toprule
-         &     & \multicolumn{5}{c}{Method}                               \\
+         &     & \multicolumn{5}{c}{Method}                 \\
     \cmidrule(l){3-7}
     $n$  & $d$ & \texttt{Simple} & \texttt{SimpleSort} & \texttt{SmithNew} & \texttt{SmithNewSort} & \texttt{SmithOld} \\
     \cmidrule(r){1-2}\cmidrule(l){3-7}
-    $10$ & $2$ & $1.04$ & $0.13$     & $1.42$   & $0.17$       & $1.00$   \\
-         & $3$ & $1.21$ & $0.25$     & $1.70$   & $0.37$       & $1.00$   \\
-         & $4$ & $1.17$ & $0.60$     & $1.61$   & $0.89$       & $1.00$   \\
-         & $5$ & $1.54$ & $0.85$     & $2.25$   & $1.34$       & $1.00$   \\
+    $10$ & $2$ & $1.04$ & $0.13$ & $1.42$ & $0.17$ & $1.00$ \\
+         & $3$ & $1.21$ & $0.25$ & $1.70$ & $0.37$ & $1.00$ \\
+         & $4$ & $1.17$ & $0.60$ & $1.61$ & $0.89$ & $1.00$ \\
+         & $5$ & $1.54$ & $0.85$ & $2.25$ & $1.34$ & $1.00$ \\
     \cmidrule(r){1-2}
-    $11$ & $2$ & $1.05$ & $0.10$     & $1.62$   & $0.13$       & $1.00$   \\
-         & $3$ & $1.23$ & $0.19$     & $1.90$   & $0.29$       & $1.00$   \\
-         & $4$ & $1.47$ & $0.36$     & $1.97$   & $0.56$       & $1.00$   \\
-         & $5$ & $1.54$ & $0.77$     & $2.57$   & $1.22$       & $1.00$   \\
+    $11$ & $2$ & $1.05$ & $0.10$ & $1.62$ & $0.13$ & $1.00$ \\
+         & $3$ & $1.23$ & $0.19$ & $1.90$ & $0.29$ & $1.00$ \\
+         & $4$ & $1.47$ & $0.36$ & $1.97$ & $0.56$ & $1.00$ \\
+         & $5$ & $1.54$ & $0.77$ & $2.57$ & $1.22$ & $1.00$ \\
     \cmidrule(r){1-2}
-    $12$ & $2$ & $1.17$ & $0.08$     & $1.90$   & $0.11$       & $1.00$   \\
-         & $3$ & $1.42$ & $0.16$     & $2.34$   & $0.25$       & $1.00$   \\
-         & $4$ & $1.73$ & $0.26$     & $2.83$   & $0.52$       & $1.00$   \\
-         & $5$ & $1.53$ & $0.59$     & $2.24$   & $1.11$       & $1.00$   \\
+    $12$ & $2$ & $1.17$ & $0.08$ & $1.90$ & $0.11$ & $1.00$ \\
+         & $3$ & $1.42$ & $0.16$ & $2.34$ & $0.25$ & $1.00$ \\
+         & $4$ & $1.73$ & $0.26$ & $2.83$ & $0.52$ & $1.00$ \\
+         & $5$ & $1.53$ & $0.59$ & $2.24$ & $1.11$ & $1.00$ \\
     \cmidrule(r){1-2}
-    $13$ & $2$ & $1.11$ & $0.05$     & $2.22$   & $0.09$       & $1.00$   \\
-         & $3$ & $1.43$ & $0.12$     & $2.80$   & $0.20$       & $1.00$   \\
-         & $4$ & $0.74$ & $0.25$     & $3.19$   & $0.43$       & $1.00$   \\
-         & $5$ & $1.66$ & $0.45$     &          & $1.14$       & $1.00$   \\
+    $13$ & $2$ & $1.11$ & $0.05$ & $2.22$ & $0.09$ & $1.00$ \\
+         & $3$ & $1.43$ & $0.12$ & $2.80$ & $0.20$ & $1.00$ \\
+         & $4$ & $0.74$ & $0.25$ & $3.19$ & $0.43$ & $1.00$ \\
+         & $5$ & $1.66$ & $0.45$ &        & $1.14$ & $1.00$ \\
     \cmidrule(r){1-2}
-    $14$ & $2$ & $0.97$ & $0.05$     & $2.63$   & $0.08$       & $1.00$   \\
-         & $3$ & $1.61$ & $0.10$     & $3.44$   & $0.19$       & $1.00$   \\
-         & $4$ & $1.52$ & $0.16$     &          & $0.39$       & $1.00$   \\
-         & $5$ &        &            &          &              &          \\
+    $14$ & $2$ & $0.97$ & $0.05$ & $2.63$ & $0.08$ & $1.00$ \\
+         & $3$ & $1.61$ & $0.10$ & $3.44$ & $0.19$ & $1.00$ \\
+         & $4$ & $1.52$ & $0.16$ &        & $0.39$ & $1.00$ \\
+         & $5$ &        &        &        &        &        \\
     \cmidrule(r){1-2}
-    $15$ & $2$ & $1.32$ & $0.04$     & $3.12$   & $0.06$       & $1.00$   \\
-         & $3$ &        &            &          &              &          \\
-         & $4$ &        &            &          &              &          \\
-         & $5$ &        &            &          &              &          \\
+    $15$ & $2$ & $1.32$ & $0.04$ & $3.12$ & $0.06$ & $1.00$ \\
+         & $3$ &        &        &        &        &        \\
+         & $4$ &        &        &        &        &        \\
+         & $5$ &        &        &        &        &        \\
     \bottomrule
   \end{tabular}
   }
@@ -387,16 +387,41 @@ topology vectors on which we optimize their corresponding tree at least once.
     set. An empty field means that either the instance for that method, or the
     instance for \texttt{SmithOld} could not be solved within the time limit.\label{tab:trees-sausage-ratio}}
 \end{table}
-%
+
 \cref{tab:trees-sausage-ratio} shows the number of trees optimized, as a ratio
 of the tree optimized by \texttt{SmithOld}, and
 \cref{tab:iterations-sausage-ratio} shows the number of iterations, also as a
-ratio. Both of these tables are for the Sausage set. As can be seen by the
-tables the new implementation, when not sorting terminals, optimizes more trees
+ratio. Both of these tables are for the Sausage set. As can be seen by the first
+table the new implementation, without terminal sorting, optimizes more trees
 than the original implementation. Especially \texttt{SmithNew} in some instances
-optimize  
-This essentially means it 
-%
+optimizes up to three times as many trees. This is of course not very desirable
+and the exact reason for this is unfortunately unknown.
+
+There seems to be several possibilities for the observed behavior. The first
+possibility is that the counting of the trees has a bug in either the new or old
+implementation, or that it does not count them in the same way. After further
+inspection of the source code, this however does not seem to be the case. The
+second possibility is that there is a bug somewhere in the new implementation,
+causing it to not prune as many trees as the original implementation. This seems
+a more likely reason, but inspection of the source code again failed to reveal
+such a problem. The third possibility, and probably must realistic, is that the
+new data structure for building topologies is at fault. In the original
+implementation every new topology vector rebuilds its tree from scratch, meaning
+that all Steiner points are replaced---at the perturbed centroid of their
+neighbors. However in the new implementation, the Steiner points of the previous
+topology is not replaced when splitting the topology and adding another terminal
+and Steiner point. It could be thought that as explained in
+\cref{sec:correctness} that the error function is faulty, and thus the if-clause
+for pruning fails in the new implementation where we may have a initial lower
+error for the tree (as most of the tree is already optimized), in contrary to
+the old implementation.
+
+As observed with the speed of the program, the number of trees optimized in
+general also fails drastically when sorting the terminals (\texttt{SimpleSort}
+and \texttt{SmithNewSort}). In all cases the ratio becomes smaller than the
+unsorted counter-part, and in most cases it also becomes a lot smaller
+\texttt{SmithOld}.
+
 \begin{table}[htbp]
 \centering
   \scalebox{0.7}{
@@ -445,7 +470,25 @@ $15$ & $2$ & $0.12$ & $0.00$ & $1.42$ & $0.02$ & $1.00$ \\
      we run the iteration for multiple times on the tree (which we most likely
      do).\label{tab:iterations-sausage-ratio}}
 \end{table}
-%
+
+Looking at the second table (showing the iteration ratios) we see more or less
+the same situation, as in the first table. However a column which is interesting
+is the one for \texttt{Simple}. As can be seen in the first table, the ratio for
+the number of optimized trees in general is slightly above $1$. However the
+ratio for iterations is in general below $0.5$. This means that \texttt{Simple},
+is a lot quicker at reaching a low error and thus stopping to optimize the
+trees. This should mean that the analytical solution converges a lot faster than
+\autocite{smith1992}'s iteration. However again we need to remember the results
+from \cref{sec:correctness}, which means that we need to be a bit cautious with
+such a conclusion. However again the ratio is consistently lower for the number
+of iterations\footnote{Except for a single outlier}, and thus is seems unlikely
+that the result is solely due to sub-optimality, as described earlier.
+
+A thing worth noticing is that the higher run-times observed in the previous
+section makes a lot more sense when observing the ratios for trees and iterations.
+Thus it is very possible, that if the source of this could be identified, that
+the new implementation would have faster run-times than \texttt{SmithOld} all around.
+
 % \begin{table}[htbp]
 %   \centering
 %   \scalebox{0.7}{
