@@ -329,24 +329,23 @@ choices we can make.
 \begin{algorithm}[htbp]
   \KwData{
     \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt,label=-,leftmargin=10pt]
-    \item A \ac{fst} containing the Steiner points $S$, terminals $R$, and edges $E$
+    \item A full Steiner topology with:
+      \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt,label=-,leftmargin=10pt]
+       \item the Steiner points $S$,
+       \item the terminals $R$,
+       \item and edges $E$.
+      \end{itemize}
     \item A small positive number $\epsilon$
     \end{itemize}
   }
-  \KwResult{The optimized \ac{fst}}
-  \ForEach{$s \in S$}{
-    $\textit{error}[s] \gets \infty$\;
-  }
-  $\textit{cont} \gets \texttt{true}$\;
-  \While{$\textit{cont}$}{
-    $\textit{cont} \gets \texttt{false}$\;
+  \KwResult{The \ac{rmt}, $T$, for the given full Steiner topology}
+
+  $\textit{error} \gets$ calculate error for $T$\;
+  \While{$\textit{error} > \epsilon$}{
     \ForEach{$s \in S$}{
-      \If{$\textit{error}[s] > \epsilon$}{
-        optimize $s$ with respect to its neighbors in $T$\;
-        recalculate \textit{error}[s]\;
-        $\textit{cont} \gets \texttt{true}$\;
-      }
+      optimize $s$ with respect to its neighbors in the given topology\;
     }
+    $\textit{error} \gets$ recalculate error for $T$\;
   }
   \Return{$T$}
   \caption[Simple iteration]{Pseudo code describing the optimization strategy

@@ -99,6 +99,12 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
   baselinestretch=0.8%
 }
 
+\newminted[go-code]{go}{%
+  bgcolor=bg,%
+  fontsize=\footnotesize,%
+  baselinestretch=0.8%
+}
+
 \makeatletter
 \renewcommand*{\thelisting}{\thechapter.\arabic{listing}}
 \@addtoreset{listing}{chapter}

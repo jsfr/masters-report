@@ -104,24 +104,29 @@ first if-clause fails, and we discard the topology vector and its descendants,
 or the tree is optimized enough that the code second if-clause is false and we
 continue on with the code (as there is only that first single \texttt{goto}).
 The relevant code snippet can be found in~\cref{fig:loop-condition-pruning}. 
-%
+
 \begin{figure}[htbp]
-\begin{c-code}
-  ITER: /* .. and optimize it until either obviously bad
-              or small error figure happens */
-    q = length();
-    r = error();
-    if ( q - r < STUB) {
-      if (r > 0.005*q) { optimize(0.0001*r/NUMSITES); goto ITER; }
-      // ... Truncated code
+  \begin{go-code}
+    ITER:
+    if q-r < upperBound {
+      if r > 5e-1*q {
+        q, r = doOptimize(r)
+        goto ITER
+      }
+      // Code truncated. Continue working with the topology and its descendants
     }
-\end{c-code}
+    // Continue to next topology vector of same length, if we have no been in
+    // the outer if-clause then all descendants of the current topology vector
+    // is effectively pruned as we have not stored it on the stack.
+  \end{go-code}
   \captionof{listing}[Loop condition for pruning topologies]{The outer if-clause
     decides whether we prune a topology or not. This is applied before the
     topology is optimized to its \acs{rmt}, which significantly speeds up the
-    program. But whether this is allowed is unclear.\label{fig:loop-condition-pruning}}
+    program. But whether this is allowed is unclear. The code snippet is from
+    the file \texttt{main.go} from the new implementation. The old
+    implementation uses the exact same conditions.\label{fig:loop-condition-pruning}}
 \end{figure}
-%
+
 The new implementation has retained this structure in the main loop, as it
 significantly speeds up the program. However, as described earlier, there is no
 clear link between the error and the length of the tree. Thus the outer
