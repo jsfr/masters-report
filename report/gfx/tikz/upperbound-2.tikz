@@ -1,0 +1,20 @@
+\begin{tikzpicture}[thick]
+\node (STUB) at (0,1) [label=left:\textit{STUB}] {};
+\node (q) at (0,2) [label=left:$q$] {};
+\node (qr) at (0,0) [label=left:$q-r$] {};
+\node (endP) at (4,0) {};
+
+\draw (STUB) -- (STUB -| endP);
+\draw (q) -- (q -| endP);
+\draw (qr) -- (qr -| endP);
+
+\begin{pgfonlayer}{background}
+  \filldraw [line width=4mm,join=round,gray!10]
+  (-2, -1)  rectangle (5, 3);
+\end{pgfonlayer}
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

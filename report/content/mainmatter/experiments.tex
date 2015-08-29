@@ -60,7 +60,7 @@ with the results of the GeoSteiner program. This showed, that simple method,
 both with and without sorting, in a few instances gave sub-optimal
 \acp{mst}. These and the difference to the optimal \ac{mst} found by GeoSteiner
 can be found in \cref{tab:correctness-errors}.
-%
+
 \begin{table}[htbp]
   \centering
   \begin{tabular}{ccc}
@@ -80,7 +80,77 @@ can be found in \cref{tab:correctness-errors}.
     in percent to the optimal \acp{mst} found by the GeoSteiner
     program.\label{tab:correctness-errors}}
 \end{table}
-%
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{ccc}
+    \toprule
+    Instance           & Method              & Diff       \\
+    \midrule
+    cube\_n12\_d2\_s27 & \texttt{Simple}     & $+0.170\%$ \\
+    cube\_n12\_d2\_s49 & \texttt{Simple}     & $+0.295\%$ \\
+    cube\_n10\_d2\_s42 & \texttt{SimpleSort} & $+0.015\%$ \\
+    cube\_n12\_d2\_s26 & \texttt{SimpleSort} & $+0.228\%$ \\
+    cube\_n12\_d2\_s38 & \texttt{SimpleSort} & $+0.071\%$ \\
+    cube\_n12\_d2\_s43 & \texttt{SimpleSort} & $+0.291\%$ \\
+    cube\_n12\_d2\_s49 & \texttt{SimpleSort} & $+0.295\%$ \\
+    \bottomrule
+  \end{tabular}
+  \caption[$r > 5e-4*q$]{Here be dragons.}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{ccc}
+    \toprule
+    Instance           & Method              & Diff       \\
+    \midrule
+    cube\_n12\_d2\_s27 & \texttt{Simple}     & $+0.170\%$ \\
+    cube\_n12\_d2\_s43 & \texttt{SimpleSort} & $+0.292\%$ \\
+    \bottomrule
+  \end{tabular}
+  \caption[$r > 5e-2*q$]{Here be dragons.}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{ccc}
+    \toprule
+    Instance           & Method              & Diff       \\
+    \midrule
+    cube\_n11\_d2\_s9  & \texttt{SimpleSort} & $+0.262\%$ \\
+    cube\_n12\_d2\_s12 & \texttt{Simple}     & $+1.405\%$ \\
+    cube\_n12\_d2\_s43 & \texttt{SimpleSort} & $+0.292\%$ \\
+    cube\_n12\_d2\_s9  & \texttt{SimpleSort} & $+0.214\%$ \\
+    \bottomrule
+  \end{tabular}
+  \caption[$q - 10*r < \textit{upperBound}$]{Here be dragons.}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.4\textwidth]{gfx/tikz/upperbound-1}
+  \caption[here be dragons]{here be dragons}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.4\textwidth]{gfx/tikz/upperbound-2}
+  \caption[here be dragons]{here be dragons}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.6\textwidth]{gfx/tikz/upperbound-3}
+  \caption[here be dragons]{here be dragons}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.6\textwidth]{gfx/tikz/upperbound-4}
+  \caption[here be dragons]{here be dragons}
+\end{figure}
+
 As can be seen \texttt{Simple} gave sub-optimal results in $2$ instances, and
 \texttt{SimpleSort} in in $4$ instances, meaning that $6$ of $300$ ($2\%$) instances
 gave sub-optimal results, or.
@@ -113,11 +183,13 @@ The relevant code snippet can be found in~\cref{fig:loop-condition-pruning}.
         q, r = doOptimize(r)
         goto ITER
       }
-      // Code truncated. Continue working with the topology and its descendants
+      // Code truncated.
+      // Continue working with the topology and its descendants
     }
-    // Continue to next topology vector of same length, if we have no been in
-    // the outer if-clause then all descendants of the current topology vector
-    // is effectively pruned as we have not stored it on the stack.
+    // Continue to next topology vector of same length,
+    // if we have no been in the outer if-clause then all
+    // descendants of the current topology vector is 
+    // effectively pruned as we have not stored it on the stack.
   \end{go-code}
   \captionof{listing}[Loop condition for pruning topologies]{The outer if-clause
     decides whether we prune a topology or not. This is applied before the
@@ -207,16 +279,12 @@ Thus the new implementation solves instances about the same size as
     Cube    & $d = 2 \ldots 4$ & $n = 10 \ldots 15$    & $360$    & Random in cube      \\
     Iowa05  & $d = 3 \ldots 5$ & $n = 10$              & $30$     & Random in cube      \\
     Sausage & $d = 2 \ldots 5$ & $n = 10 \ldots 15$    & $24$     & Simplex sequence    \\
-    Solids  & $d = 3$          & $n = 4, 6, 8, 12, 20$ & $5$      & Platonic solids     \\
     \bottomrule
   \end{tabular}
   \caption[Test sets used to test performance]{The table shows the tests sets,
     their dimensions, number of terminals, number of instances and type of instances,
     which has been used to test the performance of the implementation.\label{tab:test-sets}}
 \end{table}
-
-\NOTE[inline]{Currently it appears that I do not use Iowa05 and Solids for anything.
-  Possibly I should also use this?}
 
 The data collected from the runs have been used to compare the speed (i.e.\
 run-time), the number of iterations, and the number of trees optimized. The
@@ -238,7 +306,6 @@ results are presented and described in the two sections below.
     Cube    & $360$  & $360$      & $352$    & $360$        & $356$    \\
     Iowa05  & $30$   & $30$       & $30$     & $30$         & $30$     \\
     Sausage & $22$   & $23$       & $18$     & $22$         & $21$     \\
-    Solids  & $4$    & $4$        & $4$      & $4$          & $4$      \\
     \bottomrule
   \end{tabular}
   \caption[Successfull test runs]{The table shows the number of successfull
@@ -252,27 +319,32 @@ results are presented and described in the two sections below.
 
 \begin{figure}[htbp]
   \centering
-  \begin{subfigure}[t]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_d3_Carioca_1}
-  \end{subfigure}%
-  \begin{subfigure}[t]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_d4_Carioca_1}
-  \end{subfigure}
-  \begin{subfigure}[t]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_d3_Cube_1}
-  \end{subfigure}%
-  \begin{subfigure}[t]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_d4_Cube_1}
-  \end{subfigure}%
-  \caption[Box-plots: \texttt{SmithOld} vs.\ \texttt{SmithNew} vs.\
-  \texttt{Simple}]{Box-plots for the Carioca and Cube set for $d = 3, 4$. The
-    plots compare the three methods \texttt{SmithOld}, \texttt{SmithNew} and
-    \texttt{Simple}. The red bar is the second quartile (the median), the boxes
-    are the first and third quartiles, the whiskers show the lowest datum still
-    within $1.5$ IQR of the first and third quartile. Finally every $+$ is a datum
-    outside of the whiskers, i.e.\ outliers. The numbers at the bottom shows the
-    number of instances which completed (and thus has been used to calculate the
-    box-plot) before the stop time of $12$ hours.\label{fig:boxplots-1}}
+  \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_d3_Carioca_1}
+  \caption[Here be dragons]{Here be dragons}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_d4_Carioca_1}
+  \caption[Here be dragons]{Here be dragons}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_d3_Cube_1}
+  \caption[Here be dragons]{Here be dragons}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_d4_Cube_1}
+  \caption[Here be dragons]{Here be dragons}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_n10_Iowa_1}
+  \caption[Here be dragons]{Here be dragons}
 \end{figure}
 
 To compare the speed of the new implementation with the implementation by
@@ -295,26 +367,6 @@ speed-wise. Of course we still need to keep in mind the fact that
 \texttt{Simple} have showed some sub-optimal trees. It however seems unlikely,
 when looking at the percent of sub-optimal results that this should skew the
 results so much that this would be changed.
-
-\begin{figure}[htbp]
-  \centering
-  \begin{subfigure}[t]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_d3_Cube_2}
-  \end{subfigure}%
-  \begin{subfigure}[t]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_d4_Cube_2}
-  \end{subfigure}
-  \begin{subfigure}[t]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_d3_Cube_3}
-  \end{subfigure}%
-  \begin{subfigure}[t]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_d4_Cube_3}
-  \end{subfigure}%
-  \caption[Box-plots: Unsorted terminals vs.\ sorted terminals]{Box-plots for
-    the Cube set for $d = 3,4$, plotting the run-times for the sorted and
-    unsorted terminals. For a description of the plots legend and appearance see
-    the description in~\cref{fig:boxplots-1}.\label{fig:boxplots-2}}
-\end{figure}
 
 To further compare the effect of sorting the terminals as described
 in~\cref{sec:sorting-terminals}, box-plots for the Cube set with $d = 3$ and $d
@@ -344,45 +396,7 @@ topology vectors on which we optimize their corresponding tree at least once.
 
 \begin{table}[htbp]
   \centering
-  \scalebox{0.7}{
-  \begin{tabular}{ccccccc}
-    \toprule
-         &     & \multicolumn{5}{c}{Method}                 \\
-    \cmidrule(l){3-7}
-    $n$  & $d$ & \texttt{Simple} & \texttt{SimpleSort} & \texttt{SmithNew} & \texttt{SmithNewSort} & \texttt{SmithOld} \\
-    \cmidrule(r){1-2}\cmidrule(l){3-7}
-    $10$ & $2$ & $1.04$ & $0.13$ & $1.42$ & $0.17$ & $1.00$ \\
-         & $3$ & $1.21$ & $0.25$ & $1.70$ & $0.37$ & $1.00$ \\
-         & $4$ & $1.17$ & $0.60$ & $1.61$ & $0.89$ & $1.00$ \\
-         & $5$ & $1.54$ & $0.85$ & $2.25$ & $1.34$ & $1.00$ \\
-    \cmidrule(r){1-2}
-    $11$ & $2$ & $1.05$ & $0.10$ & $1.62$ & $0.13$ & $1.00$ \\
-         & $3$ & $1.23$ & $0.19$ & $1.90$ & $0.29$ & $1.00$ \\
-         & $4$ & $1.47$ & $0.36$ & $1.97$ & $0.56$ & $1.00$ \\
-         & $5$ & $1.54$ & $0.77$ & $2.57$ & $1.22$ & $1.00$ \\
-    \cmidrule(r){1-2}
-    $12$ & $2$ & $1.17$ & $0.08$ & $1.90$ & $0.11$ & $1.00$ \\
-         & $3$ & $1.42$ & $0.16$ & $2.34$ & $0.25$ & $1.00$ \\
-         & $4$ & $1.73$ & $0.26$ & $2.83$ & $0.52$ & $1.00$ \\
-         & $5$ & $1.53$ & $0.59$ & $2.24$ & $1.11$ & $1.00$ \\
-    \cmidrule(r){1-2}
-    $13$ & $2$ & $1.11$ & $0.05$ & $2.22$ & $0.09$ & $1.00$ \\
-         & $3$ & $1.43$ & $0.12$ & $2.80$ & $0.20$ & $1.00$ \\
-         & $4$ & $0.74$ & $0.25$ & $3.19$ & $0.43$ & $1.00$ \\
-         & $5$ & $1.66$ & $0.45$ &        & $1.14$ & $1.00$ \\
-    \cmidrule(r){1-2}
-    $14$ & $2$ & $0.97$ & $0.05$ & $2.63$ & $0.08$ & $1.00$ \\
-         & $3$ & $1.61$ & $0.10$ & $3.44$ & $0.19$ & $1.00$ \\
-         & $4$ & $1.52$ & $0.16$ &        & $0.39$ & $1.00$ \\
-         & $5$ &        &        &        &        &        \\
-    \cmidrule(r){1-2}
-    $15$ & $2$ & $1.32$ & $0.04$ & $3.12$ & $0.06$ & $1.00$ \\
-         & $3$ &        &        &        &        &        \\
-         & $4$ &        &        &        &        &        \\
-         & $5$ &        &        &        &        &        \\
-    \bottomrule
-  \end{tabular}
-  }
+  \input{gfx/tables/tree-ratio}
   \caption[Tree-exploration ratio for Sausage]{The table shows the ratio of
     trees optimized in relation to \texttt{OldSmith}. The number of trees is
     measured such that if a topology vector has been optimized at least once,
@@ -390,7 +404,8 @@ topology vectors on which we optimize their corresponding tree at least once.
     pruned before any optimization has taken place is not counted, and any
     topology can at max be counted once. The data shown are from the Sausage
     set. An empty field means that either the instance for that method, or the
-    instance for \texttt{SmithOld} could not be solved within the time limit.\label{tab:trees-sausage-ratio}}
+    instance for \texttt{SmithOld} could not be solved within the time
+    limit.\label{tab:trees-sausage-ratio}}
 \end{table}
 
 \cref{tab:trees-sausage-ratio} shows the number of trees optimized, as a ratio
@@ -428,52 +443,14 @@ unsorted counter-part, and in most cases it also becomes a lot smaller
 \texttt{SmithOld}.
 
 \begin{table}[htbp]
-\centering
-  \scalebox{0.7}{
-\begin{tabular}{ccccccc}
-\toprule
-     &     & \multicolumn{5}{c}{Method}                 \\
-\cmidrule(l){3-7}
-  $n$  & $d$ & \texttt{Simple} & \texttt{SimpleSort} & \texttt{SmithNew} & \texttt{SmithNewSort} & \texttt{SmithOld} \\
-\cmidrule(r){1-2}\cmidrule(l){3-7}
-$10$ & $2$ & $0.15$ & $0.03$ & $1.10$ & $0.14$ & $1.00$ \\
-     & $3$ & $0.23$ & $0.04$ & $1.47$ & $0.28$ & $1.00$ \\
-     & $4$ & $0.23$ & $0.08$ & $1.49$ & $0.53$ & $1.00$ \\
-     & $5$ & $0.29$ & $0.18$ & $1.37$ & $1.10$ & $1.00$ \\
-\cmidrule(r){1-2}
-$11$ & $2$ & $0.14$ & $0.02$ & $1.13$ & $0.08$ & $1.00$ \\
-     & $3$ & $0.20$ & $0.03$ & $1.57$ & $0.18$ & $1.00$ \\
-     & $4$ & $0.24$ & $0.05$ & $1.57$ & $0.32$ & $1.00$ \\
-     & $5$ & $0.24$ & $0.08$ & $1.56$ & $0.58$ & $1.00$ \\
-\cmidrule(r){1-2}
-$12$ & $2$ & $0.14$ & $0.01$ & $1.18$ & $0.06$ & $1.00$ \\
-     & $3$ & $0.19$ & $0.02$ & $1.69$ & $0.16$ & $1.00$ \\
-     & $4$ & $0.24$ & $0.03$ & $1.67$ & $0.29$ & $1.00$ \\
-     & $5$ & $0.22$ & $0.05$ & $1.81$ & $0.40$ & $1.00$ \\
-\cmidrule(r){1-2}
-$13$ & $2$ & $0.12$ & $0.01$ & $1.23$ & $0.04$ & $1.00$ \\
-     & $3$ & $0.17$ & $0.01$ & $1.83$ & $0.12$ & $1.00$ \\
-     & $4$ & $0.09$ & $0.03$ & $1.98$ & $0.21$ & $1.00$ \\
-     & $5$ & $3.18$ & $0.73$ &        & $8.76$ & $1.00$ \\
-\cmidrule(r){1-2}
-$14$ & $2$ & $0.09$ & $0.01$ & $1.32$ & $0.03$ & $1.00$ \\
-     & $3$ & $0.17$ & $0.01$ & $2.03$ & $0.10$ & $1.00$ \\
-     & $4$ & $0.63$ & $0.06$ &        & $0.71$ & $1.00$ \\
-     & $5$ &        &        &        &        &        \\
-\cmidrule(r){1-2}
-$15$ & $2$ & $0.12$ & $0.00$ & $1.42$ & $0.02$ & $1.00$ \\
-     & $3$ &        &        &        &        &        \\
-     & $4$ &        &        &        &        &        \\
-     & $5$ &        &        &        &        &        \\
-\bottomrule
-\end{tabular}
-}
+  \centering
+  \input{gfx/tables/iteration-ratio}
   \caption[Iteration ratio for Sausage]{The table shows the ratio of iterations
-     in relation to \texttt{SmithOld} for the Sausage set. The structure is as
-     in~\cref{tab:trees-sausage-ratio}. However an iteration means every time we
-     perform an optimization, i.e.\ a tree can contribute many times to this if
-     we run the iteration for multiple times on the tree (which we most likely
-     do).\label{tab:iterations-sausage-ratio}}
+    in relation to \texttt{SmithOld} for the Sausage set. The structure is as
+    in~\cref{tab:trees-sausage-ratio}. However an iteration means every time we
+    perform an optimization, i.e.\ a tree can contribute many times to this if
+    we run the iteration for multiple times on the tree (which we most likely
+    do).\label{tab:iterations-sausage-ratio}}
 \end{table}
 
 Looking at the second table (showing the iteration ratios) we see more or less
@@ -493,28 +470,6 @@ A thing worth noticing is that the higher run-times observed in the previous
 section makes a lot more sense when observing the ratios for trees and iterations.
 Thus it is very possible, that if the source of this could be identified, that
 the new implementation would have faster run-times than \texttt{SmithOld} all around.
-
-% \begin{table}[htbp]
-%   \centering
-%   \scalebox{0.7}{
-%   \begin{tabular}{cccccc}
-%     \toprule
-%          & \multicolumn{5}{c}{Method}                               \\
-%     \cmidrule(l){2-6}
-%     $n$  & \texttt{Simple} & \texttt{SimpleSort} & \texttt{SmithNew} & \texttt{SmithNewSort} & \texttt{SmithOld} \\
-%     \cmidrule(r){1-1}\cmidrule(l){2-6}
-%     $4$  & $0.24$ & $0.25$     & $0.99$   & $0.99$       & $1.00$   \\
-%     $6$  & $0.34$ & $0.33$     & $0.98$   & $1.01$       & $1.00$   \\
-%     $8$  & $0.28$ & $0.26$     & $1.38$   & $1.19$       & $1.00$   \\
-%     $12$ & $0.17$ & $0.12$     & $1.49$   & $1.51$       & $1.00$   \\
-%     $20$ &        &            &          &              &          \\
-%     \bottomrule
-%   \end{tabular}
-%   }
-%   \caption[Iteration ratio for Solids]{The table shows the ratio of iterations
-%      in relation to \texttt{SmithOld} for the Solids set. The structure is as
-%      in~\cref{tab:trees-sausage-ratio}.\label{tab:iterations-solids-ratio}}
-% \end{table}
 
 %%% Local Variables:
 %%% mode: latex

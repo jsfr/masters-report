@@ -1,0 +1,26 @@
+\begin{tikzpicture}[thick]
+\usetikzlibrary{calc}
+
+\node (STUB) at (0,1) [label=left:\textit{STUB}] {};
+\node (q) at (0,3) [label=left:$q$] {};
+\node (newq) at (0,2) {};
+\node (qr) at (0,0) [label=left:$q-r$] {};
+\node (endP) at (4,0) {};
+
+\draw (STUB) -- (STUB -| endP);
+\draw (q) -- (q -| endP);
+\draw (qr) -- (qr -| endP);
+\draw [dashed] (newq) -- (newq -| endP) node[label=right:new $q$]{};
+
+\draw [->]($ (q) !.5! (q -| endP) $) to[bend left] node[label=right:{\footnotesize optimize}]{} ($ (newq) !.5! (newq -| endP) $);
+  
+\begin{pgfonlayer}{background}
+  \filldraw [line width=4mm,join=round,gray!10]
+  (-2, -1)  rectangle (6, 4);
+\end{pgfonlayer}
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:
