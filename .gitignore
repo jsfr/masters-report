@@ -39,6 +39,7 @@
 *.glsdefs
 *.lol
 *.mw
+*.pyg
 _region_.tex
 
 ### Go ###
