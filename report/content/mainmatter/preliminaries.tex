@@ -122,7 +122,7 @@ The \ac{estp} is then defined as follows:
 Note that $T$ must be a tree, as any cycles can obviously be removed without
 disconnecting the graph or increasing the length. An example of the difference
 between the \ac{mst} and \ac{smt} can be seen in \cref{fig:points-mst-smt}.
-%
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.5\textwidth]{gfx/tikz/points-mst-smt}
@@ -207,7 +207,7 @@ the topology which describes it\footnote{Note that here we refer to the topology
   we end up with after we cannot split any more points, and not the topology we
   started out with.}. Furthermore any \ac{smt} must also be a Steiner tree, but
 not vice versa as illustrated by \cref{fig:steiner-smts}.
-%
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.6\textwidth]{gfx/tikz/steiner-smts}
@@ -220,7 +220,7 @@ not vice versa as illustrated by \cref{fig:steiner-smts}.
     center). Thus if the original points are the terminals, only the last right
     tree is a \acs{smt} for the original terminals.\label{fig:steiner-smts}}
 \end{figure}
-%
+
 The other, and newer definition, used by \textcite{brazil2015} is as follows:
 %
 \begin{definition}[Steiner tree, \acl{fst}]
@@ -394,18 +394,6 @@ to find the correct side. Thus this algorithm runs in $\mathcal{O}(n)$.
 \NOTE[inline]{If time add a more detailed description of how we decide side of
   equilateral point, and add a figure of the two steps of Hwang-Melzak.}
 
-The proof of the algorithm and how to decide the side for the equilateral point
-can be found in \textcite[ch.~1]{brazil2015}.
-
-The algorithm unfortunately does not generalize from two dimensions to higher
-dimensions. The reason for this is, that while the edges emanating from a
-Steiner point are indeed coplanar, the plane the points lie in is not known in
-advance if there are more than $3$ terminals. This means that we no longer have
-a unique pair of equilateral points for each cherry\footnote{A pair of terminals
-  adjacent to a common Steiner point in a Steiner topology is called a cherry
-  for the topology.}, but instead a continuous range of equilateral points lying
-on a circle in $d$-space, as illustrated by \cref{fig:equi-points}.
-%
 \begin{figure}[htbp]
   \centering
   \begin{subfigure}[t]{0.4\textwidth}
@@ -425,10 +413,21 @@ on a circle in $d$-space, as illustrated by \cref{fig:equi-points}.
     unable to determine a unique placement of the equilateral
     point.\label{fig:equi-points}}
 \end{figure}
-%
-Thus in contrast to the two-dimensional case where we can select one of the two
-unique equilateral points, in higher dimensions we are no longer able to do
-this, and the algorithm breaks down.
+
+The proof of the algorithm and how to decide the side for the equilateral point
+can be found in \textcite[ch.~1]{brazil2015}.
+
+The algorithm unfortunately does not generalize from two dimensions to higher
+dimensions. The reason for this is, that while the edges emanating from a
+Steiner point are indeed coplanar, the plane the points lie in is not known in
+advance if there are more than $3$ terminals. This means that we no longer have
+a unique pair of equilateral points for each cherry\footnote{A pair of terminals
+  adjacent to a common Steiner point in a Steiner topology is called a cherry
+  for the topology.}, but instead a continuous range of equilateral points lying
+on a circle in $d$-space, as illustrated by \cref{fig:equi-points}. Thus in
+contrast to the two-dimensional case where we can select one of the two unique
+equilateral points, in higher dimensions we are no longer able to do this, and
+the algorithm breaks down.
 
 \subsection{The GeoSteiner Algorithm}
 \label{sec:geosteiner-algorithm}

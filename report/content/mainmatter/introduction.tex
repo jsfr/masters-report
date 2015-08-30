@@ -4,28 +4,56 @@
 \label{cha:introduction}
 }
 
-% Introduction to the thesis
+\TODO[inline]{Write introduction}
 
 \section{Objectives}
 \label{sec:objectives}
 
-% The objectives
+The objective of the project will first and foremost be to implement Smiths
+algorithm for finding Steiner Minimal Trees in Euclidean d-Space efficiently. In
+the original paper by Smith the proposed C implementation has a lot of
+double work and ineffiecency and thus it is the main objective of this project
+to implement this algorithm effiecently and then benchmark this against the
+original implementation.
 
-\section{Related Work}
-\label{sec:related-work}
+A secondary objective of the project will be to explore and propose possible
+improvements to the algorithm. Some of which might be explored are:
 
-2D: geosteiner, efficient algorithms for 2d
+* Sorting the terminals in  different orders before finding the positions.
+* Analytically solving the problem with fewer (3) terminals at a time to improve
+  limits where the Steiner points may move very slowly normally.
+* An analysis of the stop-criteria used by Smith to see whether this is actually
+  correct, and whether there are possible improvements.
 
-nD: smiths, smiths+, smiths*, other?
+If there is time the project will also look at versions of the problem such as
+the fixed-orientation version, where edges are only allowed to have certain
+predefined orientations.
 
-other: interesting versions of trees, rectilinear, or multiangle version
+The learning goals of the project are:
 
-% Any related work
+* Understanding, analysing and describing complex algorithms and solutions to a
+  specific problem area
+    - In this case the problem of finding Steiner Minimal Trees
+      in Euclidean d-Space using Smiths algorithm)
+* On the basis of the analysis propose possible improvements to the existing
+  solution, implement and test the improvements.
+* Benchmarking
 
 \section{Structural Outline}
 \label{sec:structural-outline}
 
-% the overall outline of the thesis – each chapter and its contents
+To provide the reader with an overview of what is to come, an
+outline of the different chapters of the thesis is presented here:
+
+\begin{itemize}
+\item \textbf{Chapter 2: Preliminaries} \quad
+\item \textbf{Chapter 3: \citeauthor{smith1992}'s Algorithm} \quad 
+\item \textbf{Chapter 4: Data Structures and Methods} \quad
+\item \textbf{Chapter 5: Implementation} \quad
+\item \textbf{Chapter 6: Experiments} \quad
+\item \textbf{Chapter 7: Discussion} \quad
+\item \textbf{Chapter 8: Conclusion} \quad
+\end{itemize}
 
 %%% Local Variables:
 %%% mode: latex

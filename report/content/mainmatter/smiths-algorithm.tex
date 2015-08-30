@@ -148,7 +148,7 @@ $n + 1, n + 2, \ldots, 2 n - 2$.
     generates two new edges we have, after $i$ insertions, $3 + \underbrace{2 +
       \cdots + 2}_{2 i} = 2 i + 1$.} different edges on which we can insert
   Steiner point $p_{n + 1 + i}$ and connect it to the regular point $p_{i+3}$.
-  %
+  
   \begin{figure}[htbp] \centering
     \begin{subfigure}[t]{0.267\textwidth}
       \includegraphics[width=\textwidth]{gfx/tikz/algorithm-topology-1}
@@ -349,7 +349,7 @@ choices we can make.
     $\textit{error} \gets$ recalculate error for $T$\;
   }
   \Return{$T$}
-  \caption[Simple iteration]{Pseudo code describing the optimization strategy
+  \caption[Algorithm for the simple iteration]{Pseudo code describing the optimization strategy
     using the simple iteration. The algorithm describes running a single
     optimization. In general one would have to run the algorithm several times,
     until the error of the entire tree falls below some threshold.\label{alg:simple-iteration}}
