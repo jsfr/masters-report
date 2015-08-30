@@ -149,14 +149,14 @@ even correct. Thus both of these if-clauses are a bit sketchy.
 
 \begin{figure}[htbp]
   \centering
-  \begin{subfigure}[b]{0.4\textwidth}
+  \begin{subfigure}[t]{0.4\textwidth}
     \includegraphics[width=\textwidth]{gfx/tikz/upperbound-2}
     \caption{Example where subtracting the error from the tree
       length yields a length shorter than the current upper bound. In this case
       the program would continue to to optimize on the topology, and there is no
       risk of prematurely pruning it.\label{fig:upperbound-2}}
   \end{subfigure}\hspace{1em}
-  \begin{subfigure}[b]{0.4\textwidth}
+  \begin{subfigure}[t]{0.4\textwidth}
     \includegraphics[width=\textwidth]{gfx/tikz/upperbound-1}
     \caption{Example where subtracting the error from the tree
       length yields a length greater than the current upper bound. If it is not
@@ -164,7 +164,8 @@ even correct. Thus both of these if-clauses are a bit sketchy.
       potentially result in a topology being pruned
       prematurely.\label{fig:upperbound-1}}
   \end{subfigure}
-  \caption[Upper bounds, 1 and 2]{Here be dragons.\label{fig:upperbound-1-2}}
+  \caption[Upper bounds, 1 and 2]{The possible situations when reaching the
+    first if-clause.\label{fig:upperbound-1-2}}
 \end{figure}
 
 Consider the first if-clause. This assumes that subtracting the current error
@@ -174,7 +175,8 @@ possible to get a tree which if optimized would be shorter than the current
 upper bound, but where subtracting the current error from the current tree
 length would not be shorter than the current upper bound. This could result in a
 topology being thrown away even if it should have actually been kept. The two
-situations are shown in \cref{fig:upperbound-2-3}.
+situations are shown in \cref{fig:upperbound-1-2}. Furthermore the possible
+situations after optimizing the topology is shown in \cref{fig:upperbound-3-4}.
 
 To test the impact of the first if-clause the instances were run again where the
 condition of the first if-clause was changed to $q - 10 \cdot r <
@@ -208,6 +210,29 @@ seems to indicate that this condition indeed is partly to blame for the
 sub-optimality. The reason that new instances suddenly gave sub-optimal results
 I believe is because these instances now explore topologies which they before
 would have discarded.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/upperbound-3}
+    \caption{Example where optimizing the tree results in a new shorter length,
+      but where the error is still large enough that $q-r$ stays below the upper
+      bound. In this case we would proceed to either optimize the topology, or
+      put it on the stack, depending on the what the second if-clause
+      yields.\label{fig:upperbound-3}}
+  \end{subfigure}\hspace{1em}
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/upperbound-4}
+    \caption{Example where optimizing the tree results in a new shorter length,
+      and the error becomes small that $q-r$ is longer than the upper bound. In
+      this case we prune the topology and all its descendants. If $q-r$ is
+      always less than or equal to the length of the \ac{rmt} of the topology
+      this is correct. If this is however not the case this could result in
+      premature pruning.\label{fig:upperbound-4}}
+  \end{subfigure}
+  \caption[Upper bounds, 3 and 4]{The possible situations when optimizing a
+    topology.\label{fig:upperbound-3-4}}
+\end{figure}
 
 Now consider the second if-clause. This assumes two things, firstly that size of
 the error is proportional to the length of the tree, and secondly that the error
@@ -262,31 +287,33 @@ The potential problem is summed up by \cref{fig:upperbound-5}. We may have some
 topology which has been optimized to have a very low error, this is particularly
 likely using the analytical solution which attains very low error-figures. Upon
 splitting the topology and adding the next terminal and a new Steiner point, the
-error is raised. However because the error of the rest of the is very low,  
+error is raised. However because the error of the rest of the tree is very low,
+the error is not raised enough for the new $q-r$ to stay below the the current
+upper bound, and as such the topology will be pruned even though optimizing it
+may result in the new Steiner point moving and propagating changes throughout
+the tree, which could have resulted in a new upper bound.
 
-\begin{figure}[htbp]
-  \centering
-  \begin{subfigure}[b]{0.4\textwidth}
-    \includegraphics[width=\textwidth]{gfx/tikz/upperbound-3}
-    \caption{here be dragons.\label{fig:upperbound-3}}
-  \end{subfigure}\hspace{1em}
-  \begin{subfigure}[b]{0.4\textwidth}
-    \includegraphics[width=\textwidth]{gfx/tikz/upperbound-4}
-    \caption{here be dragons.\label{fig:upperbound-4}}
-  \end{subfigure}
-  \caption[Upper bounds, 3 and 4]{Here be dragons.\label{fig:upperbound-3-4}}
-\end{figure}
+the problem could also escalate over the course of a few of these situations in
+a row, where one adds a terminal, but does not optimize as the error continues
+to stay below the threshold.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.4\textwidth]{gfx/tikz/upperbound-5}
-  \caption[Upper bounds, 5]{here be dragons.\label{fig:upperbound-5}}
+  \caption[Upper bounds, 5]{Splitting a topology raises the error of the tree.
+    However if the error does not go up enough for the length minus the error to
+    stay below the upper bound, the topology will be pruned. This situation
+    again assumes that $q-r$ will also less than or equal to the length of the
+    \ac{rmt} for the topology. If this is not the case, it could be thought that
+    this situation could also occur when the tree should no be pruned, but
+    because of a low error on most of the tree it will be pruned
+    prematurely.\label{fig:upperbound-5}}
 \end{figure}
 
 To test the impact of the second if-clause the instances were run with the
 condition of the clause change to $r > 0.05 \cdot q$ and $r > 0.0005 \cdot q$.
 The sub-optimal results from these runs can be found in
-\cref{tab:tab-correctness-2,tab:tab-correctness-3}. As can be seen, allowing a
+\cref{tab:correctness-errors-2,tab:correctness-errors-3}. As can be seen, allowing a
 higher error gives fewer sub-optimal results, whereas setting the error even
 lower raises the number of sub-optimal instances produced by the analytical
 solution.
@@ -306,8 +333,14 @@ solution.
     number of sub-optimal results drop to $2$.\label{tab:correctness-errors-3}}
 \end{table}
 
-These observations make seems to align with the before described problems.
-Consider setting allowing a higher error. \TODO{}
+These observations seems to align with the before described problems.
+Consider allowing a higher error in the second if-clause. This would cause the
+method to halt earlier in the optimization process, and thus the chance of $q-r$
+being greater lower than the upper bound would probably be better, as we would
+less often hit a situation where most of the tree has very low error and only a
+single Steiner point has high error. However lowering the allowed error would
+cause the program to further optimize the trees, which would further magnify the
+problem where all but one Steiner point has very low error.
 
 Further raising the error allowed in the second if-clause to $r > 0.5 \cdot q$
 resulted in sub-optimal results being observed across all four of the tested
@@ -348,22 +381,15 @@ sub-optimality of these trees also was relatively low.
 \label{sec:performance}
 
 To test the performance of the implementation the test sets in
-\cref{tab:test-sets} has been run for all of the methods described in
-\cref{tab:method-names}. All sets have been taken from \textcite{fonseca2014},
-but the sets Carioca and Cube has been pruned. This has been done due to the
-sheer size of these sets. Even with these sets pruned, running all of the sets
-for all of the methods took a little more than a week in which a quad-core
-computer ran 24/7. To further prune, all runs was set up such that they would
-halt if more than $12$ hours passed, as it is then concluded infeasible to solve
-that specific instance using the given method. How many instances completed
-before the time limit can be seen in \cref{tab:set-success}.
-
-A few initial test runs showed that, especially \texttt{SimpleSort} but also
-occasionally \texttt{SmithNewSort}, were able to solve several instances with
-$n=16$, and a few for $n=17$ within the $12$ time limit. Time-wise it was
-however still infeasible to perform a proper test with these instance sizes.
-Thus the new implementation solves instances about the same size as
-\textcite{fonseca2014}.
+\cref{tab:test-sets} have been run for all of the methods described in
+\cref{tab:method-names}. The \textit{Carioca} set is from the 2014 DIMACS
+challenge, the \textit{Iowa} set is from \textcite{fampa2008}, \textit{Cube} and
+\textit{Sausage} are both from \textcite{fonseca2014}. The \textit{Cube} set is
+a set of randomly generated instances which has the terminals of each instance
+distributed randomly in a unit cube. The \textit{Sausage} set consists of
+$d$-sausages, which are linear concatenations of regular $d$-simplices. these
+have the lowest currently known Steiner ratio in dimensions $3$ and
+up~\cite{smith1995}.
 
 \begin{table}[htbp]
   \centering
@@ -373,7 +399,7 @@ Thus the new implementation solves instances about the same size as
     \midrule
     Carioca & $d = 3 \ldots 5$ & $n = 11 \ldots 16$    & $90$     & Random in cube      \\
     Cube    & $d = 2 \ldots 4$ & $n = 10 \ldots 15$    & $360$    & Random in cube      \\
-    Iowa05  & $d = 3 \ldots 5$ & $n = 10$              & $30$     & Random in cube      \\
+    Iowa  & $d = 3 \ldots 5$ & $n = 10$              & $30$     & Random in cube      \\
     Sausage & $d = 2 \ldots 5$ & $n = 10 \ldots 15$    & $24$     & Simplex sequence    \\
     \bottomrule
   \end{tabular}
@@ -381,6 +407,20 @@ Thus the new implementation solves instances about the same size as
     their dimensions, number of terminals, number of instances and type of instances,
     which has been used to test the performance of the implementation.\label{tab:test-sets}}
 \end{table}
+
+The sets \textit{Carioca} and \textit{Cube} have been pruned. This has been done
+due to the sheer size of these sets. Even with these sets pruned, running all of
+the sets for all of the methods took a little more than a week in which a
+quad-core computer ran $24/7$. Furthermore all runs were set up such that
+they would halt if more than $12$ hours passed, and it was then concluded
+infeasible to solve that specific instance using the given method. How many
+instances completed before the time limit can be seen in \cref{tab:set-success}.
+
+A few initial test runs showed that, especially \texttt{SimpleSort} but also
+occasionally \texttt{SmithNewSort} instances for $n=17$ within the $12$ hour
+limit. Time-wise it was however still infeasible to perform a proper test with
+these instance sizes. Thus the new implementation solves instances about the
+same size as \textcite{fonseca2014}.
 
 The data collected from the runs have been used to compare the speed (i.e.\
 run-time), the number of iterations, and the number of trees optimized. The
@@ -391,7 +431,6 @@ results are presented and described in the two sections below.
   \begin{tabular}{cccccc}
     \toprule
             & \multicolumn{5}{c}{Method}                             \\
-    \cmidrule(l){2-6}
     Set     & \texttt{Simple} 
             & \texttt{SimpleSort}
             & \texttt{SmithNew} 
@@ -400,7 +439,7 @@ results are presented and described in the two sections below.
     \cmidrule(r){1-1}\cmidrule(l){2-6}
     Carioca & $81/90$  & $89/90$  & $73/90$   & $87/90$  & $76/90$   \\
     Cube    & $\checkmark$ & $\checkmark$ & $352/360$ & $\checkmark$ & $356/360$ \\
-    Iowa05  & $\checkmark$ & $\checkmark$ & $\checkmark$  & $\checkmark$ & $\checkmark$  \\
+    Iowa  & $\checkmark$ & $\checkmark$ & $\checkmark$  & $\checkmark$ & $\checkmark$  \\
     Sausage & $22/24$  & $23/24$  & $18/24$   & $22/24$  & $21/24$   \\
     \bottomrule
   \end{tabular}
@@ -413,82 +452,108 @@ results are presented and described in the two sections below.
 \subsection{Speed}
 \label{sec:speed}
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_d3_Carioca_1}
-  \caption[Box-plot for Carioca with $d = 3$]{Here be dragons.\label{fig:boxplot-carioca-d3}}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_d4_Carioca_1}
-  \caption[Box-plot for Carioca with $d = 4$]{Here be dragons.\label{fig:boxplot-carioca-d4}}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_d3_Cube_1}
-  \caption[Box-plot for Cube with $d = 3$]{Here be dragons.\label{fig:boxplot-cube-d3}}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_d4_Cube_1}
-  \caption[Box-plot for Cube with $d = 4$]{Here be dragons.\label{fig:boxplot-cube-d4}}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_n10_Iowa_1}
-  \caption[Box-plot for Iowa with $n = 10$]{Here be dragons.\label{fig:boxplot-iowa-n10}}
-\end{figure}
-
 To compare the speed of the new implementation with the implementation by
-\textcite{smith1992} a box-plot of the run times for the Carioca set and Cube
-set, where $d = 3$ and $d = 4$, has been plotted in \cref{fig:boxplots-1}. As
-can be seen by the two figures the running time of \texttt{SmithNew} is in
-general a bit higher than that of \texttt{SmithOld}, whereas the new analytical
-solution \texttt{Simple} in general is lower. The reason for the higher running
-time of \texttt{SmithNew} is probably due to the fact that the implementation is
-done in Go instead of C as the original implementation. Unfortunately we are
-therefore not really able to say anything about the performance of the new data
-structure for topologies (described in \cref{sec:building-topologies}) being
-better of worse than the original implementation. It is however interesting to
-see that the analytical solution seems to have better running times than not
-only \texttt{SmithNew}, but also \texttt{SmithOld}, as this suggests that an
-implementation of this method in a more efficient language, such as C, would
-yield even better running times. Further this seems to debunk the claim by
-\textcite{smith1992} that a simple iteration would converge slower, at least
-speed-wise. Of course we still need to keep in mind the fact that
-\texttt{Simple} have showed some sub-optimal trees. It however seems unlikely,
-when looking at the percent of sub-optimal results that this should skew the
-results so much that this would be changed.
+\textcite{smith1992} box-plots of the run-times for \textit{Carioca},
+\textit{Cube} and \textit{Iowa}, have been plotted in
+\cref{fig:boxplot-carioca-d3,fig:boxplot-carioca-d4,fig:boxplot-cube-d3,fig:boxplot-cube-d4,fig:boxplot-iowa-n10}.
+The y-axis of the box-plots is logarithmic to make the plots manageable. Notice
+that
+\cref{fig:boxplot-carioca-d3,fig:boxplot-carioca-d4,fig:boxplot-cube-d3,fig:boxplot-cube-d4}
+have the number of terminals on the x-axis and are for fixed dimensions, whereas
+\cref{fig:boxplot-iowa-n10} has the dimensions on the x-axis and is the for a
+fixed number of terminals. This is simply due to the fact that \textit{Iowa}
+only contains $n=10$ instances, whereas the other sets contain several instances
+of different dimensions and number of terminals. This also illustrates that the
+number of dimensions affects the run-time, but not nearly as much as the number
+of terminals does.
 
-To further compare the effect of sorting the terminals as described
-in \cref{sec:sorting-terminals}, box-plots for the Cube set with $d = 3$ and $d
-= 4$ has been plotted for \texttt{SmithNew} vs.\ \texttt{SmithNewSort} and
-\texttt{Simple} vs.\ \texttt{SimpleSort}. These can be found
-in \cref{fig:boxplots-2}. As can be seen from the figures, the run-time of both
-methods drop significantly when the terminals are sorted. In almost all cases,
-no matter the number of terminals, is the third quartile of the sorted terminals
-below the first quartile of the unsorted terminals. The proposed way of sorting
-the terminals thus seems to work very well. Also notice, that sorting the
-terminals improves the new implementations run-time enough that
-\texttt{SmithNewSort} has run-times comparable to/slightly better than
-\texttt{SmithOld}.
+As can be seen in the figures the running time of \texttt{SmithNew} (implemented
+in Go) is in general a bit higher than that of \texttt{SmithOld} (implemented in
+C), whereas the new analytical solution \texttt{Simple} (implemented in Go) in
+general is lower. The reason for the higher running time of \texttt{SmithNew} is
+probably due to the fact that the implementation is done in Go instead of C as
+the original implementation. Unfortunately we are therefore not really able to
+say anything about the performance of the new data structure for topologies
+(described in \cref{sec:building-topologies}) being better of worse than the
+original implementation. It is however interesting to see that the analytical
+solution seems to have better running times than not only \texttt{SmithNew}, but
+also \texttt{SmithOld}, as this suggests that an implementation of this method
+in a more efficient language, such as C, would yield even better running times.
+Further this seems to debunk the claim by \textcite{smith1992} that a simple
+iteration would converge slower, at least speed-wise. Of course we still need to
+keep in mind the fact that \texttt{Simple} have showed some sub-optimal trees.
+It however seems unlikely, when looking at the percent of sub-optimal results
+that this should skew the results so much that this would be changed.
 
-The reason that the dimensions $d=2$ and $d=5$ have not been plotted is, both
-that they show the same situation, but also that $d=2$ is so small that they go
-below the graph, and would require another a change of y-axis, and $d=5$ has a
-bit to few solved instances for $n=15$ for it to be quite as reliable.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_d3_Carioca_1}
+  \caption[Box-plot for Carioca with $d = 3$]{Box-plot showing the run-times for
+    the Carioca set with $d = 3$.\label{fig:boxplot-carioca-d3}}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_d4_Carioca_1}
+  \caption[Box-plot for Carioca with $d = 4$]{Box-plot showing the run-times for
+    the Carioca set with $d = 4$.\label{fig:boxplot-carioca-d4}}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_d3_Cube_1}
+  \caption[Box-plot for Cube with $d = 3$]{Box-plot showing the run-times for
+    the Cube set with $d = 3$.\label{fig:boxplot-cube-d3}}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_d4_Cube_1}
+  \caption[Box-plot for Cube with $d = 4$]{Box-plot showing the run-times for
+    the Cube set with $d = 4$.\label{fig:boxplot-cube-d4}}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{gfx/boxplots/plot_nvst_boxplot_n10_Iowa_1}
+  \caption[Box-plot for Iowa with $n = 10$]{Box-plot showing the run-times for
+    the Iowa set with $n = 10$.\label{fig:boxplot-iowa-n10}}
+\end{figure}
+
+As can furthermore be seen in the figures, the run-time of both methods drop
+significantly when using terminal sorting (\texttt{SmithNewSort} and
+\texttt{SimpleSort}). In almost all cases, no matter the number of terminals or dimensions, is
+the third quartile of for the methods with terminal sorting below the first
+quartile for the respective method without terminal sorting. Furthermore in most
+cases is the third quartile of \texttt{SimpleSort} below the first quartile of
+\texttt{SmithOld}, and the run-times for \texttt{SmithNewSort} are better than
+or comparable to that of \texttt{SmithOld}.
+
+The reason that the \textit{Carioca} and \textit{Iowa} for $d=5$ and
+\textit{Cube} for $d = 2$ have not been plotted is, both that they show the same
+situation, but also that $d=2$ is so small that they go below the graph, and
+would require a change of y-axis, and $d=5$ has a bit too few solved
+instances for $n=15$ for it to be quite as reliable.
 
 \subsection{Trees and Iterations}
 \label{sec:trees-iterations}
 
-Apart from the actual run-time of the implementation, another metric worth
-measuring is the number of optimization iterations one runs when solving an
-instance, and the number of trees optimized. By the last what is the number of
-topology vectors on which we optimize their corresponding tree at least once.
+Apart from the actual run-time of the implementation it is also worth measuring
+the number of optimization iterations one runs when solving an instance, and the
+number of trees optimized.
+
+The number of optimization iterations is counted as the sum of all times the
+optimization function is called when solving an instance, i.e.\ every time
+perform an optimization (no matter the number of terminals in the topology) we
+increment the number of optimization iterations with one.
+
+The number of trees optimized is counted as the sum of trees which is optimized
+at least once. As described earlier we may have some trees which are never
+optimized at all. We may also have trees which are optimized more than once
+(this is the most likely, as a single tree normally requires several
+optimization iterations). Every time we optimize a tree which we have not
+optimized before (no matter the number of terminals in the topology) we
+increment the number of optimized trees with one.
 
 \begin{table}[htbp]
   \centering
@@ -505,13 +570,18 @@ topology vectors on which we optimize their corresponding tree at least once.
 \end{table}
 
 \cref{tab:trees-sausage-ratio} shows the number of trees optimized, as a ratio
-of the tree optimized by \texttt{SmithOld}, and
+of the trees optimized by \texttt{SmithOld}\footnote{So if e.g.\
+  \texttt{SmithOld} has optimized $100$ trees and \texttt{Simple} has optimized
+$56$ trees, the ratio for \texttt{Simple} would be $56/100 = 0.56$.}, and
 \cref{tab:iterations-sausage-ratio} shows the number of iterations, also as a
-ratio. Both of these tables are for the Sausage set. As can be seen by the first
-table the new implementation, without terminal sorting, optimizes more trees
-than the original implementation. Especially \texttt{SmithNew} in some instances
-optimizes up to three times as many trees. This is of course not very desirable
-and the exact reason for this is unfortunately unknown.
+ratio. Both of these tables are for the \texttt{Sausage}. This set is used as
+there is one instance for each combination of $n$ and $d$ making it easy to
+calculate the ratios.
+
+As can be seen by the first table \texttt{Simple} and \texttt{SmithNew},
+optimizes more trees than \texttt{SmithOld}. Especially \texttt{SmithNew} in
+some instances optimizes up to three times as many trees. This is of course not
+very desirable and the exact reason for this is unfortunately unknown.
 
 There seems to be several possibilities for the observed behavior. The first
 possibility is that the counting of the trees has a bug in either the new or old
@@ -520,22 +590,30 @@ inspection of the source code, this however does not seem to be the case. The
 second possibility is that there is a bug somewhere in the new implementation,
 causing it to not prune as many trees as the original implementation. This seems
 a more likely reason, but inspection of the source code again failed to reveal
-such a problem. The third possibility, and probably must realistic, is that the
-new data structure for building topologies is at fault. In the original
-implementation every new topology vector rebuilds its tree from scratch, meaning
-that all Steiner points are replaced---at the perturbed centroid of their
-neighbors. However in the new implementation, the Steiner points of the previous
-topology is not replaced when splitting the topology and adding another terminal
-and Steiner point. It could be thought that as explained in
-\cref{sec:correctness} that the error function is faulty, and thus the if-clause
-for pruning fails in the new implementation where we may have a initial lower
-error for the tree (as most of the tree is already optimized), in contrary to
-the old implementation.
+such a problem. This could however be tied together with the the if-clauses
+described in \cref{sec:correctness} and the variable described in
+\cref{sec:scale}. The old implementation uses the variable \textit{SCALE} in the
+calculation of the initial placement for new Steiner points. If this causes the
+Steiner points to have better initial placements it could be thought, that the
+if-clauses of the main loop were able to prune earlier.
+
+A third possibility, and probably the must realistic, is that the way in which
+topologies are split in the new implementation is the cause of the extra
+iterations. As described before, when splitting a topology in the new
+implementation we re-use the existing coordinates for the Steiner points already
+in the topology. When we do this a large portion of the tree is at a low error.
+This in turn can cause \citeauthor{smith1992}'s iteration to converge very
+slowly. This could therefore be the cause for the extra iterations for
+\texttt{SmithNew}, but should not affect \texttt{Simple}. For \texttt{Simple} a
+realistic explanation is, that the iteration may indeed just require more
+iterations to converge as is postulated by \textcite{smith1992}, but because
+each iteration is much lighter computationally they are done quicker and thus we
+still see better run-times.
 
 As observed with the speed of the program, the number of trees optimized in
-general also fails drastically when sorting the terminals (\texttt{SimpleSort}
+general also drops drastically when sorting the terminals (\texttt{SimpleSort}
 and \texttt{SmithNewSort}). In all cases the ratio becomes smaller than the
-unsorted counter-part, and in most cases it also becomes a lot smaller
+unsorted counter-part, and in most cases it also becomes a lot smaller than
 \texttt{SmithOld}.
 
 \begin{table}[htbp]
@@ -555,17 +633,18 @@ is the one for \texttt{Simple}. As can be seen in the first table, the ratio for
 the number of optimized trees in general is slightly above $1$. However the
 ratio for iterations is in general below $0.5$. This means that \texttt{Simple},
 is a lot quicker at reaching a low error and thus stopping to optimize the
-trees. This should mean that the analytical solution converges a lot faster than
-\autocite{smith1992}'s iteration. However again we need to remember the results
+trees. This could mean that the analytical solution converges a lot faster than
+\citeauthor{smith1992}'s iteration. However again we need to remember the results
 from \cref{sec:correctness}, which means that we need to be a bit cautious with
 such a conclusion. However again the ratio is consistently lower for the number
 of iterations\footnote{Except for a single outlier}, and thus is seems unlikely
 that the result is solely due to sub-optimality, as described earlier.
 
-A thing worth noticing is that the higher run-times observed in the previous
-section makes a lot more sense when observing the ratios for trees and iterations.
-Thus it is very possible, that if the source of this could be identified, that
-the new implementation would have faster run-times than \texttt{SmithOld} all around.
+A thing worth noticing is that the higher run-times for \texttt{SmithNew} (and
+partly \texttt{SmithNewSort}) observed in the previous section make a lot more
+sense when observing the ratios for trees and iterations. Thus it is very
+possible, that if one could bring down these numbers the new implementation
+would have faster run-times than \texttt{SmithOld} all around.
 
 %%% Local Variables:
 %%% mode: latex

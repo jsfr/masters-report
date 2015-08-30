@@ -97,8 +97,9 @@ having to optimize the non-full topologies is clearly desirable.
   \centering
   \begin{tabular}{cccccc}
     \toprule
-    $k \backslash n$ & 3    & 4    & 5     & 6      & 7      \\
-    \hhline{~-----}
+    & \multicolumn{5}{c}{$n$} \\
+    $k$ & 3    & 4    & 5     & 6      & 7      \\
+    \cmidrule(r){1-1}\cmidrule(l){2-6}
     0   & 3          & 12         & 60          & 360          & 2520         \\
     1   & \textbf{1} & 12         & 120         & 1200         & 12600        \\
     2   &            & \textbf{3} & 75          & 1350         & 22050        \\
