@@ -7,29 +7,29 @@
 This chapter will describe the architecture of the new implementation, i.e.\ how
 the new implementation has been structured.
 
-The new implementation has been written in the, still relatively new but at this
-point stable, language Go, which quoting the homepage: ``Go is an open source
-programming language that makes it easy to build simple, reliable, and efficient
-software.''~\cite{golanghomepage}. Go is a general-purpose, strongly typed and
-garbage-collected language. The syntax bears resemblance to C\footnote{But
-  with a lot less braces, and no pointer arithmetic.}. Furthermore Go has
-explicit support for concurrent programming. The language furthermore sports
-extremely fast compiling of source code and tries to have performance
-comparable to C.
+The new implementation has been written in the language Go that is still
+relatively new but is considered stable at this point. Quoting the homepage:
+``Go is an open source programming language that makes it easy to build simple,
+reliable, and efficient software.''~\cite{golanghomepage}. Go is a
+general-purpose, strongly typed and garbage-collected language. The syntax bears
+resemblance to C\footnote{But with a lot less braces, and no pointer
+  arithmetic.}. Furthermore Go has explicit support for concurrent programming.
+The language furthermore sports extremely fast compiling of source code and
+tries to have performance comparable to C.
 
 The reasoning behind choosing Go for the new implementation were firstly that I
 already had experience with the language making it easy to get to work on the
-new implementation without also having to learn a new programming
-language. Secondly the language has, in my opinion, a very clean syntax which
-makes it easily readable for anyone familiar with any C-syntax styled
-language. Finally the easy use of concurrency in Go\footnote{Starting a new
-  goroutine, which is the languages type of lightweight threads, is as simple as
-  writing: \texttt{go~SomeFunction~(args\ldots)}.} made it interesting as
-continued work with the new implementation could include a potential,
-significant, speedup by making the branching of the algorithm concurrent. The
-same could be be true for the Gauss elimination, concurrent\footnote{Not
-  concurrency has actually been implemented in the new implementation. However
-  the possibilities of this is discussed in \cref{sec:concurrency}.}.
+new implementation without also having to learn a new programming language.
+Secondly the language has, in my opinion, a very clean syntax which makes it
+easily readable for anyone familiar with any C-syntax styled language. Finally
+the easy use of concurrency in Go\footnote{Starting a new goroutine, which is
+  the languages type of lightweight threads, is as simple as writing:
+  \texttt{go~SomeFunction~(args\ldots)}.} made it interesting as continued work
+with the new implementation could include a potential and significant speedup by
+making the branching of the algorithm concurrent. The same could be be true for
+the Gauss elimination\footnote{No concurrency has actually been implemented in
+  the new implementation. However the possibilities of this is discussed in
+  \cref{sec:concurrency}.}.
 
 In general the implementation tries to follow guidelines given in
 \textcite{effectivego}. These are guidelines as to how one codes effective
@@ -50,13 +50,28 @@ configuration file). This is done to allow for easy reuse of the main amount of
 work, as it is a library.
 
 The \texttt{smt} package consists of all the data structures and and their
-functions related to calculating \acp{smt}. The main file consists mainly of the
-main function which mainly reads the flags from the command-line and then starts
-the main loop---Which iterates through generated topologies, similarly to
-\citeauthor{smith1992}'s main loop---with the correct flags, i.e.\ whether we
-should use sorting, which iteration we should use, etc. Finally the
-configuration file consists of a data structure and function for reading the
-command-line flags---this is what is used by the main function for this.
+functions related to calculating \acp{smt}. The main file contains the main
+function which initializes a configuration (using the configuration file) and
+then starts the main loop of the program with the correct parameters. The main
+loop generates topologies, similarly to \citeauthor{smith1992}'s main loop.
+Finally the configuration file consists of a data structure and function for
+reading the command-line flags.
+
+The possible flags one can pass to the program are:
+\begin{itemize}
+\item \texttt{-sort} \quad Sorts the terminals before initiating the main loop.
+\item \texttt{-1} \quad 1-indexes all printed results on STDOUT. The program is
+  0-indexed as this simply makes more sense programming-wise. However one may
+  wish a 1-indexed tree when printed for easier comparison with the old
+  implementation and the theory.
+\item \texttt{-iteration=[method]} \quad Selects the optimization method used.
+  \texttt{[method]} can be either \texttt{simple} or \texttt{smith}. The default
+  is \texttt{smith}.
+\item \texttt{-cpuprofile=[path]} \quad Flag used to initiate a profiling of the
+  program. If passed Go's internal profiling is enabled, and the trace is saved
+  at \texttt{[path]}. This is only intended for debugging.
+\item \texttt{-help,-h} \quad Shows this list of flags. 
+\end{itemize}
 
 \section{\acs{smt} Package}
 \label{sec:smt-package}
@@ -75,23 +90,23 @@ edge.
 The most important structs for the new implementation are:
 %
 \begin{itemize}
-\item \textbf{Point} \quad A struct which just represent a $d$ dimensional
+\item \textbf{Point} \quad Represents a $d$ dimensional
   point. Implemented as a simple array of floats. For convenience points has a
   number of functions for subtracting points, calculating dot products, and
   finally the function for sorting terminals, which is simply implemented as a
   function that takes a list of points and sorts them as described in \cref{sec:sorting-terminals}.
-\item \textbf{Edge} \quad A struct representing an edge of a tree. The edge
+\item \textbf{Edge} \quad Represents an edge of a tree. The edge
   consists of a pointer to the tree and two integers which are the indicies of
   the end points of the edge in the point-array of the tree. The pointer is
   needed of for the indicies to make sense, and to easily calculate the length
   of the edge.
-\item \textbf{Tree} \quad A struct represent a complete tree. The struct
+\item \textbf{Tree} \quad Represents a complete tree. The struct
   contains a list of all edges, a list of points, the dimension of the the
   points and the number of points which are terminals. Finally the struct also
   contains a list of adjacencies to the Steiner points, as this was considered
   the easiest way to hold these, instead of having to find them every time they
   are needed in the edges. The most important functions (besides the iterations)
-  on at tree are those for splitting and restoring and edge and the function for
+  on a tree are those for splitting and restoring an edge, and the function for
   calculating the error of the tree.
 \item \textbf{Stack} \quad The implementation of \citeauthor{smith1992}'s
   iteration utilizes quite a few stacks. These were in the original
@@ -114,16 +129,17 @@ outside the package. The others are for internal use only.
 \subsection{Iterations}
 \label{sec:iterations-1}
 
-Finally the package also contains a file with an implementation of the two
-different iterations. The first one is the iteration described by
-\textcite{smith1992} (named \texttt{SmithsIteration}) and the second is a
-iteration based of the simple iteration described in \cref{sec:simple-iteration}
-using the analytical solution for the Fermat-Torricelli problem presented by
-\textcite{uteshev2014} to place the Steiner points (named \texttt{SimpleIteration}).
+The package also contains a file, named \texttt{optimize.go} with an
+implementation of the two different iterations. The first one is the iteration
+described by \textcite{smith1992} (named \texttt{SmithsIteration}) and the
+second is the iteration based on the simple iteration described in
+\cref{sec:simple-iteration} using the analytical solution for the
+Fermat-Torricelli problem presented by \textcite{uteshev2014} to place the
+Steiner points (named \texttt{SimpleIteration}).
 
-The second iteration is relatively simple in its iteration. It simple iterates
-through all Steiner points, calculating their placement at with regards to the
-other points current placement.
+The second iteration is relatively simple in its iteration. It iterates
+through all Steiner points, calculating their placement with regard to the
+other points' current placement.
 
 The first iteration in general follows the same outline as done in the original
 implementation. In the same way it also utilizes a number of arrays and stacks
@@ -131,7 +147,7 @@ which are global to the package (but inaccessible from the outside to avoid
 someone using the library from tampering with the data mid-iteration
 unintentionally). In general these global arrays is unwanted as it clutters the
 space of the other functions in the package. However initial runs of the
-iteration, showed that the new implementation used a significant amount of time
+iteration showed that the new implementation used a significant amount of time
 in the iteration on creating new local arrays every time it was being run. This
 was of course undesirable, as it both wasted time, and made comparison to the
 original code harder. Thus after some consideration, and for lack of a better
@@ -141,7 +157,7 @@ of \texttt{SmithsIteration}.
 \section{Main and Configuration File}
 \label{sec:main-file}
 
-Finally the new implementation contains a main file, and a configuration file.
+The new implementation contains a main file, and a configuration file.
 
 The main file contains the main function being run when the program is executed
 on the command-line, and the main loop for enumerating and optimizing
@@ -153,18 +169,18 @@ The main file furthermore uses the functions and structs of the configuration
 file for reading and handling the arguments given on the command-line. The
 implementation unlike \citeauthor{smith1992}'s implementation does not read a
 list of terminals on STDIN, but instead takes as argument a file-path to what it
-expects to be a JSON file containing a key ``points'' which should be a list of
-equal length lists, corresponding to the terminals. The syntax of the file is
-the standard JSON syntax~\cite{ecma404}.
+expects to be a JSON file containing a list, named \textit{``points''},
+consisting of equal length lists, corresponding to the terminals. The file uses
+standard JSON syntax~\cite{ecma404}.
 
 \section{Other Source Code and Files}
 \label{sec:other-source-code}
 
-Finally at the repository for the implementation,
+Finally, at the repository for the implementation,
 \url{https://github.com/jsfr/SteinerExact}, one can also find code not directly
 related to the implementation, but instead related to the thesis as a
-whole. The repository apart from the implementation also contains all tree
-instances that has been run during the experiments, and all scripts for running
+whole. Apart from the implementation, the repository also contains all tree
+instances that has been used during the experiments, and all scripts for running
 and aggregating the experimental data. It also contains the runs on which
 \cref{cha:experiments} is based.
 
