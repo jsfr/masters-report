@@ -4,20 +4,23 @@
 
 \node (STUB) at (0,1) [label=left:\textit{STUB}] {};
 \node (q) at (0,3) [label=left:$q$] {};
-\node (newq) at (0,2) {};
+\node (newq) at (0,5) {};
 \node (qr) at (0,0) [label=left:$q-r$] {};
+\node (newqr) at (0,1.5) {};
 \node (endP) at (4,0) {};
 
 \draw (STUB) -- (STUB -| endP);
 \draw (q) -- (q -| endP);
 \draw (qr) -- (qr -| endP);
 \draw [dashed] (newq) -- (newq -| endP) node[label=right:new $q$]{};
+\draw [dashed] (newqr) -- (newqr -| endP) node[label=right:new $q-r$]{};
 
-\draw [->]($ (q) !.5! (q -| endP) $) to[bend left] node[label=right:{\scriptsize optimize}]{} ($ (newq) !.5! (newq -| endP) $);
-  
+\draw [->]($ (q) !.5! (q -| endP) $) to[bend right] node[label=right:{\scriptsize split topology}]{} ($ (newq) !.5! (newq -| endP) $);
+\draw [->]($ (qr) !.5! (qr -| endP) $) to[bend left] ($ (newqr) !.5! (newqr -| endP) $);
+
 \begin{pgfonlayer}{background}
   \filldraw [line width=4mm,join=round,gray!10]
-  (-2, -1)  rectangle (6, 4);
+  (-2, -1)  rectangle (7, 5);
 \end{pgfonlayer}
 \end{tikzpicture}
 

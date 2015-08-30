@@ -3,7 +3,7 @@
 %------------------------------------------------------------------------------
 
 \RequirePackage[l2tabu, orthodox, abort]{nag}
-\documentclass[11pt, a4paper, openright, twoside]{memoir}
+\documentclass[11pt, a4paper, openany, twoside]{memoir}
 \chapterstyle{southall}
 \checkandfixthelayout[nearest]
 
@@ -21,7 +21,7 @@
 
 % Customizable
 \usepackage{morewrites}
-% \usepackage{csquotes}
+\usepackage{csquotes}
 \usepackage[style=numeric-comp]{biblatex}
 \usepackage{subcaption}
 \usepackage[dvipsnames]{xcolor}
@@ -40,7 +40,7 @@ obeyFinal,bordercolor=black,linecolor=black]{todonotes}
 \usepackage[font={small,it},margin=.5cm]{caption}
 \usepackage{etoolbox}
 \usepackage{colortbl}
-\usepackage{afterpage}
+% \usepackage{afterpage}
 \usepackage{hhline}
 \usepackage[noabbrev,capitalize]{cleveref}
 \usepackage{autonum}
@@ -136,6 +136,9 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 % Bibliographies
 \addbibresource{content/backmatter/bibliography.bib}
 
+% Section numbering
+\setsecnumdepth{subsubsection}
+
 %------------------------------------------------------------------------------
 %	BEGIN DOCUMENT
 %------------------------------------------------------------------------------
@@ -156,8 +159,8 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 
 \include{content/frontmatter/abstract}
 
-{
-\openany%
+% {
+% \openany%
 \listoftodos%
 \newpage
 \tableofcontents
@@ -169,8 +172,8 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \listoflistings%
 \newpage
 \input{content/frontmatter/glossaries}
-\openright%
-}
+% \openright%
+% }
 
 %------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS

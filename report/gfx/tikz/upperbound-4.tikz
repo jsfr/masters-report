@@ -1,5 +1,6 @@
 \begin{tikzpicture}[thick]
 \usetikzlibrary{calc}
+\tikzstyle{every node}=[font=\footnotesize]
 
 \node (STUB) at (0,1) [label=left:\textit{STUB}] {};
 \node (q) at (0,4) [label=left:$q$] {};
@@ -14,12 +15,12 @@
 \draw [dashed] (newq) -- (newq -| endP) node[label=right:new $q$]{};
 \draw [dashed] (newqr) -- (newqr -| endP) node[label=right:new $q-r$]{};
 
-\draw [->]($ (q) !.5! (q -| endP) $) to[bend left] node[label=right:{\footnotesize optimize}]{} ($ (newq) !.5! (newq -| endP) $);
+\draw [->]($ (q) !.5! (q -| endP) $) to[bend left] node[label=right:{\scriptsize optimize}]{} ($ (newq) !.5! (newq -| endP) $);
 \draw [->]($ (qr) !.5! (qr -| endP) $) to[bend left] ($ (newqr) !.5! (newqr -| endP) $);
 
 \begin{pgfonlayer}{background}
   \filldraw [line width=4mm,join=round,gray!10]
-  (-2, -1)  rectangle (6, 5);
+  (-2, -1)  rectangle (7, 5);
 \end{pgfonlayer}
 \end{tikzpicture}
 

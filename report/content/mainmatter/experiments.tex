@@ -4,39 +4,35 @@
 \label{cha:experiments}
 }
 
-This chapter describes and discuss the experiments that has been performed in
+This chapter describes and discusses the experiments that have been performed in
 relation to the new implementation.
 
-All experiments has been executed on computer with $8 \times$ Intel\textsuperscript{\textregistered}
-Xeon\textsuperscript{\textregistered} CPU E5-2630L at $2.00$ GHz and with $16$ GB
-RAM. Furthermore all tests was executed using version $1.4.2$ of Go\footnote{A newer 1.5
-which ups the performance of the language due to more efficient garbage
-collection was released after the experiments had been conducted.}.
-%
+All experiments have been executed on computer with $8 \times$
+Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\textregistered} CPU
+E5-2630L at $2.00$ GHz and with $16$ GB RAM. Furthermore all tests were executed
+using version $1.4.2$ of Go\footnote{A newer version (1.5) which improves the performance of
+  the language due to more efficient garbage collection was released after the
+  experiments had been conducted.}. In the experiments the used methods are
+named as seen in \cref{tab:method-names}.
+
 \begin{table}[htbp]
   \centering
   \begin{tabular}{cp{9cm}}
     \toprule
-    Method                & Description                                      \\
+    Method                & Description                                                                                                                                      \\
     \midrule
-    \texttt{Simple}       & New implementation with the analytical method.   \\
-    \texttt{SimpleSort}   & New implementation with the analytical method and sorted
-                   terminals.                                                \\
-    \texttt{SmithNew}     & New implementation with \citeauthor{smith1992}'s
-                   iteration.                                                \\
-    \texttt{SmithNewSort} & New implementation with \citeauthor{smith1992}'s iteration
-                   and sorted terminals.                                     \\
-    \texttt{SmithOld}     & Original implementation by \textcite{smith1992}. \\
+    \texttt{Simple}       & New implementation using the analytical method. Implemented in Go.                                                                               \\
+    \texttt{SimpleSort}   & New implementation using the analytical method and with terminal sorting. Implemented in Go.                                                     \\
+    \texttt{SmithNew}     & New implementation using \citeauthor{smith1992}'s iteration. Implemented in Go.                                                                  \\
+    \texttt{SmithNewSort} & New implementation using \citeauthor{smith1992}'s iteration and with terminal sorting. Implemented in Go.                                        \\
+    \texttt{SmithOld}     & Original implementation by \textcite{smith1992}, only slightly modified to fix the bug described in \cref{sec:if-clause-when}. Implemented in C. \\
     \bottomrule
   \end{tabular}
   \caption[Naming of methods]{The naming of methods has been done in the
     experiments as shown here.\label{tab:method-names}}
 \end{table}
-%
-In the experiments the used methods are named as seen in
-\cref{tab:method-names}.
 
-In general the type of experiments which has been performed, relates to either
+In general the experiments performed, relates to either
 correctness or performance of the implementation. The correctness has been
 measured by comparing a set of instances with the results found by the
 GeoSteiner program. The performance experiments is divided into experiments
@@ -48,17 +44,20 @@ the number of iterations being run.
 
 To test the correctness of the new implementation $150$ random cube instances
 with $n = 10 \ldots 12$ and $d = 2$ has been run. The cube instances are the
-same used by \textcite{fonseca2014}, which can also be found in
-\url{https://github.com/DIKU-Steiner/MPC15/tree/master/experiments/Correctness/Instances}. The
-experiments was run for the two methods of the new implementation, both with and
-without sorting of terminals. To compare with, the instances was also run using
-the official GeoSteiner implementation, which can be found at
-\url{http://geosteiner.com}.
+same as used by \textcite{fonseca2014}, which can also be found at
+\url{https://github.com/DIKU-Steiner/MPC15/tree/master/experiments/Correctness/Instances}.
+The the terminals of the instances are randomly distributed in a unit cube.
 
-After all instances was run, the results of the new implementation was compared
-with the results of the GeoSteiner program. This showed, that simple method,
-both with and without sorting, in a few instances gave sub-optimal
-\acp{mst}. These and the difference to the optimal \ac{mst} found by GeoSteiner
+The experiments was run for all of the methods in \cref{tab:method-names},
+except \texttt{SmithOld} which I had no interest in testing the correctness of,
+as this has been done before. To compare the instances was also completed using
+the official GeoSteiner implementation\footnote{The implementation can be found
+  at downloaded at \url{http://geosteiner.com}}.
+
+After all instances were completed, the results of the new implementation were compared
+with the results of the GeoSteiner program. This showed that analytical solution,
+both with and without terminals sorting, in a few instances gave sub-optimal
+\acp{smt}. These and the difference to the optimal \ac{smt} found by GeoSteiner
 can be found in \cref{tab:correctness-errors}.
 
 \begin{table}[htbp]
@@ -75,11 +74,154 @@ can be found in \cref{tab:correctness-errors}.
     cube\_n12\_d2\_s49 & \texttt{SimpleSort} & $+0.295\%$ \\
     \bottomrule
   \end{tabular}
-  \caption[Suboptimal \acsp{mst} in correctness test]{The table shows the
+  \caption[Sub-optimal results in correctness test]{The table shows the
     instances in which some method gave sub-optimal results, and the difference
-    in percent to the optimal \acp{mst} found by the GeoSteiner
+    in percent to the optimal \acp{smt} found by the GeoSteiner
     program.\label{tab:correctness-errors}}
 \end{table}
+
+As can be seen \texttt{Simple} gave sub-optimal results in $2$ instances, and
+\texttt{SimpleSort} in $4$ instances, meaning that $6$ of $300$ ($2\%$) instances
+gave sub-optimal results. Neither \texttt{SmithNew} or \texttt{SmithNewSort}
+gave any errors.
+
+When inspecting the \acp{smt} generated by the simple method in the sub-optimal
+instances, it was clear, that the method in these case indeed gave different
+topologies from the topology found by the GeoSteiner program.
+
+The reason for this, I believe can be traced back to two things: the two
+if-clauses in the implementation used when optimizing, and the possibility that
+the error function defined by \citeauthor{smith1992} is faulty.
+
+\begin{figure}[htbp]
+  \begin{c-code}
+    ITER:
+    q = length();
+    r = error();
+    if ( q - r < STUB) {
+      if (r > 0.005*q) {
+        optimize(0.0001*r/NUMSITES);
+        goto ITER;
+      }
+      /* Truncated code.
+         Pushes topology and length to stack.
+         Continue working with the topology and its descendants */
+    }
+    /* Continue to next topology vector of same length,
+       if we have no been in the outer if-clause then all
+       descendants of the current topology vector is 
+       effectively pruned as we have not stored it on the stack. */
+  \end{c-code}
+  \captionof{listing}[Loop condition for pruning topologies]{The outer if-clause
+    decides whether we prune a topology or not. This is applied before the
+    topology is optimized to its \acs{rmt}, which significantly speeds up the
+    program. But whether this is allowed is unclear. The code snippet is from
+    \autocite{smith1992}'s implementation, given in~\cite{smith1992}. The new
+    implementation in Go uses the same two
+    conditions.\label{fig:loop-condition-pruning}}
+\end{figure}
+
+Consider the the code snippet in \cref{fig:loop-condition-pruning}, which is
+from the original implementation found in \textcite{smith1992}. What happens in
+the snippet is the following: before any optimization iterations has taken
+place, the length and error of the tree is calculated. A check (the first if-clause) whether the
+length minus the error is lower than the upper bound ($q-r < \textit{STUB}$)
+is then performed. If the check is yields false, the main loop continues without
+pushing the topology vector to the stack used described
+in \cref{sec:order-build-optim}. This means that any descendant of that topology
+vector will not be optimized, i.e.\ they are pruned. If the check yields true,
+the the program goes to the second if-clause which checks if the error is
+greater than $0.005 \cdot q$. If the second check yields true, the tree is
+optimized, and the program return to the \texttt{ITER} label. If it yields
+false, the program continues on, within the first if-clause, and eventually push
+the topology vector to the stack.
+
+The structure just described means that we can both discard a topology before
+optimizing it, or after optimizing some for some number of iterations. This
+significantly speeds up the program, in contrast to optimizing the topology to
+its \ac{rmt} and then deciding whether it must be pruned or not. The new
+implementation therefore retained this structure.
+
+However as described in \cref{sec:loop-condition-when-1} there seems to be no
+direct relation between the length and error of the tree. Also as described in
+\cref{sec:choice-error-funct} it is even unclear whether the error function is
+even correct. Thus both of these if-clauses are a bit sketchy.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[b]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/upperbound-2}
+    \caption{Example where subtracting the error from the tree
+      length yields a length shorter than the current upper bound. In this case
+      the program would continue to to optimize on the topology, and there is no
+      risk of prematurely pruning it.\label{fig:upperbound-2}}
+  \end{subfigure}\hspace{1em}
+  \begin{subfigure}[b]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/upperbound-1}
+    \caption{Example where subtracting the error from the tree
+      length yields a length greater than the current upper bound. If it is not
+      always the case that $q-r \le \ac{rmt}$ then this situation could
+      potentially result in a topology being pruned
+      prematurely.\label{fig:upperbound-1}}
+  \end{subfigure}
+  \caption[Upper bounds, 1 and 2]{Here be dragons.\label{fig:upperbound-1-2}}
+\end{figure}
+
+Consider the first if-clause. This assumes that subtracting the current error
+from the current tree length, will always yield something which is lower than or
+equal to the \ac{rmt} of the topology. If this is not the case, then it could be
+possible to get a tree which if optimized would be shorter than the current
+upper bound, but where subtracting the current error from the current tree
+length would not be shorter than the current upper bound. This could result in a
+topology being thrown away even if it should have actually been kept. The two
+situations are shown in \cref{fig:upperbound-2-3}.
+
+To test the impact of the first if-clause the instances were run again where the
+condition of the first if-clause was changed to $q - 10 \cdot r <
+\textit{STUB}$. The observed result that some of the instances which before gave
+sub-optimal results were solved to optimality, while other new ones gave
+sub-optimal results. These can be seen in \cref{tab:correctness-errors-4}. As
+can be seen \texttt{Simple} and \texttt{SimpleSort} were still the only methods
+to give sub-optimal results.
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{ccc}
+    \toprule
+    Instance           & Method              & Diff       \\
+    \midrule
+    cube\_n11\_d2\_s9  & \texttt{SimpleSort} & $+0.262\%$ \\
+    cube\_n12\_d2\_s12 & \texttt{Simple}     & $+1.405\%$ \\
+    cube\_n12\_d2\_s43 & \texttt{SimpleSort} & $+0.292\%$ \\
+    cube\_n12\_d2\_s9  & \texttt{SimpleSort} & $+0.214\%$ \\
+    \bottomrule
+  \end{tabular}
+  \caption[Sub-optimal results with condition $q - 10 \cdot r < \textit{STUB}$]{
+    Changing the condition of the first if-clause to $q - 10 \cdot r <
+    \textit{STUB}$ causes the number of sub-optimal results drop to $4$.
+    However some of these are were not sub-optimal before the
+    change.\label{tab:correctness-errors-4}}
+\end{table}
+
+The instances which were not solved optimally before, but were after the change
+seems to indicate that this condition indeed is partly to blame for the
+sub-optimality. The reason that new instances suddenly gave sub-optimal results
+I believe is because these instances now explore topologies which they before
+would have discarded.
+
+Now consider the second if-clause. This assumes two things, firstly that size of
+the error is proportional to the length of the tree, and secondly that the error
+of the entire tree represents the optimality of the entire tree. The first
+assumption does have some merit. If one looks at the error function, as it is
+defined in \cref{eq:28} it is clear, that if we have longer edges, they will
+contribute more than shorter edges. Whether there is a direct relation between
+error and length is however still unclear. The second assumption however faces
+some problems in the new implementation. This assumes that we will not hit a
+a situation in which most of the tree is optimal, but e.g.\ a single Steiner
+point contributes a large error and is at a sub-optimal placement. This is a
+problem, as a single Steiner point at a wrong position can propagate changes
+throughout the tree when it is optimized. It may therefore be, that the tree is
+not at all optimal, and that we therefore risk stopping prematurely.
 
 \begin{table}[htbp]
   \centering
@@ -96,8 +238,58 @@ can be found in \cref{tab:correctness-errors}.
     cube\_n12\_d2\_s49 & \texttt{SimpleSort} & $+0.295\%$ \\
     \bottomrule
   \end{tabular}
-  \caption[$r > 5e-4*q$]{Here be dragons.}
+  \caption[Sub-optimal results with condition $r > 0.0005 \cdot q$]{Changing
+    the condition of the second if-clause to $r > 0.0005 \cdot q$ causes the
+    number of sub-optimal results increase to $7$.\label{tab:correctness-errors-2}}
 \end{table}
+
+This may not have been a problem in the old implementation which rebuilt the
+topology every time it was changed, however the new implementation does not
+rebuild the entire topology, but reuses the already found placements when
+splitting the topology. Thus the issue might be magnified by this new approach. 
+
+A question which of course emerges, is why the issue with sub-optimality is seen
+then only seen with \texttt{Simple} and \texttt{SimpleSort} but not with
+\texttt{SmithNew} and \texttt{SmithNewSort}. I.e.\ why does the analytical
+solution show this issue, but not \citeauthor{smith1992}'s iteration?
+
+The reason for this, I believe, is that the analytical solution when it runs, in
+general obtains much lower error-figures than \citeauthor{smith1992}'s
+iteration. I therefore believe that the issue exists for both iteration methods,
+but is magnified and therefore only seen when using the analytical solution.
+
+The potential problem is summed up by \cref{fig:upperbound-5}. We may have some
+topology which has been optimized to have a very low error, this is particularly
+likely using the analytical solution which attains very low error-figures. Upon
+splitting the topology and adding the next terminal and a new Steiner point, the
+error is raised. However because the error of the rest of the is very low,  
+
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[b]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/upperbound-3}
+    \caption{here be dragons.\label{fig:upperbound-3}}
+  \end{subfigure}\hspace{1em}
+  \begin{subfigure}[b]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{gfx/tikz/upperbound-4}
+    \caption{here be dragons.\label{fig:upperbound-4}}
+  \end{subfigure}
+  \caption[Upper bounds, 3 and 4]{Here be dragons.\label{fig:upperbound-3-4}}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.4\textwidth]{gfx/tikz/upperbound-5}
+  \caption[Upper bounds, 5]{here be dragons.\label{fig:upperbound-5}}
+\end{figure}
+
+To test the impact of the second if-clause the instances were run with the
+condition of the clause change to $r > 0.05 \cdot q$ and $r > 0.0005 \cdot q$.
+The sub-optimal results from these runs can be found in
+\cref{tab:tab-correctness-2,tab:tab-correctness-3}. As can be seen, allowing a
+higher error gives fewer sub-optimal results, whereas setting the error even
+lower raises the number of sub-optimal instances produced by the analytical
+solution.
 
 \begin{table}[htbp]
   \centering
@@ -109,144 +301,48 @@ can be found in \cref{tab:correctness-errors}.
     cube\_n12\_d2\_s43 & \texttt{SimpleSort} & $+0.292\%$ \\
     \bottomrule
   \end{tabular}
-  \caption[$r > 5e-2*q$]{Here be dragons.}
+  \caption[Sub-optimal results with condition $r > 0.05 \cdot q$]{Changing
+    the condition of the second if-clause to $r > 0.05 \cdot q$ causes the
+    number of sub-optimal results drop to $2$.\label{tab:correctness-errors-3}}
 \end{table}
 
-\begin{table}[htbp]
-  \centering
-  \begin{tabular}{ccc}
-    \toprule
-    Instance           & Method              & Diff       \\
-    \midrule
-    cube\_n11\_d2\_s9  & \texttt{SimpleSort} & $+0.262\%$ \\
-    cube\_n12\_d2\_s12 & \texttt{Simple}     & $+1.405\%$ \\
-    cube\_n12\_d2\_s43 & \texttt{SimpleSort} & $+0.292\%$ \\
-    cube\_n12\_d2\_s9  & \texttt{SimpleSort} & $+0.214\%$ \\
-    \bottomrule
-  \end{tabular}
-  \caption[$q - 10*r < \textit{upperBound}$]{Here be dragons.}
-\end{table}
+These observations make seems to align with the before described problems.
+Consider setting allowing a higher error. \TODO{}
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.4\textwidth]{gfx/tikz/upperbound-1}
-  \caption[here be dragons]{here be dragons}
-\end{figure}
+Further raising the error allowed in the second if-clause to $r > 0.5 \cdot q$
+resulted in sub-optimal results being observed across all four of the tested
+methods. This is due to the fact the we at this point have raised the error so
+much that the optimal trees cannot be obtained in all situations. This also
+shows that we cannot simply raise the allowed error for the entire tree to
+ensure we will not get sub-optimal results, as it will have to walk a tightrope
+between sub-optimality due to to high errors, or sub-optimality due to the
+previous described issues.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.4\textwidth]{gfx/tikz/upperbound-2}
-  \caption[here be dragons]{here be dragons}
-\end{figure}
+To correct this problem I believe one would have to do two things. Firstly,
+before deciding whether to prune a topology and its descendants one would have
+to optimize the tree until it was the \ac{rmt}, i.e.\ drop the condition $q-r <
+\textit{STUB}$, and instead optimize until we have the \ac{rmt} and then simply
+check $q < \textit{STUB}$, or perhaps $q - \epsilon < \textit{STUB}$ where
+$\epsilon$ would be some very small positive number. This would prevent pruning
+of topologies prematurely. Secondly, at least when using the analytical solution
+(\textit{Simple} and \textit{SimpleSort}) the second if-clause should not look
+at the error of the entire tree, but instead at the error of each individual
+Steiner point. This would prevent the situation where most of tree has an error
+of zero, and one point contributes most of the error. This approach might also
+be the correct one for \textit{SmithNew} and \textit{SmithNewSort} as they also, in
+contrast to \textit{SmithOld}, do not re-position the already placed Steiner
+points when splitting the topology (due to the new method were we can split and
+restore a topology, in contrast to the old method where one had to rebuild the
+tree from the topology vector every time it was changed).
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.6\textwidth]{gfx/tikz/upperbound-3}
-  \caption[here be dragons]{here be dragons}
-\end{figure}
+As the issue was first discovered during the experiments, the current
+implementation does not fix it. I however believe this could be done using the
+changes described above. It is however unclear how much this would affect the
+run-time of the program.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.6\textwidth]{gfx/tikz/upperbound-4}
-  \caption[here be dragons]{here be dragons}
-\end{figure}
-
-As can be seen \texttt{Simple} gave sub-optimal results in $2$ instances, and
-\texttt{SimpleSort} in in $4$ instances, meaning that $6$ of $300$ ($2\%$) instances
-gave sub-optimal results, or.
-
-When inspecting the \acp{mst} generated by the simple method in the sub-optimal
-instances, it was clear, that the method in these case indeed gave \acp{mst}
-which were slightly different from the \ac{smt} found by either GeoSteiner or
-with \citeauthor{smith1992}'s iteration. 
-
-The reason for this seems to lie with to things, one the condition of the main
-loop which decides is we skip a topology, and two the error function.
-
-Firstly, in the original implementation in the main loop, \textit{before} any
-optimization has taken place, the length and error of the tree is calculated. A
-check is then performed to see whether the length minus the error is greater
-than the upper bound, and if so the topology vector and all its descendants are
-skipped. If this is not the case, the tree is optimized once if its error is
-greater than the length times $0.005$. It then loops back and once again
-calculates the length and error. There are two ways out of this loop. Either the
-first if-clause fails, and we discard the topology vector and its descendants,
-or the tree is optimized enough that the code second if-clause is false and we
-continue on with the code (as there is only that first single \texttt{goto}).
-The relevant code snippet can be found in~\cref{fig:loop-condition-pruning}. 
-
-\begin{figure}[htbp]
-  \begin{go-code}
-    ITER:
-    if q-r < upperBound {
-      if r > 5e-1*q {
-        q, r = doOptimize(r)
-        goto ITER
-      }
-      // Code truncated.
-      // Continue working with the topology and its descendants
-    }
-    // Continue to next topology vector of same length,
-    // if we have no been in the outer if-clause then all
-    // descendants of the current topology vector is 
-    // effectively pruned as we have not stored it on the stack.
-  \end{go-code}
-  \captionof{listing}[Loop condition for pruning topologies]{The outer if-clause
-    decides whether we prune a topology or not. This is applied before the
-    topology is optimized to its \acs{rmt}, which significantly speeds up the
-    program. But whether this is allowed is unclear. The code snippet is from
-    the file \texttt{main.go} from the new implementation. The old
-    implementation uses the exact same conditions.\label{fig:loop-condition-pruning}}
-\end{figure}
-
-The new implementation has retained this structure in the main loop, as it
-significantly speeds up the program. However, as described earlier, there is no
-clear link between the error and the length of the tree. Thus the outer
-if-clause is indeed a bit sketchy as \texttt{STUB} is the length of a fully
-optimized tree, whereas $q - r$ is the length of a possibly still yet to be optimized
-tree minus its error. Thus this assumes that one can subtract the error, and
-always get a length which is the same or smaller than the length of the fully
-optimized tree. If this is not the case, we may actually discard a topology
-vector which could lead to the \ac{mst}.
-
-However this does indeed seem to go right when using the iteration proposed by
-\textcite{smith1992} and therefore one may ask the question why it sometimes
-fails for the method using the analytical solution.
-
-The reason for this, I believe, is two-fold: Firstly when optimizing using the
-analytical solution one in general gets an error which is much smaller than the
-one found when using \citeauthor{smith1992}'s iteration. This is due to the fact
-that we place the Steiner points at their exact position when optimizing them.
-Because the error becomes so much smaller, we could imagine a situation in which
-we have optimized a tree with e.g.\ $4$ terminals. When we then insert the $5$th
-terminal because the error of the rest of the tree is so small we will not
-optimize the tree when we reach the second if-clause---even if the $5$th point
-is at a sub-optimal placement. Secondly, if the first if-clause is faulty, then
-it may go well with \citeauthor{smith1992}'s iteration because the error of all
-Steiner points tend to follow each other, and also in general only goes slightly
-below the optimization stop-criteria. However when using the analytical solution
-the error becomes so much smaller, that we may risk discarding a topology vector
-for which we could have a optimized, e.g.\ the Steiner point from when we
-inserted the before described $5$th terminal, to get the length below the upper
-bound. These two factors together, I believe to be the source of the bug.
-
-I believe this bug could be fixed firstly by not using the error of the entire
-tree, but instead look at the error of each Steiner point (similar to
-the way the simple method is presented in \cref{sec:simple-iteration}). Thus we
-only stop optimizing (the inner if-clause) when the error of all Steiner points,
-considered independently, falls below some threshold. Secondly, it is possible
-that one has to wait with the check as to whether we can prune a topology vector
-until we have optimized it to its respective \ac{rmt}. Both of these
-modifications, especially the second, are at the risk of increasing the number
-of iterations, trees and thus run-time of the program.
-
-The bug as it is described here has not been fixed at this point, due to the
-lack of time, and all of the below tests has been performed using this
-implementation. As such this is something we have to keep in mind when comparing
-the performance of the implementations and methods. However I do not believe it
-invalidates the data, as the number of sub-optimal trees in the correctness test,
-was still very low, and the sub-optimality of these trees also was relatively
-low.
+However I do not believe it invalidates the performance data completely, as the
+number of sub-optimal trees in the correctness test, was still very low, and the
+sub-optimality of these trees also was relatively low.
 
 \section{Performance}
 \label{sec:performance}
@@ -260,7 +356,7 @@ for all of the methods took a little more than a week in which a quad-core
 computer ran 24/7. To further prune, all runs was set up such that they would
 halt if more than $12$ hours passed, as it is then concluded infeasible to solve
 that specific instance using the given method. How many instances completed
-before the time limit can be seen in~\cref{tab:set-success}.
+before the time limit can be seen in \cref{tab:set-success}.
 
 A few initial test runs showed that, especially \texttt{SimpleSort} but also
 occasionally \texttt{SmithNewSort}, were able to solve several instances with
@@ -294,24 +390,24 @@ results are presented and described in the two sections below.
   \centering
   \begin{tabular}{cccccc}
     \toprule
-            & \multicolumn{5}{c}{Method}                               \\
+            & \multicolumn{5}{c}{Method}                             \\
     \cmidrule(l){2-6}
     Set     & \texttt{Simple} 
             & \texttt{SimpleSort}
             & \texttt{SmithNew} 
             & \texttt{SmithNewSort}
-            & \texttt{SmithOld}                                        \\
+            & \texttt{SmithOld}                                      \\
     \cmidrule(r){1-1}\cmidrule(l){2-6}
-    Carioca & $81$   & $89$       & $73$     & $87$         & $76$     \\
-    Cube    & $360$  & $360$      & $352$    & $360$        & $356$    \\
-    Iowa05  & $30$   & $30$       & $30$     & $30$         & $30$     \\
-    Sausage & $22$   & $23$       & $18$     & $22$         & $21$     \\
+    Carioca & $81/90$  & $89/90$  & $73/90$   & $87/90$  & $76/90$   \\
+    Cube    & $\checkmark$ & $\checkmark$ & $352/360$ & $\checkmark$ & $356/360$ \\
+    Iowa05  & $\checkmark$ & $\checkmark$ & $\checkmark$  & $\checkmark$ & $\checkmark$  \\
+    Sausage & $22/24$  & $23/24$  & $18/24$   & $22/24$  & $21/24$   \\
     \bottomrule
   \end{tabular}
-  \caption[Successfull test runs]{The table shows the number of successfull
+  \caption[Successfull test runs]{The table shows the number of successful
     instances, i.e.\ instances which finished within $12$ hours, of the test
-    sets which has been run. The number of instances for each test set can be
-    seen in~\cref{tab:test-sets}.\label{tab:set-success}}
+    sets which has been run. A checkmark indicates all instances of the set was
+    solved.\label{tab:set-success}}
 \end{table}
 
 \subsection{Speed}
@@ -320,31 +416,31 @@ results are presented and described in the two sections below.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_d3_Carioca_1}
-  \caption[Here be dragons]{Here be dragons}
+  \caption[Box-plot for Carioca with $d = 3$]{Here be dragons.\label{fig:boxplot-carioca-d3}}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_d4_Carioca_1}
-  \caption[Here be dragons]{Here be dragons}
+  \caption[Box-plot for Carioca with $d = 4$]{Here be dragons.\label{fig:boxplot-carioca-d4}}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_d3_Cube_1}
-  \caption[Here be dragons]{Here be dragons}
+  \caption[Box-plot for Cube with $d = 3$]{Here be dragons.\label{fig:boxplot-cube-d3}}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_d4_Cube_1}
-  \caption[Here be dragons]{Here be dragons}
+  \caption[Box-plot for Cube with $d = 4$]{Here be dragons.\label{fig:boxplot-cube-d4}}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{gfx/boxplots/plot_nvst_boxplot_n10_Iowa_1}
-  \caption[Here be dragons]{Here be dragons}
+  \caption[Box-plot for Iowa with $n = 10$]{Here be dragons.\label{fig:boxplot-iowa-n10}}
 \end{figure}
 
 To compare the speed of the new implementation with the implementation by
@@ -356,7 +452,7 @@ solution \texttt{Simple} in general is lower. The reason for the higher running
 time of \texttt{SmithNew} is probably due to the fact that the implementation is
 done in Go instead of C as the original implementation. Unfortunately we are
 therefore not really able to say anything about the performance of the new data
-structure for topologies (described in~\cref{sec:building-topologies}) being
+structure for topologies (described in \cref{sec:building-topologies}) being
 better of worse than the original implementation. It is however interesting to
 see that the analytical solution seems to have better running times than not
 only \texttt{SmithNew}, but also \texttt{SmithOld}, as this suggests that an
@@ -369,10 +465,10 @@ when looking at the percent of sub-optimal results that this should skew the
 results so much that this would be changed.
 
 To further compare the effect of sorting the terminals as described
-in~\cref{sec:sorting-terminals}, box-plots for the Cube set with $d = 3$ and $d
+in \cref{sec:sorting-terminals}, box-plots for the Cube set with $d = 3$ and $d
 = 4$ has been plotted for \texttt{SmithNew} vs.\ \texttt{SmithNewSort} and
 \texttt{Simple} vs.\ \texttt{SimpleSort}. These can be found
-in~\cref{fig:boxplots-2}. As can be seen from the figures, the run-time of both
+in \cref{fig:boxplots-2}. As can be seen from the figures, the run-time of both
 methods drop significantly when the terminals are sorted. In almost all cases,
 no matter the number of terminals, is the third quartile of the sorted terminals
 below the first quartile of the unsorted terminals. The proposed way of sorting
@@ -447,7 +543,7 @@ unsorted counter-part, and in most cases it also becomes a lot smaller
   \input{gfx/tables/iteration-ratio}
   \caption[Iteration ratio for Sausage]{The table shows the ratio of iterations
     in relation to \texttt{SmithOld} for the Sausage set. The structure is as
-    in~\cref{tab:trees-sausage-ratio}. However an iteration means every time we
+    in \cref{tab:trees-sausage-ratio}. However an iteration means every time we
     perform an optimization, i.e.\ a tree can contribute many times to this if
     we run the iteration for multiple times on the tree (which we most likely
     do).\label{tab:iterations-sausage-ratio}}

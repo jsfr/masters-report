@@ -1,4 +1,6 @@
 \begin{tikzpicture}[thick]
+\tikzstyle{every node}=[font=\footnotesize]
+
 \node (STUB) at (0,0) [label=left:\textit{STUB}] {};
 \node (q) at (0,2) [label=left:$q$] {};
 \node (qr) at (0,1) [label=left:$q-r$] {};
