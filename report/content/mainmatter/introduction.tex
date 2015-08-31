@@ -4,40 +4,60 @@
 \label{cha:introduction}
 }
 
-\TODO[inline]{Write introduction}
+In two dimensions efficient algorithms for finding \aclp{smt} exists, some of
+which can solve instances with thousands of terminals. These algorithms, however do
+not generalize to higher dimensions, and as such we need to find other methods.
+The most well-known of these is the one originally presented by
+\textcite{smith1992}. However the algorithm is not able to solve instances with
+more than around $15--20$ terminals.
+
+There have been articles to propose extensions on the algorithm to further push
+the boundaries of solvable instances. These have included sorting of terminals,
+using lower bounds, and pruning via geometric conditions. None of these have
+pushed the boundaries for solvable instances with more than a few terminals.
+
+It is therefore still interesting to explore possible improvements of the
+algorithm, either by a more efficient implementation, extensions, or by changing
+parts of the algorithm (such as the iteration for optimizing a tree).
 
 \section{Objectives}
 \label{sec:objectives}
 
-The objective of the project will first and foremost be to implement Smiths
-algorithm for finding Steiner Minimal Trees in Euclidean d-Space efficiently. In
-the original paper by Smith the proposed C implementation has a lot of
-double work and ineffiecency and thus it is the main objective of this project
-to implement this algorithm effiecently and then benchmark this against the
-original implementation.
+To provide the reader with an overview of the primary and secondary goals of
+this thesis. The primary are:
+%
+\begin{itemize}
+\item Understand, analyze and describe the algorithm for finding \aclp{smt} in
+  euclidean $d$-space, presented by \textcite{smith1992}. A sub-objective of
+  this is also to identify and discuss elements of the article which are
+  questionable (e.g.\ the proposed error-function). It also includes identifying
+  and discussing double-work, or questionable elements of the C-implementation
+  given by \textcite{smith1992} (e.g.\ the way in which topologies are built).
+\item Propose a, possibly more efficient, data structure and method for building
+  topologies instead of the one used by \citeauthor{smith1992}'s implementation.
+  Then implement the algorithm presented in \textcite{smith1992}, using the new
+  data structure.
+\item Present and generalize to $d$ dimensions an the analytical solution for
+  the Fermat-Torricelli problem presented for two dimensions by
+  \textcite{uteshev2014}. Then propose and implement a simple algorithm for
+  optimizing full Steiner topologies using the analytical solution. This is to
+  be seen as a alternative to the algorithm given by \textcite{smith1992}.
+\item Describe existing methods for sorting terminals. Then propose and
+  implement a new greedy method for sorting terminals.
+\item Perform experiments to test the correctness of the new implementation and
+  compare it with the old implementation.
+\end{itemize}
 
-A secondary objective of the project will be to explore and propose possible
-improvements to the algorithm. Some of which might be explored are:
-
-* Sorting the terminals in  different orders before finding the positions.
-* Analytically solving the problem with fewer (3) terminals at a time to improve
-  limits where the Steiner points may move very slowly normally.
-* An analysis of the stop-criteria used by Smith to see whether this is actually
-  correct, and whether there are possible improvements.
-
-If there is time the project will also look at versions of the problem such as
-the fixed-orientation version, where edges are only allowed to have certain
-predefined orientations.
-
-The learning goals of the project are:
-
-* Understanding, analysing and describing complex algorithms and solutions to a
-  specific problem area
-    - In this case the problem of finding Steiner Minimal Trees
-      in Euclidean d-Space using Smiths algorithm)
-* On the basis of the analysis propose possible improvements to the existing
-  solution, implement and test the improvements.
-* Benchmarking
+The secondary are:
+%
+\begin{itemize}
+\item Present preliminaries (definitions, proofs, etc.) for understanding
+  Steiner trees and topologies in euclidean $d$-space.
+\item Present methods for finding \aclp{smt} in two dimensions, and why
+  these do generalize to higher dimensions.
+\item Discuss possible extensions for the new implementation (e.g.\
+  concurrency).
+\end{itemize}
 
 \section{Structural Outline}
 \label{sec:structural-outline}
@@ -46,13 +66,64 @@ To provide the reader with an overview of what is to come, an
 outline of the different chapters of the thesis is presented here:
 
 \begin{itemize}
-\item \textbf{Chapter 2: Preliminaries} \quad
-\item \textbf{Chapter 3: \citeauthor{smith1992}'s Algorithm} \quad 
-\item \textbf{Chapter 4: Data Structures and Methods} \quad
-\item \textbf{Chapter 5: Implementation} \quad
-\item \textbf{Chapter 6: Experiments} \quad
-\item \textbf{Chapter 7: Discussion} \quad
-\item \textbf{Chapter 8: Conclusion} \quad
+\item \textbf{Chapter 2: Preliminaries} \quad This chapter presents the
+  \acl{estp} which is the problem this thesis is about solving. The chapter also
+  presents the different types of Steiner trees and topologies. The presentation
+  includes. The chapter afterwards presents some of the most well-known methods
+  for finding Steiner trees in 2D, why they are effective and discusses why these
+  do not generalize to higher dimensions. The chapter then presents some of
+  the known related work into the field of finding Steiner trees in $d$-space.
+  Finally the chapter presents some variations and applications of the Steiner
+  tree in $d$-space, to get a feel of possible uses for a solution to the
+  problem.
+\item \textbf{Chapter 3: \citeauthor{smith1992}'s Algorithm} \quad This chapter
+  presents the different parts that go into the combined algorithm as present by
+  \textcite{smith1992}. Initially the representation and generation of
+  topologies is described. The reasoning behind the representation is also
+  given, by describing how we can use the representation to prune topologies
+  which cannot become the \acl{smt}. A simple iteration which can be used to
+  optimize the tree of a given topology is then presented. This is done to both
+  approach the iteration proposed by \citeauthor{smith1992} somewhat softer, and
+  as this iteration will be used later in the thesis. The chapter then presents
+  the iteration proposed by \citeauthor{smith1992} for optimizing the tree of a
+  given topology. Finally the chapter presents and discusses elements of the
+  article by \textcite{smith1992} that I found questionable or odd. This
+  includes both elements of the article and the actual implementation he gives.
+\item \textbf{Chapter 4: Data Structures and Methods} \quad This chapter
+  presents the possible improvements and changes made by the new implementation.
+  The chapter first presents the new data structure and method proposed for
+  building topologies, which will be used in stead of the original
+  implementation's which was to just rebuild the entire tree from scratch every
+  time. The chapter then presents and generalizes to higher dimensions an
+  analytical solution (originally presented by \textcite{uteshev2014}) for
+  solving the Fermat-Torricelli problem. This is presented here, as it is used
+  as the optimization iteration in conjunction with the simple iteration
+  presented in Chapter 3.
+\item \textbf{Chapter 5: Implementation} \quad This chapter presents the new
+  implementation, its structure and gives a general overview of how the
+  architecture of the new implementation is set up. The also chapter reasons for
+  the choice of programming language.
+\item \textbf{Chapter 6: Experiments} \quad This chapter presents the
+  experimental work done to test the new implementation. The experiment work
+  falls in two categories: correctness and performance. The chapter first
+  presents work on correctness, and describes the sub-optimality observed with
+  the implemented simple iteration in some instances. The chapter furthermore
+  describes the work done to identify the cause of the sub-optimality, and
+  discusses the possible reasons on the basis of this work. The chapter
+  afterwards present the work done to test the performance of the implementation
+  compared to the original implementation. The performance is measured by three
+  different parameters: speed/run-time, number of optimized trees and number of
+  iterations. The chapter describes and discusses the observed behavior of the
+  two implemented optimization iterations in comparison to the original
+  implementation. This is done with and without terminal sorting. 
+\item \textbf{Chapter 7: Discussion} \quad This chapter discusses some of the
+  observations made and obstacles met during the work of this thesis. The
+  chapter also discusses possible extensions and improvements to the work of the
+  thesis, most of which are related to the implementation (e.g.\ concurrency and
+  how one could do this).
+\item \textbf{Chapter 8: Conclusion} \quad This chapter summarizes the various
+  results and conclusions from the thesis. The suggested improvements and the
+  implementation is evaluated.
 \end{itemize}
 
 %%% Local Variables:
