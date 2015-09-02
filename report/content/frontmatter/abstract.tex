@@ -1,12 +1,44 @@
-{
-\abnormalparskip{0pt}
-\chapter{Abstract}
-\label{cha:abstract}
-}
+\begin{abstract}
+This thesis presents possible improvements to the original implementation of the
+algorithm for finding \aclp{smt} proposed by \textcite{smith1992}. The suggested changes include a new data structure and method
+for building topologies as well as a method for ordering the terminals before the
+topologies. This is used to avoid double-work in the original
+implementation which rebuilds the entire tree every time its topology changes.
 
-\TODO[inline]{Write abstract}
+This the thesis also presents a simple iteration for
+optimizing \aclp{fst} as an alternative to the one proposed by
+\textcite{smith1992}. This includes presenting an analytical solution to the
+Fermat-Torricelli problem as proposed by \textcite{uteshev2014} and further
+generalizing it from 2D to higher dimensions.
+
+% Apart from presenting the preliminaries for understanding the \acl{estp} and the
+% algorithm proposed in \textcite{smith1992}, the thesis also presents and
+% discusses elements of \textcite{smith1992} that are questionable or odd. This
+% includes both elements of the article and the actual implementation given in the
+% article.
+
+The thesis also presents experimental work performed to test the correctness and
+efficiency (compared to the original implementation) of the new implementation.
+The new suggested iteration, based on the analytical solution, shows some
+sub-optimal results. These are discussed and further investigated, and are
+concluded to probably stem from the used error-function and the if-clauses
+deciding when to prune a topology. A possible way of fixing the sub-optimality
+is then proposed.
+
+With the sub-optimality in mind, the new simple iteration however seems to show
+promise as the performance of it in general is much better than the original
+implementation using \citeauthor{smith1992}'s iteration. The new implementation
+of \citeauthor{smith1992}'s iteration show performance equivalent to
+the original implementation. This however is ascribed to the choice of programming
+language, and the much larger amount of trees the new implementation optimizes
+before reaching optimality. The new method for ordering terminals shows very promising results
+(when used with either of the iterations).
+
+Finally the thesis presents and discusses possible extensions and improvements
+to the new implementation.
+\end{abstract}
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "../main"
+%%% TeX-master: "../../main"
 %%% End:

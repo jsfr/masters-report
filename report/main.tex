@@ -3,7 +3,7 @@
 %------------------------------------------------------------------------------
 
 \RequirePackage[l2tabu, orthodox, abort]{nag}
-\documentclass[11pt, a4paper, openany, twoside]{memoir}
+\documentclass[11pt, a4paper, openany, twoside, final]{memoir}
 \chapterstyle{southall}
 \checkandfixthelayout[nearest]
 
@@ -46,13 +46,11 @@ obeyFinal,bordercolor=black,linecolor=black]{todonotes}
 \usepackage{autonum}
 
 % algorithm2e setup
-\AtBeginEnvironment{algorithm}{\captionsetup{margin={-.5cm,.5cm}}}
-\SetAlCapSkip{1.5ex}
 \renewcommand\AlCapNameSty{\small\textit}
 \renewcommand\AlCapSty{\small\textit}
 
 % tikz setup
-\usetikzlibrary{tikzmark, arrows.meta}
+\usetikzlibrary{tikzmark, arrows.meta, shapes}
 \tikzset{%
 stein/.style 2 args={circle,inner sep=1pt,fill=white,draw,minimum size=5pt,label={#2:#1}},%
 reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1}}%
@@ -137,7 +135,7 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \addbibresource{content/backmatter/bibliography.bib}
 
 % Section numbering
-\setsecnumdepth{subsubsection}
+\setsecnumdepth{subsection}
 
 %------------------------------------------------------------------------------
 %	BEGIN DOCUMENT
@@ -191,7 +189,6 @@ reg/.style 2 args={circle,inner sep=1pt,fill=black,minimum size=8pt,label={#2:#1
 \appendix
 \include{content/backmatter/proof-convergence}
 \include{content/backmatter/proof-fermat-torricelli}
-\include{content/backmatter/sourcecode}
 
 %------------------------------------------------------------------------------
 %	POST-CONTENT  - APPENDIX AND BIBLIOGRAPHY

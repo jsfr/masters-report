@@ -4,7 +4,80 @@
 \label{cha:conclusion}
 }
 
-\TODO[inline]{Write conclusion}
+The thesis has presented the \ac{estp} and preliminaries for understanding it.
+The thesis has also presented methods for finding \acp{smt} in two dimensions
+and have described why these do not generalize to higher dimensions. Known methods for
+finding \acp{smt} in higher dimensions have been presented and apart from the
+branch algorithm by \textcite{fonseca2014} all of these have been seen to be
+modifications or extension to the method proposed by \textcite{smith1992}.
+
+The thesis has presented the algorithm for finding \acp{smt} in euclidean
+$d$-space proposed by \textcite{smith1992}. Apart from presenting it, the thesis
+has also identified and discussed elements of the article and implementation
+given in~\cite{smith1992} which were questionable. The most distinctive of which
+were the choice of error function for which no real argument has been given and
+the if-clauses when pruning which were seen to possibly cause sub-optimality in
+the new implementation.
+
+The thesis has presented improvements to the \citeauthor{smith1992}'s algorithm
+and implementation. The first were to use a new method and data structure for
+building topologies to avoid rebuilding the tree every time the topology is
+extended. The second were a new method for ordering the terminals before before
+building the topologies. This method greedily selected the terminals furthest
+apart. Finally the thesis have presented a new simple iteration as an
+alternative to the iteration given by \textcite{smith1992} for optimizing the
+tree of a full Steiner topology. The presentation of this simple method included
+the presentation and generalization to higher dimensions of the analytical
+solution to the Fermat-Torricelli problem for $3$ points presented in 2D by
+\textcite{uteshev2014}. This iteration was proposed as \textcite{smith1992} had
+noted one such method would converge slowly but gave no data or proof to back up
+the claim. As the method was computationally very light it seemed likely that it
+would perform similarly or better than the iteration proposed by
+\textcite{smith1992}.
+
+Furthermore the thesis has accounted for the structure of
+the new implementation which has been structured such that most of the work lies
+in a self-contained library for others to continue to work on or with.
+
+The thesis has presented the experimental work performed to test the efficiency
+and correctness of the new implementation (i.e.\ both of the iterations, with
+and without sorting of terminals). The correctness tests revealed that
+sub-optimality would occur in some instances when using the new simple
+iteration. This sub-optimality was discussed and further investigated.
+Eventually the sub-optimality was ascribed mostly to the use of current
+error-function on the entire tree, and the if-clauses used when optimizing and
+pruning topologies. The thesis afterwards presented the tests done to test the
+efficiency of the new implementation when compared with the original
+implementation. The tests in general showed promising results for the new simple
+iteration which on most occasions was much faster than the original
+implementation. The new implementation of \citeauthor{smith1992}'s iteration in
+general performed slightly worse than the original. The cause for this is still
+unknown, but several qualified suggestions were made. These were the choice of
+programming language and more importantly a bug/change which causes the new
+implementation to optimize on many more trees than the original implementation.
+This higher number of optimizations was ascribed to the fact that the new
+implementation reuses the coordinates from the previous optimized tree, causing
+it to move very slowly. The new method for ordering terminals also showed good
+performance. It brought the speed of the simple iteration even further
+below the original implementation and the speed of the new implementation of
+\citeauthor{smith1992}'s iteration at the same level/slightly below the original
+implementation.
+
+Furthermore the performance tests seemed to debunk the claim by
+\textcite{smith1992} that a simple iteration would converge much slower than the
+one he proposes.
+
+Finally the thesis has a discussion of possible extensions and improvements for
+the new implementation. The first was the possibility of making the
+implementation concurrent, for which a possible implementation scheme was
+outlined. The second was more efficient way of propagating changes out through
+the tree when optimizing with the simple iteration. It was described how this
+could speed up convergence by allowing us to only optimize on the part of the
+tree which is changes. The third and final improvement was to exchange the
+initial placement of Steiner points in the implementation with the perturbed
+Fermat-Torricelli point, instead of the perturbed centroid. A test which showed
+much improved numbers for iterations and optimized trees was performed to
+further support the argument of making this change.
 
 %%% Local Variables:
 %%% mode: latex

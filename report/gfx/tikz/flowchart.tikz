@@ -1,0 +1,31 @@
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+    text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=7em, text centered, rounded corners, minimum height=2em]
+\tikzstyle{line} = [draw, ->]
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=4cm,
+    minimum height=2em]
+    
+\begin{tikzpicture}[node distance = 2cm, auto, scale=0.5]
+    \node (init) {};
+    \node [block, below of=init] (p1) {\texttt{q = length()}\\\texttt{r = error()}};
+    \node [decision, below of=p1] (d1) {\texttt{q - r < STUB}};
+    \node [decision, below of=d1] (d2) {\texttt{r > 0.005*q}};
+    \node [block, below of=d2] (p2) {\texttt{optimize()}};
+    \node [cloud, right of=d1] (c1) {\fbox{1}};
+    \node [cloud, right of=d2] (c2) {\fbox{2}};
+
+    \path [line] (init) -- (p1);
+    \path [line] (p1) -- (d1);
+    \path [line] (d1) -- node {YES} (d2);
+    \path [line] (d1) -- node {NO} (c1);
+    \path [line] (d2) -- node {YES} (p2);
+    \path [line] (d2) -- node {NO} (c2);
+    \path [line] (p2) to [out=140,in=-140] (p1);
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

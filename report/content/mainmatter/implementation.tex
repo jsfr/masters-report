@@ -36,10 +36,8 @@ In general the implementation tries to follow guidelines given in
 Go. Here effective means both in terms of speed, memory usage, stability and
 readability.
 
-Source code for the new implementation, fixes for the old implementation and
-experiments can be found at \url{https://github.com/jsfr/SteinerExact}. The
-source code for just the new implementation is also included in
-\cref{cha:source-code}.
+Source code for the new implementation, fixes for the original implementation and
+experiments can be found at \url{https://github.com/jsfr/SteinerExact}.
 
 \section{Overview}
 \label{sec:overview-1}
@@ -62,7 +60,7 @@ The possible flags one can pass to the program are:
 \item \texttt{-sort} \quad Sorts the terminals before initiating the main loop.
 \item \texttt{-1} \quad 1-indexes all printed results on STDOUT. The program is
   0-indexed as this simply makes more sense programming-wise. However one may
-  wish a 1-indexed tree when printed for easier comparison with the old
+  wish a 1-indexed tree when printed for easier comparison with the original
   implementation and the theory.
 \item \texttt{-iteration=[method]} \quad Selects the optimization method used.
   \texttt{[method]} can be either \texttt{simple} or \texttt{smith}. The default

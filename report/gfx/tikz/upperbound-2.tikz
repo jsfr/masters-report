@@ -6,6 +6,8 @@
 \node (qr) at (0,0) [label=left:$q-r$] {};
 \node (endP) at (4,0) {};
 
+\node [circle,inner sep=1pt,fill=black,minimum size=3pt,label={right:$q^\ast$}](qs) at (2,.5) {};
+
 \draw (STUB) -- (STUB -| endP);
 \draw (q) -- (q -| endP);
 \draw (qr) -- (qr -| endP);

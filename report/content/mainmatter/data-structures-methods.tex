@@ -22,7 +22,7 @@ In \citeauthor{smith1992}'s implementation of the algorithm when generating
 topologies every new topology is rebuilt completely from the bottom. E.g.\ say
 that we have just optimized the topology corresponding to the topology vector
 $A = [1, 2]$. We now wish to optimize the topology vector
-$A' = [1, 2, 3]$. In the old implementation $A'$ would have to be built again
+$A' = [1, 2, 3]$. In the original implementation $A'$ would have to be built again
 from scratch instead of simply splitting and building on to $A$.
 
 To avoid this extra work, the new implementation instead uses a different

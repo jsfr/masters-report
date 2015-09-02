@@ -4,15 +4,18 @@
 
 % Short introduction to the chapter (max 1/2 page)
 
-This chapter will introduce the algorithm for finding \acp{smt} in
-$d$-space, as proposed by \textcite{smith1992}.
-
-The chapter will mainly be concerned with the design of the algorithm, and the
-proofs and theorems surrounding it. It will however also delve into the actual
-implementation done by \citeauthor{smith1992} when this is relevant.
-
-Finally the chapter discuss some more dubious parts of the implementation done
-by \citeauthor{smith1992}.
+This chapter presents the different parts that go into the combined algorithm as
+presented by \textcite{smith1992}. Initially the representation and generation
+of topologies is described. The reasoning behind the representation is also
+given, by describing how we can use the representation to prune topologies which
+cannot become the \acl{smt}. A simple iteration which can be used to optimize
+the tree of a given topology is then presented. This is done to both approach
+the iteration proposed by \citeauthor{smith1992} somewhat softer, and as this
+iteration will be used later in the thesis. The chapter then presents the
+iteration proposed by \citeauthor{smith1992} for optimizing the tree of a given
+topology. Finally the chapter presents and discusses elements of the article by
+\textcite{smith1992} that was found questionable or odd. This includes both
+elements of the article and the actual implementation he gives.
 
 Apart from the already used $n$ and $k$, for clarity we define the following symbols
 %
@@ -507,7 +510,7 @@ optimized.
   \centering
   \includegraphics[width=0.8\textwidth]{gfx/tikz/errorfunction}
   \caption[Possible problem with the error function, part 1]{The left part of the figure
-    shows how the use of the current error function might result in a suboptimal
+    shows how the use of the current error function might result in a sub-optimal
     tree. The right part of the figure shows the optimal tree. Notice that
     this topology does not result in the \ac{smt} for these
     terminals.\label{fig:error-function}}
